@@ -7,7 +7,7 @@
 #include "Model.h"
 #include "BoundingBox.h"
 
-class gameObject{
+class GameObject{
     Model mModel;
     void init();
     void update();

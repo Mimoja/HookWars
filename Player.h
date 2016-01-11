@@ -1,7 +1,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-class Player : gameObject{
+class Player : GameObject{
     public:
     	Player(int p){
     	    playerID = p;
