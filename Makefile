@@ -5,7 +5,7 @@ CPP    = c++
 CPPFLAGS = -pthread -O2 -Wall --std=c++11
 
 EXTRA_DEFINES  = -DLINUX -DGLM_FORCE_RADIANS -DPROG_NAME=\"$(TARGET)\"
-LFLAGS       = $(LIB_LINUX) -lXrandr -lGL -lXi -pthread -lm -lX11 -lXxf86vm -lGLEW -lglfw
+LFLAGS       = $(LIB_LINUX) -lXrandr -lGL -lXi -pthread -lm -lX11 -lXxf86vm -lGLEW -lglfw -lassimp
 
 OBJECTS = $(patsubst %.cpp, %.o, $(wildcard *.cpp))
 
