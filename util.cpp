@@ -20,6 +20,7 @@ int nbFrames = 0;
 void FPS_init(float delay) {
 	lastTime= glfwGetTime();
 	nbFrames = 0;
+    del = delay;
 }
 void FPS_count(){
 	double currentTime = glfwGetTime();
@@ -74,5 +75,5 @@ bool loadModelFromFile( const char * path,
 		indices.push_back(mesh->mFaces[i].mIndices[1]);
 		indices.push_back(mesh->mFaces[i].mIndices[2]);
 	}
-
+    return true;
 }

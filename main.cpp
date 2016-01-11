@@ -104,7 +104,7 @@ int main(void){
 	return 0;
 }
         
-double lastTime;
+double lastUpdateTime;
 double nowTime;
 
 void mainLoop(void){
@@ -114,11 +114,11 @@ void mainLoop(void){
     // Clear the screen
 	glClear( GL_COLOR_BUFFER_BIT| GL_DEPTH_BUFFER_BIT );
     
-    if(nowTime-lastTime>(1/60)){
+    if(nowTime-lastUpdateTime>(1/60)){
         for(GameObject o : allGameObjects){
             o.update();
         }
-        lastTime = glfwGetTime();
+        lastUpdateTime = glfwGetTime();
     }
 
     for(GameObject o : allGameObjects){

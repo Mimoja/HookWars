@@ -3,6 +3,9 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
+Camera::Camera(){
+    Camera(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0f,0.0f,0.0f));
+}
 
 Camera::Camera(glm::vec3 Pos, glm::vec3 Target, glm::vec3 Up){
 	mBasePos = mPos = Pos;
