@@ -1,5 +1,8 @@
 #ifndef UTIL_H
 #define UTIL_H
+
+#include <vector>
+
 void FPS_init(float delay);
 void FPS_count();
 bool loadModelFromFile( const char * path, 

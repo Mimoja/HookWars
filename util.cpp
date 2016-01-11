@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <glm/glm.hpp>
 #include <GLFW/glfw3.h>
 
 #include "util.h"

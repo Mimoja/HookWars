@@ -11,13 +11,14 @@
 #include "config.h"
 #include "Camera.h"
 #include "BoundingBox.h"
-#include "Player.h"
 
 std::vector<GameObject> allGameObjects;
 
 GLFWwindow* window;
 void mainLoop(void);
 
+glm::mat4 Projection;
+Camera cam;
 
 int main(void){
 
@@ -71,23 +72,19 @@ int main(void){
 	// Ensure we can capture the escape key being pressed below
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
-    //TODO
-    //allGameObjects = createGameObjects();
-    allGameObjects.push_back(Player(1));
-    allGameObjects.push_back(Player(2));
 
 	// Black background
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
-	glm::mat4 Projection = glm::perspective( 45.0f, 
+	Projection = glm::perspective( 45.0f, 
                                              (float)WINDOW_WIDTH/(float)WINDOW_HEIGHT, 
                                              0.1f, 100.0f);
 
-	Camera cam( glm::vec3(0.0f,4.0f,4.0f), 
-                glm::vec3(0.0f,-3.0f,-4.0f),
-                glm::vec3(0.0f,1.0f,0.0f));
+	cam = Camera( glm::vec3(0.0f,4.0f,4.0f), 
+                  glm::vec3(0.0f,-3.0f,-4.0f),
+                  glm::vec3(0.0f,1.0f,0.0f));
 
     cam.setDomain(glm::vec3(-5.0f,0.0f,0.0f), glm::vec3(5.0f,10.0f,10.0f));
 
@@ -125,7 +122,7 @@ void mainLoop(void){
     }
 
     for(GameObject o : allGameObjects){
-        o.render();
+        o.render(0, Projection, cam);
     }
  
     // Swap buffers

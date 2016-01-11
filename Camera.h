@@ -6,6 +6,7 @@
 
 class Camera{
 public:
+    Camera();
     Camera(glm::vec3 Pos, glm::vec3 Target, glm::vec3 Up);
     glm::mat4 getView();
     void setDomain(glm::vec3 p1, glm::vec3 p2);
