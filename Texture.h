@@ -12,7 +12,7 @@
 class Texture
 {
     public:
-        Texture();   
+        Texture();
         bool loadPNG(char* path);
         void bindToUnit(GLenum TextureUnit);
         GLuint ID;
@@ -20,6 +20,6 @@ class Texture
         void generateMipmap();
         std::vector<unsigned char> image;
         unsigned int width, height;
-}; 
+};
 
 #endif
