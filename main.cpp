@@ -19,6 +19,7 @@ void mainLoop(void);
 
 glm::mat4 Projection;
 Camera cam;
+int joysticks = 0;
 
 int main(void){
 
@@ -73,6 +74,20 @@ int main(void){
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
 
+    // Joystick handle
+    const char* joy1Name=glfwGetJoystickName(GLFW_JOYSTICK_1);
+    const char* joy2Name=glfwGetJoystickName(GLFW_JOYSTICK_2);
+
+    if(joy1Name!=0){
+        printf("Found Joystick %s\n",joy1Name);
+        joysticks++;
+    }
+    if(joy2Name!=0){
+        printf("Found Joystick %s\n",joy1Name);
+        joysticks++;
+    }
+    printf("%d Joysticks found\n",joysticks);
+
 	// Black background
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glEnable(GL_DEPTH_TEST);
@@ -107,9 +122,31 @@ int main(void){
 double lastUpdateTime;
 double nowTime;
 
+const float* joyAxis1;
+const float* joyAxis2;
+const unsigned char* joyButtons1;
+const unsigned char* joyButtons2;
+
+int joyAxisCount1;
+int joyAxisCount2;
+int joyButtonsCount1;
+int joyButtonsCount2;
+
+
 void mainLoop(void){
 
     nowTime = glfwGetTime();
+    if(joysticks>=1){
+        joyAxis1 = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &joyAxisCount1);
+        joyButtons1 = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &joyButtonsCount1);
+        //for(int a = 0; a<joyAxisCount1; a++)        
+        //printf("%f from asix %d\n",joyAxis1[a],a);
+    }
+
+    if(joysticks==2){
+        joyAxis2 = glfwGetJoystickAxes(GLFW_JOYSTICK_2, &joyAxisCount2);
+        joyButtons2 = glfwGetJoystickButtons(GLFW_JOYSTICK_2, &joyButtonsCount2);
+    }
 
     // Clear the screen
 	glClear( GL_COLOR_BUFFER_BIT| GL_DEPTH_BUFFER_BIT );
