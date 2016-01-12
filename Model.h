@@ -17,9 +17,9 @@ class Model{
 		void setScaling(float x, float y, float z);
         glm::mat4 getMatr();
         void render();
-        Texture* diffuseTexture;
-        Texture* normalTexture;
-        Texture* specularTexture;
+        Texture* diffuseTexture=0;
+        Texture* normalTexture=0;
+        Texture* specularTexture=0;
     private:
         GLuint elementBuffer;
         GLuint vertexBuffer;

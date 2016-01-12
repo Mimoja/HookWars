@@ -8,6 +8,11 @@ Texture::Texture(){
     glGenTextures(1, &ID);
 }
 
+void Texture::bindToUnit(GLenum textureUnir){
+    glActiveTexture(textureUnir);
+    glBindTexture(GL_TEXTURE_2D, ID);
+} 
+
 bool Texture::loadPNG(char* path){
     unsigned int res = lodepng::decode(image, width, height, path);
  

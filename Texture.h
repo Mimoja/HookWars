@@ -14,7 +14,7 @@ class Texture
     public:
         Texture();   
         bool loadPNG(char* path);
-        void BindToUnit(GLenum TextureUnit);
+        void bindToUnit(GLenum TextureUnit);
         GLuint ID;
     private:
         void generateMipmap();
