@@ -109,7 +109,7 @@ int main(void){
     // Compile Shaders
     printf("Compiling Shaders");
 
-    basicShaderID = buildShader("shader.fs","shader.vs");
+    basicShaderID = buildShader("shader.vs","shader.fs");
 
 
     FPS_init(2000);
