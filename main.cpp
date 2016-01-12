@@ -112,6 +112,10 @@ int main(void){
     basicShaderID = buildShader("shader.vs","shader.fs");
 
     GameObject cube("cube.obj");
+    cube.mModel.setScaling(1.0f,1.0f,1.0f);
+	cube.mModel.setPosition(0,0,0);
+	cube.mModel.setRotation(0,0,0);
+
     allGameObjects.push_back(cube);
 
 
@@ -171,7 +175,7 @@ void mainLoop(void){
     }
 
     for(GameObject o : allGameObjects){
-        o.render(basicShaderID, Projection, cam);
+        o.render(basicShaderID, Projection*cam.getView(), cam);
     }
  
     // Swap buffers

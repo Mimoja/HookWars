@@ -4,7 +4,7 @@
 #include "stdio.h"
 
 void Model::readFile(char* path){
-    printf("Loading Model 0  from %s",path);
+    printf("Loading Model 0  from %s\n",path);
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
 
@@ -19,6 +19,7 @@ void Model::readFile(char* path){
         printf("Could not load model %s\n",path);
         exit(1);
     }
+     printf("success!\n");
 
 	glGenBuffers(1, &vertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
@@ -37,6 +38,7 @@ void Model::readFile(char* path){
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned short), &indices[0] , GL_STATIC_DRAW);
     
     indicesCount = indices.size();
+    printf("Model has %d indice\n", indicesCount);
 
 }
 
@@ -80,7 +82,7 @@ void Model::render(){
     glEnableVertexAttribArray(1);
     glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
 	glVertexAttribPointer(
-			0,                                // attribute
+			2,                                // attribute
 			3,                                // size
 			GL_FLOAT,                         // type
 			GL_FALSE,                         // normalized?
@@ -92,7 +94,7 @@ void Model::render(){
 	glEnableVertexAttribArray(2);
 	glBindBuffer(GL_ARRAY_BUFFER, uvBuffer);
 	glVertexAttribPointer(
-		1,                                // attribute
+		3,                                // attribute
 		2,                                // size
 		GL_FLOAT,                         // type
 		GL_FALSE,                         // normalized?
