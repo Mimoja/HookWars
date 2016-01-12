@@ -96,11 +96,11 @@ int main(void){
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
 
-    Projection = glm::perspective( 45.0f, 
-                                   (float)WINDOW_WIDTH/(float)WINDOW_HEIGHT, 
+    Projection = glm::perspective( 45.0f,
+                                   (float)WINDOW_WIDTH/(float)WINDOW_HEIGHT,
                                    0.1f, 100.0f);
 
-    cam = Camera( glm::vec3(0.0f,4.0f,4.0f), 
+    cam = Camera( glm::vec3(0.0f,4.0f,4.0f),
                   glm::vec3(0.0f,-3.0f,-4.0f),
                   glm::vec3(0.0f,1.0f,0.0f));
 
@@ -122,8 +122,8 @@ int main(void){
 
     FPS_init(2000);
     long frameCount = 0;
-    do{ 
-        mainLoop(); 
+    do{
+        mainLoop();
         frameCount++;
         FPS_count();
     } // Check if the ESC key was pressed or the window was closed
@@ -135,7 +135,7 @@ int main(void){
 
     return 0;
 }
-        
+
 double lastUpdateTime;
 double nowTime;
 
@@ -156,7 +156,7 @@ void mainLoop(void){
     if(joysticks>=1){
         joyAxis1 = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &joyAxisCount1);
         joyButtons1 = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &joyButtonsCount1);
-        //for(int a = 0; a<joyAxisCount1; a++)        
+        //for(int a = 0; a<joyAxisCount1; a++)
         //printf("%f from asix %d\n",joyAxis1[a],a);
     }
 
@@ -167,7 +167,7 @@ void mainLoop(void){
 
     // Clear the screen
     glClear( GL_COLOR_BUFFER_BIT| GL_DEPTH_BUFFER_BIT );
-    
+
     if(nowTime-lastUpdateTime>(1/60)){
         for(GameObject o : allGameObjects){
             o.update();
@@ -178,7 +178,7 @@ void mainLoop(void){
     for(GameObject o : allGameObjects){
         o.render(basicShaderID, Projection*cam.getView(), cam);
     }
- 
+
     // Swap buffers
     glfwSwapBuffers(window);
     glfwPollEvents();

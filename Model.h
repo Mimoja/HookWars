@@ -29,6 +29,6 @@ class Model{
         int indicesCount;
         glm::vec3 rotation,scaling, translation;
         glm::mat4 sum = glm::mat4(1.0f);
-        
+
 };
 #endif

@@ -33,7 +33,7 @@ void FPS_count(){
     }
 }
 
-bool loadModelFromFile( const char * path, 
+bool loadModelFromFile( const char * path,
                         std::vector<unsigned short> & indices,
                         std::vector<glm::vec3> & vertices,
                         std::vector<glm::vec2> & uvs,
@@ -64,22 +64,22 @@ bool loadModelFromFile( const char * path,
     uvs.reserve(mesh->mNumVertices);
     normals.reserve(mesh->mNumVertices);
     indices.reserve(3*mesh->mNumFaces);
-    
+
     for(unsigned int i=0; i<mesh->mNumVertices; i++){
         aiVector3D pos = mesh->mVertices[i];
         vertices.push_back(glm::vec3(pos.x, pos.y, pos.z));
     }
-    
+
     for(unsigned int i=0; i<mesh->mNumVertices; i++){
         aiVector3D UVW = mesh->mTextureCoords[0][i];
         uvs.push_back(glm::vec2(UVW.x, UVW.y));
     }
-    
+
     for(unsigned int i=0; i<mesh->mNumVertices; i++){
         aiVector3D n = mesh->mNormals[i];
         normals.push_back(glm::vec3(n.x, n.y, n.z));
     }
-    
+
     for (unsigned int i=0; i<mesh->mNumFaces; i++){
         indices.push_back(mesh->mFaces[i].mIndices[0]);
         indices.push_back(mesh->mFaces[i].mIndices[1]);

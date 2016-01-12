@@ -12,9 +12,9 @@ void Model::readFile(const char* path){
     std::vector<unsigned short> indices;
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec2> uvs;
-    std::vector<glm::vec3> normals; 
+    std::vector<glm::vec3> normals;
     bool res = loadModelFromFile(path, indices, vertices, uvs, normals);
-    
+
     if(!res){
         printf("Could not load model %s\n",path);
         exit(1);
@@ -28,7 +28,7 @@ void Model::readFile(const char* path){
     glGenBuffers(1, &uvBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, uvBuffer);
     glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
-    
+
     glGenBuffers(1, &normalBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
     glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals[0], GL_STATIC_DRAW);
@@ -36,7 +36,7 @@ void Model::readFile(const char* path){
     glGenBuffers(1, &elementBuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned short), &indices[0] , GL_STATIC_DRAW);
-    
+
     indicesCount = indices.size();
     printf("Model has %d indice\n", indicesCount);
 
@@ -57,7 +57,7 @@ glm::mat4 Model::getMatr(){
     sum=glm::rotate(sum,rotation[0],glm::vec3(1,0,0));
     sum=glm::rotate(sum,rotation[1],glm::vec3(0,1,0));
     sum=glm::rotate(sum,rotation[2],glm::vec3(0,0,1));
-    
+
     sum=glm::translate(sum,translation);
     return sum;
 }
@@ -101,7 +101,7 @@ void Model::render(){
         0,                                // stride
         (void*)0                          // array buffer offset
     );
-    
+
     // Index buffer
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
 
