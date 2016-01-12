@@ -40,15 +40,25 @@ bool loadModelFromFile( const char * path,
                         std::vector<glm::vec3> & normals){
 
     Assimp::Importer importer;
+    printf("Staring importer\n");
 
     const aiScene* scene = importer.ReadFile(path, 0);
     if( !scene) {
-        fprintf( stderr, importer.GetErrorString());
+        printf("%s\n",importer.GetErrorString());
         getchar();
         return false;
     }
+    
+    if(scene->mNumMeshes==0){
+        printf("No mesh found!\n");
+        return false;
+    }
 
+    printf("success!!\n");
     const aiMesh* mesh = scene->mMeshes[0];
+        
+    printf("Contains %d verticies\n",mesh->mNumVertices);
+    printf("Contains %d faces\n",mesh->mNumFaces);
 
     vertices.reserve(mesh->mNumVertices);
     uvs.reserve(mesh->mNumVertices);

@@ -3,7 +3,7 @@
 
 #include "stdio.h"
 
-void Model::readFile(char* path){
+void Model::readFile(const char* path){
     printf("Loading Model 0  from %s\n",path);
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);

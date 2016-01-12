@@ -111,12 +111,13 @@ int main(void){
 
     basicShaderID = buildShader("shader.vs","shader.fs");
 
-    GameObject cube("cube.obj");
-    cube.mModel.setScaling(1.0f,1.0f,1.0f);
-    cube.mModel.setPosition(0,0,0);
-    cube.mModel.setRotation(0,0,0);
+    // Create map
+    GameObject map(MAP_MODEL);
+    map.mModel.setScaling(1.0f,1.0f,1.0f);
+    map.mModel.setPosition(0,0,0);
+    map.mModel.setRotation(0,0,0);
 
-    allGameObjects.push_back(cube);
+    allGameObjects.push_back(map);
 
 
     FPS_init(2000);

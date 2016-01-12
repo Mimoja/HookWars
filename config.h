@@ -5,6 +5,7 @@
 #define GAME_NAME "Hook Wars"
 
 #define PLAYER_MODEL "player.obj"
+#define MAP_MODEL "assets/testcube.obj"
 
 #define WINDOW_NAME  GAME_NAME
 #define WINDOW_WIDTH 800

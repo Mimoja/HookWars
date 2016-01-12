@@ -16,7 +16,7 @@
 class GameObject{
     public:
         GameObject();
-        GameObject(char* file);
+        GameObject(const char* file);
         Model mModel;
         void update();
         glm::vec3 position, rotation, scaling;

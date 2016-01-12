@@ -3,7 +3,7 @@
 
 #include "stdio.h"
 	
-GameObject::GameObject(char* path){
+GameObject::GameObject(const char* path){
     printf("Building GameObject from %s\n",path);
     mModel.readFile(path);
 }
