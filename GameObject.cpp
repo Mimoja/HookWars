@@ -29,7 +29,7 @@ void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera){
             mModel.diffuseTexture->bindToUnit(GL_TEXTURE0);
             GLuint diffuseID = glGetUniformLocation(shaderID, "diffuseTexture");
             glUniform1i(diffuseID, 0);
-        }   
+        }
 
         if(mModel.normalTexture !=0){
             mModel.normalTexture->bindToUnit(GL_TEXTURE1);
@@ -40,7 +40,7 @@ void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera){
 
         if(mModel.specularTexture !=0){
             mModel.specularTexture->bindToUnit(GL_TEXTURE2);
-            GLuint specularID = glGetUniformLocation(shaderID, "specularTexture");    
+            GLuint specularID = glGetUniformLocation(shaderID, "specularTexture");
             glUniform1i(specularID, 2);
         }
 

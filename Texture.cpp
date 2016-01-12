@@ -11,11 +11,11 @@ Texture::Texture(){
 void Texture::bindToUnit(GLenum textureUnir){
     glActiveTexture(textureUnir);
     glBindTexture(GL_TEXTURE_2D, ID);
-} 
+}
 
 bool Texture::loadPNG(char* path){
     unsigned int res = lodepng::decode(image, width, height, path);
- 
+
     if(res != 0)
     {
         printf("error %d : %s\n",res,lodepng_error_text(res));
@@ -25,7 +25,7 @@ bool Texture::loadPNG(char* path){
     glBindTexture(GL_TEXTURE_2D, ID);
 
     glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, &image[0]);
-    
+
     generateMipmap();
 
     return true;
@@ -38,7 +38,7 @@ void Texture::generateMipmap(){
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); 
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glGenerateMipmap(GL_TEXTURE_2D);
 
 }
