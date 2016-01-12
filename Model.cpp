@@ -70,25 +70,25 @@ void Model::render(){
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 	glVertexAttribPointer(
-			0,                                // attribute
-			3,                                // size
-			GL_FLOAT,                         // type
-			GL_FALSE,                         // normalized?
-			0,                                // stride
-			(void*)0                          // array buffer offset
-		);
+		0,                                // attribute
+		3,                                // size
+		GL_FLOAT,                         // type
+		GL_FALSE,                         // normalized?
+		0,                                // stride
+		(void*)0                          // array buffer offset
+	);
 
     // VAA 1 Normals
     glEnableVertexAttribArray(1);
     glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
 	glVertexAttribPointer(
-			2,                                // attribute
-			3,                                // size
-			GL_FLOAT,                         // type
-			GL_FALSE,                         // normalized?
-			0,                                // stride
-			(void*)0                          // array buffer offset
-		);
+		1,                                // attribute
+		3,                                // size
+		GL_FLOAT,                         // type
+		GL_FALSE,                         // normalized?
+		0,                                // stride
+		(void*)0                          // array buffer offset
+	);
 
     // VAA 2 UVs
 	glEnableVertexAttribArray(2);
@@ -107,10 +107,10 @@ void Model::render(){
 
 	// Draw the triangles !
 	glDrawElements(
-		GL_TRIANGLES,      // mode
-		indicesCount,    // count
-		GL_UNSIGNED_SHORT,   // type
-		(void*)0           // element array buffer offset
+		GL_TRIANGLES,                     // mode
+		indicesCount,                     // count
+		GL_UNSIGNED_SHORT,                // type
+		(void*)0                          // element array buffer offset
 	);
 
 	glDisableVertexAttribArray(0);
