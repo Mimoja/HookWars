@@ -3,12 +3,6 @@
 
 #include <GL/glew.h>
 
-class Shader{
-    public:
-        Shader(char * vertex_file_path, char * fragment_file_path);
-        GLuint getShaderID();
-    private:
-        GLuint mID;
-};
+GLuint buildShader(const char * vertex_file_path,const char * fragment_file_path);
 
 #endif

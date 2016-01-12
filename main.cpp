@@ -11,6 +11,7 @@
 #include "config.h"
 #include "Camera.h"
 #include "BoundingBox.h"
+#include "Shader.h"
 
 std::vector<GameObject> allGameObjects;
 
@@ -21,14 +22,16 @@ glm::mat4 Projection;
 Camera cam;
 int joysticks = 0;
 
+GLuint basicShaderID;
+
 int main(void){
 
-    // Initialise GLFW
+	// Initialise GLFW
 	if( !glfwInit() )
 	{
 		fprintf( stderr, "Failed to initialize GLFW\n" );
 		getchar();
-		exit(1);
+		return -1;
 	}
 
 	glfwWindowHint(GLFW_SAMPLES, 4); // Multisampling
@@ -42,7 +45,7 @@ int main(void){
 	if( window == NULL ){
 		fprintf( stderr, "Failed to open GLFW Window\n" );
 		glfwTerminate();
-		exit(1);
+		return -1;
 	}
 	glfwMakeContextCurrent(window);
 
@@ -51,7 +54,7 @@ int main(void){
 	if (glewInit() != GLEW_OK) {
 		fprintf(stderr, "Failed to initialize GLEW\n");
 		glfwTerminate();
-		exit(1);
+		return -1;
 	}
 
 	// Ensure we can capture the escape key being pressed below
@@ -94,14 +97,20 @@ int main(void){
 	glDepthFunc(GL_LESS);
 
 	Projection = glm::perspective( 45.0f, 
-                                             (float)WINDOW_WIDTH/(float)WINDOW_HEIGHT, 
-                                             0.1f, 100.0f);
+                                   (float)WINDOW_WIDTH/(float)WINDOW_HEIGHT, 
+                                   0.1f, 100.0f);
 
 	cam = Camera( glm::vec3(0.0f,4.0f,4.0f), 
                   glm::vec3(0.0f,-3.0f,-4.0f),
                   glm::vec3(0.0f,1.0f,0.0f));
 
     cam.setDomain(glm::vec3(-5.0f,0.0f,0.0f), glm::vec3(5.0f,10.0f,10.0f));
+
+    // Compile Shaders
+    printf("Compiling Shaders");
+
+    basicShaderID = buildShader("shader.fs","shader.vs");
+
 
     FPS_init(2000);
 	long frameCount = 0;
@@ -159,7 +168,7 @@ void mainLoop(void){
     }
 
     for(GameObject o : allGameObjects){
-        o.render(0, Projection, cam);
+        o.render(basicShaderID, Projection, cam);
     }
  
     // Swap buffers

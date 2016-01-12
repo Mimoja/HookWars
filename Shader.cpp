@@ -1,3 +1,8 @@
+#include <GL/glew.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <GLFW/glfw3.h>
+
 #include "Shader.h"
 
 #include "stdio.h"
@@ -6,8 +11,8 @@
 #include <fstream>
 #include <vector>
 
-Shader::Shader(char* vertex_file_path, char* fragment_file_path){
-    
+GLuint buildShader(const char * vertex_file_path,const char * fragment_file_path){
+
 	// Create the shaders
 	GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
 	GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
@@ -22,6 +27,7 @@ Shader::Shader(char* vertex_file_path, char* fragment_file_path){
 		VertexShaderStream.close();
 	}else{
 		printf("Impossible to open %s\n", vertex_file_path);
+		exit(-1);
 	}
 
 	// Read the Fragment Shader code from the file
@@ -36,6 +42,7 @@ Shader::Shader(char* vertex_file_path, char* fragment_file_path){
 
 	GLint Result = GL_FALSE;
 	int InfoLogLength;
+
 
 	// Compile Vertex Shader
 	printf("Compiling shader : %s\n", vertex_file_path);
@@ -52,6 +59,8 @@ Shader::Shader(char* vertex_file_path, char* fragment_file_path){
 		printf("%s\n", &VertexShaderErrorMessage[0]);
 	}
 
+
+
 	// Compile Fragment Shader
 	printf("Compiling shader : %s\n", fragment_file_path);
 	char const * FragmentSourcePointer = FragmentShaderCode.c_str();
@@ -66,6 +75,8 @@ Shader::Shader(char* vertex_file_path, char* fragment_file_path){
 		glGetShaderInfoLog(FragmentShaderID, InfoLogLength, NULL, &FragmentShaderErrorMessage[0]);
 		printf("%s\n", &FragmentShaderErrorMessage[0]);
 	}
+
+
 
 	// Link the program
 	printf("Linking program\n");
@@ -89,9 +100,5 @@ Shader::Shader(char* vertex_file_path, char* fragment_file_path){
 	glDeleteShader(VertexShaderID);
 	glDeleteShader(FragmentShaderID);
 
-    mID = ProgramID;
-}
-
-GLuint Shader::getShaderID(){
-    return mID;
+	return ProgramID;
 }
