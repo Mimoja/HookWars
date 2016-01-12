@@ -8,8 +8,8 @@
 
 class Model{
     public:
-        Model(void  );
-        Model (char* file);
+        Model(){}
+        void readFile(char* file);
 		void setPosition(float x,float y,float z);
 		void setRotation(float x, float y, float z);
 		void setScaling(float x, float y, float z);

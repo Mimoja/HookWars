@@ -22,6 +22,8 @@ class GameObject{
         BoundingBox mBox;
         void render(GLuint shaderID, glm::mat4 MVP, Camera camera);
         void kill();
+    private:
+        GLuint lastShader;
 };
 
 #endif

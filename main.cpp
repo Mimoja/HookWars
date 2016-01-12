@@ -107,9 +107,12 @@ int main(void){
     cam.setDomain(glm::vec3(-5.0f,0.0f,0.0f), glm::vec3(5.0f,10.0f,10.0f));
 
     // Compile Shaders
-    printf("Compiling Shaders");
+    printf("Compiling Shaders\n");
 
     basicShaderID = buildShader("shader.vs","shader.fs");
+
+    GameObject cube("cube.obj");
+    allGameObjects.push_back(cube);
 
 
     FPS_init(2000);

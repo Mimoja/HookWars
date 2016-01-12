@@ -3,12 +3,11 @@
 
 #include "stdio.h"
 
-Model::Model(void){}
-
-Model::Model(char* path){
-
+void Model::readFile(char* path){
+    printf("Loading Model 0  from %s",path);
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
+
     // Read .obj file
     std::vector<unsigned short> indices;
 	std::vector<glm::vec3> vertices;
@@ -18,6 +17,7 @@ Model::Model(char* path){
 	
     if(!res){
         printf("Could not load model %s\n",path);
+        exit(1);
     }
 
 	glGenBuffers(1, &vertexBuffer);
