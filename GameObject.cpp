@@ -8,6 +8,8 @@ GameObject::GameObject(char* path){
     mModel.readFile(path);
 }
 
+GameObject::GameObject(){}
+
 void GameObject::update(){}
 
 void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera){

@@ -15,6 +15,7 @@
 
 class GameObject{
     public:
+        GameObject();
         GameObject(char* file);
         Model mModel;
         void update();
