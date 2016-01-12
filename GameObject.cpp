@@ -14,16 +14,16 @@ void GameObject::update(){}
 
 void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera){
 
-      	// Use our shader
-		glUseProgram(shaderID);
+          // Use our shader
+        glUseProgram(shaderID);
 
-	    GLuint WorldMatrixID = glGetUniformLocation(shaderID, "WORLD");
+        GLuint WorldMatrixID = glGetUniformLocation(shaderID, "WORLD");
         GLuint ModelMatrixID = glGetUniformLocation(shaderID, "MODEL");
-    	GLuint CameraPositionID = glGetUniformLocation(shaderID, "CAMERA");
+        GLuint CameraPositionID = glGetUniformLocation(shaderID, "CAMERA");
 
-		glUniformMatrix4fv(WorldMatrixID, 1, GL_FALSE, &MVP[0][0]);
+        glUniformMatrix4fv(WorldMatrixID, 1, GL_FALSE, &MVP[0][0]);
         glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &(mModel.getMatr()[0][0]));
-		glUniform3f(CameraPositionID, camera.mPos.x,camera.mPos.y,camera.mPos.z);
+        glUniform3f(CameraPositionID, camera.mPos.x,camera.mPos.y,camera.mPos.z);
 
         if(mModel.diffuseTexture !=0){
             mModel.diffuseTexture->bindToUnit(GL_TEXTURE0);
@@ -44,5 +44,5 @@ void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera){
             glUniform1i(specularID, 2);
         }
 
-		mModel.render();
+        mModel.render();
 }

@@ -8,13 +8,13 @@ Camera::Camera(){
 }
 
 Camera::Camera(glm::vec3 Pos, glm::vec3 Target, glm::vec3 Up){
-	mBasePos = mPos = Pos;
-	mTarget = Target;
-	mUp = Up;
+    mBasePos = mPos = Pos;
+    mTarget = Target;
+    mUp = Up;
 
 }
 glm::mat4 Camera::getView(){
-	return glm::lookAt(mPos,mPos+mTarget,mUp);
+    return glm::lookAt(mPos,mPos+mTarget,mUp);
 }
 void Camera::setDomain(glm::vec3 p1, glm::vec3 p2){
     mD1 = p1;
@@ -42,7 +42,7 @@ void Camera::handleKeyboard(GLFWwindow* window){
     if(glfwGetKey(window, GLFW_KEY_Q)==GLFW_PRESS)
         mPos[1]+=cameraSpeed;
     if(glfwGetKey(window, GLFW_KEY_E)==GLFW_PRESS)
-	mPos[1]-=cameraSpeed;
+    mPos[1]-=cameraSpeed;
     if(mD1[2]>mD2[2]){
         if(mPos[2]>mD1[2])mPos[2]=mD1[2];
         if(mPos[2]<mD2[2])mPos[2]=mD2[2];
