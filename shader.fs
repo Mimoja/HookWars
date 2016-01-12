@@ -10,5 +10,5 @@ uniform vec3 CAMERA;
 
 void main()                                                                         
 {                                                                                                                         
-    FragColor = color;                   
+    FragColor = color*dot(normal,vec3(3,0.1,1));                   
 }

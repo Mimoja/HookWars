@@ -29,7 +29,7 @@ void Model::readFile(char* path){
 	glBindBuffer(GL_ARRAY_BUFFER, uvBuffer);
 	glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
     
-	glGenBuffers(1, &uvBuffer);
+	glGenBuffers(1, &normalBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
 	glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals[0], GL_STATIC_DRAW);
 
@@ -94,7 +94,7 @@ void Model::render(){
 	glEnableVertexAttribArray(2);
 	glBindBuffer(GL_ARRAY_BUFFER, uvBuffer);
 	glVertexAttribPointer(
-		3,                                // attribute
+		2,                                // attribute
 		2,                                // size
 		GL_FLOAT,                         // type
 		GL_FALSE,                         // normalized?

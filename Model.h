@@ -6,6 +6,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <GLFW/glfw3.h>
 
+#include "Texture.h"
+
 class Model{
     public:
         Model(){}
@@ -15,6 +17,9 @@ class Model{
 		void setScaling(float x, float y, float z);
         glm::mat4 getMatr();
         void render();
+        Texture* diffuseTexture;
+        Texture* normalTexture;
+        Texture* specularTexture;
     private:
         GLuint elementBuffer;
         GLuint vertexBuffer;

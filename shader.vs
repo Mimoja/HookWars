@@ -14,7 +14,7 @@ out vec3 worldPos;
 void main()
 {
     gl_Position = (WORLD*MODEL)*vec4(Position, 1.0);
-    color = vec4(clamp(Position,0.0,1.0),1.0f);
-    normal = (WORLD * vec4(Normal, 0.0)).xyz;
+    color = vec4(Normal, 1.0f);
+    normal = ( vec4(Normal, 0.0)).xyz;
     worldPos   = (WORLD * vec4(Position, 1.0)).xyz;      
 }
