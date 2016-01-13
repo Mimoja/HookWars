@@ -25,13 +25,11 @@ int joysticks = 0;
 GLuint basicShaderID;
 Lights allLightSources;
 
-
-int main(void){
+int main(void) {
 
     // Initialise GLFW
-    if( !glfwInit() )
-    {
-        fprintf( stderr, "Failed to initialize GLFW\n" );
+    if (!glfwInit()) {
+        fprintf(stderr, "Failed to initialize GLFW\n");
         getchar();
         return -1;
     }
@@ -43,9 +41,9 @@ int main(void){
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Open a window and create its OpenGL context
-    window = glfwCreateWindow( WINDOW_WIDTH, WINDOW_HEIGHT,WINDOW_NAME, NULL, NULL);
-    if( window == NULL ){
-        fprintf( stderr, "Failed to open GLFW Window\n" );
+    window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_NAME, NULL, NULL);
+    if (window == NULL) {
+        fprintf(stderr, "Failed to open GLFW Window\n");
         glfwTerminate();
         return -1;
     }
@@ -80,66 +78,67 @@ int main(void){
 
 
     // Joystick handle
-    const char* joy1Name=glfwGetJoystickName(GLFW_JOYSTICK_1);
-    const char* joy2Name=glfwGetJoystickName(GLFW_JOYSTICK_2);
+    const char* joy1Name = glfwGetJoystickName(GLFW_JOYSTICK_1);
+    const char* joy2Name = glfwGetJoystickName(GLFW_JOYSTICK_2);
 
-    if(joy1Name!=0){
-        printf("Found Joystick %s\n",joy1Name);
+    if (joy1Name != 0) {
+        printf("Found Joystick %s\n", joy1Name);
         joysticks++;
     }
-    if(joy2Name!=0){
-        printf("Found Joystick %s\n",joy1Name);
+    if (joy2Name != 0) {
+        printf("Found Joystick %s\n", joy1Name);
         joysticks++;
     }
-    printf("%d Joysticks found\n",joysticks);
+    printf("%d Joysticks found\n", joysticks);
 
     // Black background
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
 
-    Projection = glm::perspective( 45.0f,
-                                   (float)WINDOW_WIDTH/(float)WINDOW_HEIGHT,
-                                   0.1f, 100.0f);
+    Projection = glm::perspective(45.0f,
+        (float) WINDOW_WIDTH / (float) WINDOW_HEIGHT,
+        0.1f, 100.0f);
 
-    cam = Camera( glm::vec3(0.0f,4.0f,4.0f),
-                  glm::vec3(0.0f,-3.0f,-4.0f),
-                  glm::vec3(0.0f,1.0f,0.0f));
+    cam = Camera(glm::vec3(0.0f, 4.0f, 4.0f),
+        glm::vec3(0.0f, -3.0f, -4.0f),
+        glm::vec3(0.0f, 1.0f, 0.0f));
 
-    cam.setDomain(glm::vec3(-5.0f,0.0f,0.0f), glm::vec3(5.0f,10.0f,10.0f));
+    cam.setDomain(glm::vec3(-5.0f, 0.0f, 0.0f), glm::vec3(5.0f, 10.0f, 10.0f));
 
     // Compile Shaders
     printf("Compiling Shaders\n");
 
-    basicShaderID = buildShader("shader.vs","shader.fs");
+    basicShaderID = buildShader("shader.vs", "shader.fs");
 
     // Create map
     GameObject map(MAP_MODEL);
-    map.mModel.setScaling(1.0f,1.0f,1.0f);
-    map.mModel.setPosition(0,0,0);
-    map.mModel.setRotation(0,0,0);
+    map.mModel.setScaling(MAP_SCALING, MAP_SCALING, MAP_SCALING);
+    map.mModel.setPosition(0, 0, 0);
+    map.mModel.setRotation(0, 0, 0);
 
     allGameObjects.push_back(map);
 
     // Create lights
     allLightSources.ambient.intensity = 0.1f;
-    allLightSources.ambient.lightColor = glm::vec3(1.0f,1.0f,1.0f);
-    
+    allLightSources.ambient.lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
+
     DirectionLight dir1;
-    dir1.direction=glm::vec3(3.0f,1.0f,1.0f);
-    dir1.intensity=0.7f;
-    dir1.lightColor=glm::vec3(1.0f, 1.0f, 1.0f);
+    dir1.direction = glm::vec3(3.0f, 1.0f, -1.0f);
+    dir1.intensity = 0.7f;
+    dir1.lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
+    dir1.specular.intensity = 32;
     allLightSources.directionalLights.push_back(dir1);
 
-        FPS_init(2000);
+    FPS_init(2000);
     long frameCount = 0;
-    do{
+    do {
         mainLoop();
         frameCount++;
         FPS_count();
-    } // Check if the ESC key was pressed or the window was closed
-    while( glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS &&
-           glfwWindowShouldClose(window) == 0 );
+    }// Check if the ESC key was pressed or the window was closed
+    while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
+        glfwWindowShouldClose(window) == 0);
 
     // Close OpenGL window and terminate GLFW
     glfwTerminate();
@@ -160,36 +159,34 @@ int joyAxisCount2;
 int joyButtonsCount1;
 int joyButtonsCount2;
 
-
-
-void mainLoop(void){
+void mainLoop(void) {
 
     nowTime = glfwGetTime();
-    if(joysticks>=1){
+    if (joysticks >= 1) {
         joyAxis1 = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &joyAxisCount1);
         joyButtons1 = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &joyButtonsCount1);
         //for(int a = 0; a<joyAxisCount1; a++)
         //printf("%f from asix %d\n",joyAxis1[a],a);
     }
 
-    if(joysticks==2){
+    if (joysticks == 2) {
         joyAxis2 = glfwGetJoystickAxes(GLFW_JOYSTICK_2, &joyAxisCount2);
         joyButtons2 = glfwGetJoystickButtons(GLFW_JOYSTICK_2, &joyButtonsCount2);
     }
 
     // Clear the screen
-    glClear( GL_COLOR_BUFFER_BIT| GL_DEPTH_BUFFER_BIT );
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    if(nowTime-lastUpdateTime>(1/60)){
-        for(GameObject o : allGameObjects){
+    if (nowTime - lastUpdateTime > (1 / 60)) {
+        for (GameObject o : allGameObjects) {
             o.update();
         }
         lastUpdateTime = glfwGetTime();
     }
-    allGameObjects[0].mModel.rotation.y+=0.01f;
+    allGameObjects[0].mModel.rotation.y += 0.01f;
 
-    for(GameObject o : allGameObjects){
-        o.render(basicShaderID, Projection*cam.getView(), cam, allLightSources);
+    for (GameObject o : allGameObjects) {
+        o.render(basicShaderID, Projection * cam.getView(), cam, allLightSources);
     }
 
     // Swap buffers

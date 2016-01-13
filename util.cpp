@@ -81,7 +81,7 @@ bool loadModelFromFile(const char * path,
     }
 
     if (mesh->HasTextureCoords(0)) {
-        printf("Reading %d UVs\n", mesh->mNumUVComponents);
+        printf("Reading %d UVs\n", mesh->mNumUVComponents[0]);
         for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
             aiVector3D UVW = mesh->mTextureCoords[0][i];
             uvs.push_back(glm::vec2(UVW.x, UVW.y));
@@ -96,12 +96,13 @@ bool loadModelFromFile(const char * path,
         }
     }
     if (mesh->HasNormals()) {
-        printf("Reading Normals\n");
+        printf("Reading %d Normals\n", mesh->mNumVertices);
         for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
             aiVector3D n = mesh->mNormals[i];
             normals.push_back(glm::vec3(n.x, n.y, n.z));
         }
     }else{
+        printf("No Normals Found. Calculting manual\n");
         calculateNormals(vertices, normals, indices, mesh->mNumFaces);
     }
 

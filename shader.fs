@@ -17,6 +17,7 @@ struct DirectionalLight
     vec3 Color;
     float Intensity;
     vec3 Direction;
+    int SpecularIntensity;
 };
 
 uniform AmbientLight ambientLight;
@@ -45,8 +46,7 @@ void main()
         
     }  
     /*                                                                       
-    
-    vec3 LightDirection = -gDirectionalLight.Direction;                             
+                             
                               
                                                                                                                        
     vec4 SpecularColor = vec4(0, 0, 0, 0);                                          

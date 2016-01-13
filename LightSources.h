@@ -13,7 +13,7 @@ typedef struct _AmbientLight{
 } AmbientLight;
 
 typedef struct _SpecularLight{
-    float intensity;
+    int intensity;
 } SpecularLight;
 
 typedef struct _DirectionLight{

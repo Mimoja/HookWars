@@ -77,6 +77,9 @@ void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights li
             
             GLuint intensityID = glGetUniformLocation(shaderID, (lightName+".Intensity").c_str());
             glUniform1f(intensityID,  light.intensity);
+            
+            GLuint specIntensityID = glGetUniformLocation(shaderID, (lightName+".SpecularIntensity").c_str());
+            glUniform1f(specIntensityID,  light.specular.intensity);
         }
 
         mModel.render();
