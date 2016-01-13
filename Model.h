@@ -22,7 +22,7 @@ class Model{
         Texture* normalTexture=0;
         Texture* specularTexture=0;
     private:
-        GLuint elementBuffer;
+        GLuint indexBuffer;
         GLuint vertexBuffer;
         GLuint normalBuffer;
         GLuint uvBuffer;

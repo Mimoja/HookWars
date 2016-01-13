@@ -22,8 +22,6 @@ void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights li
         GLuint CameraPositionID = glGetUniformLocation(shaderID, "CAMERA");
         GLuint AmbientLightColorID = glGetUniformLocation(shaderID, "ambientLight.Color");
         GLuint AmbientLightIntensityID = glGetUniformLocation(shaderID, "ambientLight.Intensity");
-        GLuint DirectionalLightCountID = glGetUniformLocation(shaderID, "directionalLightCount");
-
 
         // Transformations Matricies
         glUniformMatrix4fv(WorldMatrixID, 1, GL_FALSE, &MVP[0][0]);
@@ -57,7 +55,9 @@ void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights li
                 lights.ambient.lightColor.b);
         glUniform1f(AmbientLightIntensityID, lights.ambient.intensity);
 
-        // DirectionalLights
+
+        // Directional Lights
+        GLuint DirectionalLightCountID = glGetUniformLocation(shaderID, "directionalLightCount");
         glUniform1i(DirectionalLightCountID, lights.directionalLights.size());
 
         for(unsigned int i = 0; i<lights.directionalLights.size(); i++){
@@ -83,6 +83,45 @@ void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights li
             
             GLuint specPowerID = glGetUniformLocation(shaderID, (lightName+".SpecularPower").c_str());
             glUniform1i(specPowerID,  light.specular.power);
+        }
+        
+        // Point Lights
+        GLuint PointLightCountID = glGetUniformLocation(shaderID, "pointLightCount");
+        glUniform1i(PointLightCountID, lights.pointLights.size());
+
+        for(unsigned int i = 0; i<lights.pointLights.size(); i++){
+            
+            PointLight light = lights.pointLights[i];
+            std::string lightName = "pointLight["+std::to_string(i)+"]";
+            
+            GLuint colorID = glGetUniformLocation(shaderID, (lightName+".Color").c_str());
+            glUniform3f(colorID,light.lightColor.r, 
+                                light.lightColor.g, 
+                                light.lightColor.b);
+
+            GLuint positionID = glGetUniformLocation(shaderID, (lightName+".Position").c_str());
+            glUniform3f(positionID, light.position.x, 
+                                     light.position.y, 
+                                     light.position.z);
+            
+            GLuint intensityID = glGetUniformLocation(shaderID, (lightName+".Intensity").c_str());
+            glUniform1f(intensityID,  light.intensity);
+            
+            GLuint specIntensityID = glGetUniformLocation(shaderID, (lightName+".SpecularIntensity").c_str());
+            glUniform1f(specIntensityID,  light.specular.intensity);
+            
+            GLuint specPowerID = glGetUniformLocation(shaderID, (lightName+".SpecularPower").c_str());
+            glUniform1i(specPowerID,  light.specular.power);
+            
+            GLuint falloffConstantID = glGetUniformLocation(shaderID, (lightName+".Falloff.constant").c_str());
+            glUniform1f(falloffConstantID,  light.falloff.constant);
+            
+            GLuint falloffLinearID = glGetUniformLocation(shaderID, (lightName+".Falloff.linear").c_str());
+            glUniform1f(falloffLinearID,  light.falloff.linear);
+            
+            GLuint falloffExponentialID = glGetUniformLocation(shaderID, (lightName+".Falloff.exponential").c_str());
+            glUniform1f(falloffExponentialID,  light.falloff.exponential);
+            
         }
 
         mModel.render();

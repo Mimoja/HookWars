@@ -6,46 +6,59 @@
 
 #include <vector>
 
-
-typedef struct _AmbientLight{
+typedef struct _BaseLight {
     glm::vec3 lightColor;
     float intensity;
-} AmbientLight;
 
-typedef struct _SpecularLight{
+    _BaseLight() {
+        lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
+    }
+} BaseLight;
+
+typedef struct _SpecularLight {
     int intensity;
     int power;
 } SpecularLight;
 
-typedef struct _DirectionLight{
-    glm::vec3 lightColor;
-    float intensity;
+typedef struct _Attenuation {
+    float constant;
+    float linear;
+    float exponential;
+
+    _Attenuation() {
+        constant = 1.0f;
+        linear = 0.0f;
+        exponential = 0.0f;
+    }
+
+} Attenuation;
+
+typedef struct _DirectionLight : public BaseLight {
     glm::vec3 direction;
     SpecularLight specular;
 } DirectionLight;
 
-typedef struct _PointLight{
-    glm::vec3 lightColor;
+typedef struct _PointLight : public BaseLight {
     glm::vec3 position;
-    float intensity;
-    float falloff;
+    Attenuation falloff;
     SpecularLight specular;
 } PointLight;
 
-typedef struct _SpotLight{
-    glm::vec3 lightColor;
-    glm::vec3 position;
-    glm::vec3 direction;
-    float intensity;
-    float falloff;
-    SpecularLight specular;
+typedef struct _SpotLight : public PointLight {
+    glm::vec3 Direction;
+    float Cutoff;
+
+    _SpotLight() {
+        Direction = glm::vec3(0.0f, 0.0f, 0.0f);
+        Cutoff = 0.0f;
+    }
 } SpotLight;
 
-typedef struct _Lights{
-    AmbientLight ambient;
+typedef struct _Lights {
+    BaseLight ambient;
     std::vector<DirectionLight> directionalLights;
     std::vector<PointLight> pointLights;
-    std::vector<SpotLight>  spotLights;
+    std::vector<SpotLight> spotLights;
 } Lights;
 
 

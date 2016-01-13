@@ -121,7 +121,7 @@ int main(void) {
 
     allGameObjects.push_back(player1);
     
-//#define loadCube
+#define loadCube
 #ifndef loadCube
     GameObject map(MAP_MODEL);
     map.mModel.setScaling(MAP_SCALING, MAP_SCALING, MAP_SCALING);
@@ -136,12 +136,12 @@ int main(void) {
     allGameObjects.push_back(map);
     
     // Create lights
-    allLightSources.ambient.intensity = 0.1f;
+    allLightSources.ambient.intensity = 0.0f;
     allLightSources.ambient.lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
     DirectionLight dir1;
     dir1.direction = glm::vec3(3.0f, 0.0f, -1.0f);
-    dir1.intensity = 0.3f;
+    dir1.intensity = 0.1f;
     dir1.lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
     dir1.specular.intensity = 1.0f;
     dir1.specular.power = 32;
@@ -153,8 +153,27 @@ int main(void) {
     dir2.specular.intensity = 0.1f;
     dir2.specular.power = 32;
     
-    allLightSources.directionalLights.push_back(dir1);
-    allLightSources.directionalLights.push_back(dir2);
+    //allLightSources.directionalLights.push_back(dir1);
+    //allLightSources.directionalLights.push_back(dir2);
+    
+    PointLight point1;
+    point1.lightColor = glm::vec3(0.1f, 0.3f, 0.8f);
+    point1.intensity = 6.0f;
+    point1.position = glm::vec3(3.0f, 0.5f, 0.0f);
+    point1.falloff.exponential=0.4f;
+    
+    allLightSources.pointLights.push_back(point1);
+    
+    
+    SpotLight spot1;
+    spot1.lightColor = glm::vec3(0.9f, 0.3f, 0.1f);
+    spot1.intensity = 1.0f;
+    spot1.position = glm::vec3(-3.0f, 0.0f, 1.0f);
+    spot1.falloff.linear=1.0f;
+    spot1.Cutoff = 1.0f;
+    spot1.Direction = glm::vec3(3.0f, 0.0f, -1.0f);
+    
+    allLightSources.pointLights.push_back(point1);
 
     FPS_init(2000);
     long frameCount = 0;
@@ -209,6 +228,7 @@ void mainLoop(void) {
         }
         lastUpdateTime = glfwGetTime();
     }
+    cam.handleKeyboard(window);
     allGameObjects[0].mModel.rotation.y += 0.01f;
 
     for (GameObject o : allGameObjects) {

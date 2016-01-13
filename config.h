@@ -5,7 +5,7 @@
 #define GAME_NAME "Hook Wars"
 
 #define PLAYER_MODEL "assets/bunny.obj"
-#define PLAYER_SCALING 20
+#define PLAYER_SCALING 25
 
 #define MAP_MODEL "assets/map1.obj"
 #define MAP_SCALING 1
