@@ -4,9 +4,11 @@
 // PROG_NAME comes from makefile
 #define GAME_NAME "Hook Wars"
 
-#define PLAYER_MODEL "player.obj"
-#define MAP_MODEL "assets/bunny_blend.obj"
-#define MAP_SCALING 20
+#define PLAYER_MODEL "assets/bunny.obj"
+#define PLAYER_SCALING 20
+
+#define MAP_MODEL "assets/map1.obj"
+#define MAP_SCALING 1
 
 #define WINDOW_NAME  GAME_NAME
 #define WINDOW_WIDTH 1024

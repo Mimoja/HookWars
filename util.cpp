@@ -86,7 +86,6 @@ bool loadModelFromFile(const char * path,
     normals.reserve(mesh->mNumVertices);
     indices.reserve(3 * mesh->mNumFaces);
 
-
     printf("Reading %d Verticies\n", (int) mesh->mNumVertices);
     for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
         aiVector3D pos = mesh->mVertices[i];
@@ -118,7 +117,5 @@ bool loadModelFromFile(const char * path,
         printf("No Normals Found. Calculating manual\n");
         calculateNormals(vertices, normals, indices, mesh->mNumFaces);
     }
-
-
     return true;
 }

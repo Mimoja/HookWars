@@ -100,8 +100,8 @@ int main(void) {
         (float) WINDOW_WIDTH / (float) WINDOW_HEIGHT,
         0.1f, 100.0f);
 
-    cam = Camera(glm::vec3(0.0f, 4.0f, 4.0f),
-        glm::vec3(0.0f, -3.0f, -4.0f),
+    cam = Camera(glm::vec3(0.0f, 8.0f, 6.0f),
+        glm::vec3(0.0f, -7.0f, -5.0f),
         glm::vec3(0.0f, 1.0f, 0.0f));
 
     cam.setDomain(glm::vec3(-5.0f, 0.0f, 0.0f), glm::vec3(5.0f, 10.0f, 10.0f));
@@ -112,23 +112,49 @@ int main(void) {
     basicShaderID = buildShader("shader.vs", "shader.fs");
 
     // Create map
+
+    
+    GameObject player1(PLAYER_MODEL);
+    player1.mModel.setScaling(PLAYER_SCALING,PLAYER_SCALING,PLAYER_SCALING);
+    player1.mModel.setPosition(0, 0, 0);
+    player1.mModel.setRotation(0, 0, 0);
+
+    allGameObjects.push_back(player1);
+    
+//#define loadCube
+#ifndef loadCube
     GameObject map(MAP_MODEL);
     map.mModel.setScaling(MAP_SCALING, MAP_SCALING, MAP_SCALING);
     map.mModel.setPosition(0, 0, 0);
     map.mModel.setRotation(0, 0, 0);
-
+#else
+    GameObject map("assets/testcube.obj");
+    map.mModel.setScaling(10.0f, 0.5f, 10.0f);
+    map.mModel.setPosition(0, -0.5, 0);
+    map.mModel.setRotation(0, 0, 0);
+#endif
     allGameObjects.push_back(map);
-
+    
     // Create lights
     allLightSources.ambient.intensity = 0.1f;
     allLightSources.ambient.lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
     DirectionLight dir1;
     dir1.direction = glm::vec3(3.0f, 0.0f, -1.0f);
-    dir1.intensity = 0.03f;
+    dir1.intensity = 0.3f;
     dir1.lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
-    dir1.specular.intensity = 32;
+    dir1.specular.intensity = 1.0f;
+    dir1.specular.power = 32;
+    
+    DirectionLight dir2;
+    dir2.direction = glm::vec3(-3.0f, 3.0f, -1.0f);
+    dir2.intensity = 0.10f;
+    dir2.lightColor = glm::vec3(1.0f, 0.0f, 0.0f);
+    dir2.specular.intensity = 0.1f;
+    dir2.specular.power = 32;
+    
     allLightSources.directionalLights.push_back(dir1);
+    allLightSources.directionalLights.push_back(dir2);
 
     FPS_init(2000);
     long frameCount = 0;
@@ -177,7 +203,7 @@ void mainLoop(void) {
     // Clear the screen
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    if (nowTime - lastUpdateTime > (1 / 60)) {
+    if (nowTime - lastUpdateTime > (1 / 61)) {
         for (GameObject o : allGameObjects) {
             o.update();
         }

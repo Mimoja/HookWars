@@ -15,6 +15,6 @@ void main()
 {
     gl_Position = (WORLD*MODEL)*vec4(Position, 1.0);
     normal = ((WORLD*MODEL)* vec4(Normal, 0.0)).xyz;
-    color = vec4(clamp(normal,0.0f,1.0f),1.0f);
+    color = vec4(0.8f,0.8f,0.8f,1.0f);
     worldPos   = ((WORLD*MODEL) * vec4(Position, 1.0)).xyz;      
 }
