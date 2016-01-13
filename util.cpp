@@ -115,9 +115,10 @@ bool loadModelFromFile(const char * path,
             normals.push_back(glm::vec3(n.x, n.y, n.z));
         }
     }else{
-        printf("No Normals Found. Calculting manual\n");
+        printf("No Normals Found. Calculating manual\n");
         calculateNormals(vertices, normals, indices, mesh->mNumFaces);
     }
+    calculateNormals(vertices, normals, indices, mesh->mNumFaces);
 
     return true;
 }

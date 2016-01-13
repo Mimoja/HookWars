@@ -25,43 +25,32 @@ uniform AmbientLight ambientLight;
 uniform int directionalLightCount;
 uniform DirectionalLight directionalLight[10];
 
-
 uniform vec3 CAMERA;
 
 void main()                                                                         
 {    
     vec3 Normal = normalize(normal);                                               
 
-
-
     vec4 DiffuseColor  = vec4(0, 0, 0, 0);
+    vec4 SpecularColor = vec4(0, 0, 0, 0);
 
-    
-   
+    // Ambient Color
     vec4 AmbientColor = vec4(ambientLight.Color * ambientLight.Intensity, 1.0f);
 
+    // DiffuseColor
     float DiffuseFactor = dot(Normal, directionalLight[0].Direction); 
     if (DiffuseFactor > 0) {                                                        
         DiffuseColor = vec4(directionalLight[0].Color * directionalLight[0].Intensity *  DiffuseFactor, 1.0f); 
-        
-    }  
-    /*                                                                       
-                             
-                              
-                                                                                                                       
-    vec4 SpecularColor = vec4(0, 0, 0, 0);                                          
 
-    DiffuseFactor > 0
-                                                                        
+        // Specular Reflection
         vec3 VertexToEye = normalize(CAMERA - worldPos);                     
-        vec3 LightReflect = normalize(reflect(gDirectionalLight.Direction, Normal));
+        vec3 LightReflect = normalize(reflect(directionalLight[0].Direction, Normal));
         float SpecularFactor = dot(VertexToEye, LightReflect);                      
         if (SpecularFactor > 0) {                                                   
-            SpecularFactor = pow(SpecularFactor, gDirectionalLight.SpecularPower);
-            SpecularColor = vec4(gDirectionalLight.Color * gDirectionalLight.SpecularIntensity * SpecularFactor, 1.0f);
+            SpecularFactor = pow(SpecularFactor, directionalLight[0].SpecularIntensity);
+            SpecularColor = vec4(ambientLight.Color * directionalLight[0].SpecularIntensity * SpecularFactor, 1.0f);
         }                                                                           
-    }                                                                               
-                                                                                    
-    FragColor = color * (AmbientColor + DiffuseColor + SpecularColor);        */                                                                                                                               
-    FragColor = color * (AmbientColor + DiffuseColor);                   
+    }
+
+    FragColor = color * (AmbientColor + DiffuseColor + SpecularColor);                                                                                                                                       
 }
