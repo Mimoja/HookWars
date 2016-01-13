@@ -118,7 +118,7 @@ bool loadModelFromFile(const char * path,
         printf("No Normals Found. Calculating manual\n");
         calculateNormals(vertices, normals, indices, mesh->mNumFaces);
     }
-    calculateNormals(vertices, normals, indices, mesh->mNumFaces);
+
 
     return true;
 }
