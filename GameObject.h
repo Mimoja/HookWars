@@ -20,7 +20,6 @@ class GameObject{
         GameObject(const char* file);
         Model mModel;
         void update();
-        glm::vec3 position, rotation, scaling;
         BoundingBox mBox;
         void render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights lights);
         void kill();

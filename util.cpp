@@ -57,33 +57,39 @@ bool loadModelFromFile( const char * path,
     printf("success!!\n");
     const aiMesh* mesh = scene->mMeshes[0];
         
-    printf("Contains %d verticies\n",mesh->mNumVertices);
-    printf("Contains %d faces\n",mesh->mNumFaces);
-
     vertices.reserve(mesh->mNumVertices);
     uvs.reserve(mesh->mNumVertices);
     normals.reserve(mesh->mNumVertices);
     indices.reserve(3*mesh->mNumFaces);
 
+
+    printf("Reading %d Verticies\n",mesh->mNumVertices);
     for(unsigned int i=0; i<mesh->mNumVertices; i++){
         aiVector3D pos = mesh->mVertices[i];
         vertices.push_back(glm::vec3(pos.x, pos.y, pos.z));
     }
-
-    for(unsigned int i=0; i<mesh->mNumVertices; i++){
-        aiVector3D UVW = mesh->mTextureCoords[0][i];
-        uvs.push_back(glm::vec2(UVW.x, UVW.y));
+     
+    if( mesh->HasTextureCoords(0)){
+        printf("Reading %d UVs\n",mesh->mNumUVComponents);
+        for(unsigned int i=0; i<mesh->mNumVertices; i++){
+            aiVector3D UVW = mesh->mTextureCoords[0][i];
+            uvs.push_back(glm::vec2(UVW.x, UVW.y));
+        }   
     }
-
-    for(unsigned int i=0; i<mesh->mNumVertices; i++){
-        aiVector3D n = mesh->mNormals[i];
-        normals.push_back(glm::vec3(n.x, n.y, n.z));
+    if(mesh->HasNormals()){
+        printf("Reading Normals\n");
+        for(unsigned int i=0; i<mesh->mNumVertices; i++){
+            aiVector3D n = mesh->mNormals[i];
+            normals.push_back(glm::vec3(n.x, n.y, n.z));
+        }
     }
-
-    for (unsigned int i=0; i<mesh->mNumFaces; i++){
-        indices.push_back(mesh->mFaces[i].mIndices[0]);
-        indices.push_back(mesh->mFaces[i].mIndices[1]);
-        indices.push_back(mesh->mFaces[i].mIndices[2]);
+    if(mesh->HasFaces()){
+        printf("Reading %d Faces as Indices\n", mesh->mNumFaces);
+        for (unsigned int i=0; i<mesh->mNumFaces; i++){
+            indices.push_back(mesh->mFaces[i].mIndices[0]);
+            indices.push_back(mesh->mFaces[i].mIndices[1]);
+            indices.push_back(mesh->mFaces[i].mIndices[2]);
+        }
     }
     return true;
 }

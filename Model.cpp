@@ -19,7 +19,7 @@ void Model::readFile(const char* path){
         printf("Could not load model %s\n",path);
         exit(1);
     }
-     printf("success!\n");
+    printf("success in loadModelFromPath!\n");
 
     glGenBuffers(1, &vertexBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);

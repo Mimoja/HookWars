@@ -18,10 +18,8 @@ typedef struct _SpecularLight{
 
 typedef struct _DirectionLight{
     glm::vec3 lightColor;
-    glm::vec3 position;
     float intensity;
     glm::vec3 direction;
-    float falloff;
     SpecularLight specular;
 } DirectionLight;
 

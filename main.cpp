@@ -125,9 +125,13 @@ int main(void){
     allLightSources.ambient.intensity = 0.1f;
     allLightSources.ambient.lightColor = glm::vec3(1.0f,1.0f,1.0f);
     
-    
+    DirectionLight dir1;
+    dir1.direction=glm::vec3(3.0f,1.0f,1.0f);
+    dir1.intensity=0.7f;
+    dir1.lightColor=glm::vec3(1.0f, 1.0f, 1.0f);
+    allLightSources.directionalLights.push_back(dir1);
 
-    FPS_init(2000);
+        FPS_init(2000);
     long frameCount = 0;
     do{
         mainLoop();
@@ -182,6 +186,7 @@ void mainLoop(void){
         }
         lastUpdateTime = glfwGetTime();
     }
+    allGameObjects[0].mModel.rotation.y+=0.01f;
 
     for(GameObject o : allGameObjects){
         o.render(basicShaderID, Projection*cam.getView(), cam, allLightSources);

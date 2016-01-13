@@ -1,7 +1,8 @@
 #include "GameObject.h"
 
 #include "stdio.h"
-	
+#include <string>
+
 GameObject::GameObject(const char* path){
     printf("Building GameObject from %s\n",path);
     mModel.readFile(path);
@@ -58,24 +59,24 @@ void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights li
 
         // DirectionalLights
         glUniform1i(DirectionalLightCountID, lights.directionalLights.size());
+
         for(unsigned int i = 0; i<lights.directionalLights.size(); i++){
-            DirectionLight light = lights.directionalLights[i];
             
-            GLuint colorID = glGetUniformLocation(shaderID, "directionalLight[0].Color");
+            DirectionLight light = lights.directionalLights[i];
+            std::string lightName = "directionalLight["+std::to_string(i)+"]";
+            
+            GLuint colorID = glGetUniformLocation(shaderID, (lightName+".Color").c_str());
             glUniform3f(colorID,light.lightColor.r, 
                                 light.lightColor.g, 
                                 light.lightColor.b);
-            GLuint positionID = glGetUniformLocation(shaderID, "directionalLight[0].Position");
-            glUniform3f(positionID, light.position.x, 
-                                    light.position.y, 
-                                    light.position.z);
 
-            GLuint directionID = glGetUniformLocation(shaderID, "directionalLight[0].Position");
+            GLuint directionID = glGetUniformLocation(shaderID, (lightName+".Direction").c_str());
             glUniform3f(directionID, light.direction.x, 
                                      light.direction.y, 
                                      light.direction.z);
-
-            glUniform1f(AmbientLightIntensityID, lights.ambient.intensity);
+            
+            GLuint intensityID = glGetUniformLocation(shaderID, (lightName+".Intensity").c_str());
+            glUniform1f(intensityID,  light.intensity);
         }
 
         mModel.render();

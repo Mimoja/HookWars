@@ -31,9 +31,6 @@ void main()
 {    
     vec3 Normal = normalize(normal);                                               
 
-    vec3 LightDirection = vec3(3,0.1,1);
-    float DiffuseIntensity = 1.0f;
-
 
 
     vec4 DiffuseColor  = vec4(0, 0, 0, 0);
@@ -42,9 +39,9 @@ void main()
    
     vec4 AmbientColor = vec4(ambientLight.Color * ambientLight.Intensity, 1.0f);
 
-    float DiffuseFactor = dot(Normal, LightDirection); 
+    float DiffuseFactor = dot(Normal, directionalLight[0].Direction); 
     if (DiffuseFactor > 0) {                                                        
-        DiffuseColor = vec4(vec3(1.0f,1.0f,1.0f) * DiffuseIntensity * DiffuseFactor, 1.0f); 
+        DiffuseColor = vec4(directionalLight[0].Color * directionalLight[0].Intensity *  DiffuseFactor, 1.0f); 
         
     }  
     /*                                                                       
