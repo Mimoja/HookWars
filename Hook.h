@@ -8,5 +8,7 @@ class Hook : GameObject {
 
     public:
         Hook(int player, glm::vec3 origin, glm::vec3 velocity);
+        void update();
         void pull();
+        glm::vec3 origin();
 };
