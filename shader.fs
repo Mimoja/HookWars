@@ -46,13 +46,11 @@ uniform int pointLightCount;
 uniform PointLight pointLight[10];
 
 uniform vec3 CAMERA;
+uniform mat4 WORLD;
 
 uniform sampler2D DiffuseTextureSampler;
 uniform sampler2D NormalTextureSampler;
 uniform sampler2D SpecularTextureSampler;
-
-                                                                                 
-      
 
 
 void main(){
@@ -86,24 +84,25 @@ void main(){
             float SpecularFactor = dot(VertexToEye, LightReflect);
             if (SpecularFactor > 0) {
                 SpecularFactor = pow(SpecularFactor, light.SpecularPower);
-                SpecularColor += vec4(light.Color * light.SpecularIntensity * SpecularFactor, 1.0f);
+                SpecularColor += vec4(light.Color * SpecularFactor * light.SpecularIntensity , 1.0f);
             }
         }
     }
 
     // PointLights
     for(int i=0; i<pointLightCount; i++){
-
         PointLight light = pointLight[i];
+        light.Position = (WORLD*vec4(light.Position,1.0f)).xyz;
+
         vec3 LightDirection = (worldPos - light.Position);
         float Distance = length(LightDirection);
         LightDirection = normalize(LightDirection);
 
-        // DiffuseColor
-        float DiffuseFactor = dot(Normal, -LightDirection);
         vec4 PointLightDiffuseColor  = vec4(0, 0, 0, 0);
         vec4 PointLightSpecularColor  = vec4(0, 0, 0, 0);
 
+        // DiffuseColor
+        float DiffuseFactor = dot(Normal, -LightDirection);
         if (DiffuseFactor > 0) {
             PointLightDiffuseColor += vec4(light.Color * light.Intensity *  DiffuseFactor, 1.0f);
 
@@ -113,7 +112,7 @@ void main(){
             float SpecularFactor = dot(VertexToEye, LightReflect);
             if (SpecularFactor > 0) {
                 SpecularFactor = pow(SpecularFactor, light.SpecularPower);
-                PointLightSpecularColor = vec4(light.Color * light.SpecularIntensity * SpecularFactor, 1.0f);
+                PointLightSpecularColor = vec4(light.Color * SpecularFactor * light.SpecularIntensity , 1.0f);
             }
         }
 
@@ -123,5 +122,5 @@ void main(){
     }
 
 
-    FragColor = color * (AmbientColor + DiffuseColor + SpecularColor);
+    FragColor = color * (AmbientColor + DiffuseColor +  SpecularColor);
 }

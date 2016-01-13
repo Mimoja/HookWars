@@ -12,11 +12,12 @@ out vec3 normal;
 out vec3 worldPos;
 out vec2 UV;
 
+
 void main()
 {
     gl_Position = (WORLD*MODEL)*vec4(Position, 1.0);
     normal = ((WORLD*MODEL)* vec4(Normal, 0.0)).xyz;
     color = vec4(0.8f,0.8f,0.8f,1.0f);
-    worldPos   = (MODEL* vec4(Position, 1.0)).xyz;  
+    worldPos   = ((WORLD*MODEL)*vec4(Position, 1.0)).xyz;  
     UV = UVs;
 }

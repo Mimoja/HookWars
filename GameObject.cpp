@@ -16,13 +16,16 @@ void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights li
 
           // Use our shader
         glUseProgram(shaderID);
+        if(shaderID!=lastShader){
 
-        GLuint WorldMatrixID = glGetUniformLocation(shaderID, "WORLD");
-        GLuint ModelMatrixID = glGetUniformLocation(shaderID, "MODEL");
-        GLuint CameraPositionID = glGetUniformLocation(shaderID, "CAMERA");
-        GLuint AmbientLightColorID = glGetUniformLocation(shaderID, "ambientLight.Color");
-        GLuint AmbientLightIntensityID = glGetUniformLocation(shaderID, "ambientLight.Intensity");
+        WorldMatrixID = glGetUniformLocation(shaderID, "WORLD");
+        ModelMatrixID = glGetUniformLocation(shaderID, "MODEL");
+        CameraPositionID = glGetUniformLocation(shaderID, "CAMERA");
+        AmbientLightColorID = glGetUniformLocation(shaderID, "ambientLight.Color");
+        AmbientLightIntensityID = glGetUniformLocation(shaderID, "ambientLight.Intensity");
 
+        }else lastShader = shaderID;
+        
         // Transformations Matricies
         glUniformMatrix4fv(WorldMatrixID, 1, GL_FALSE, &MVP[0][0]);
         glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &(mModel.getMatr()[0][0]));

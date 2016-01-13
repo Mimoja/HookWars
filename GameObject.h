@@ -24,7 +24,12 @@ class GameObject{
         void render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights lights);
         void kill();
     private:
-        GLuint lastShader;
+        GLuint lastShader = 1024;
+        GLuint WorldMatrixID;
+        GLuint ModelMatrixID;
+        GLuint CameraPositionID;
+        GLuint AmbientLightColorID;
+        GLuint AmbientLightIntensityID;
 };
 
 #endif

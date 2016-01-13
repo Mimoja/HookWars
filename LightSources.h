@@ -26,9 +26,9 @@ typedef struct _Attenuation {
     float exponential;
 
     _Attenuation() {
-        constant = 1.0f;
+        constant = 0.0f;
         linear = 0.0f;
-        exponential = 0.0f;
+        exponential = 1.0f;
     }
 
 } Attenuation;
