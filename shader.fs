@@ -52,5 +52,5 @@ void main()
         }                                                                           
     }
 
-    FragColor = color * (AmbientColor + DiffuseColor + SpecularColor);                                                                                                                                       
+    FragColor = color * (AmbientColor + DiffuseColor +  SpecularColor);                                                                                                                                       
 }
