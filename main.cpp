@@ -23,6 +23,8 @@ Camera cam;
 int joysticks = 0;
 
 GLuint basicShaderID;
+Lights allLightSources;
+
 
 int main(void){
 
@@ -119,6 +121,11 @@ int main(void){
 
     allGameObjects.push_back(map);
 
+    // Create lights
+    allLightSources.ambient.intensity = 0.1f;
+    allLightSources.ambient.lightColor = glm::vec3(1.0f,1.0f,1.0f);
+    
+    
 
     FPS_init(2000);
     long frameCount = 0;
@@ -150,6 +157,7 @@ int joyButtonsCount1;
 int joyButtonsCount2;
 
 
+
 void mainLoop(void){
 
     nowTime = glfwGetTime();
@@ -176,7 +184,7 @@ void mainLoop(void){
     }
 
     for(GameObject o : allGameObjects){
-        o.render(basicShaderID, Projection*cam.getView(), cam);
+        o.render(basicShaderID, Projection*cam.getView(), cam, allLightSources);
     }
 
     // Swap buffers

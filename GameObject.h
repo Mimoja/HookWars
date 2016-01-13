@@ -12,6 +12,7 @@
 #include "BoundingBox.h"
 #include "Camera.h"
 #include "Shader.h"
+#include "LightSources.h"
 
 class GameObject{
     public:
@@ -21,7 +22,7 @@ class GameObject{
         void update();
         glm::vec3 position, rotation, scaling;
         BoundingBox mBox;
-        void render(GLuint shaderID, glm::mat4 MVP, Camera camera);
+        void render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights lights);
         void kill();
     private:
         GLuint lastShader;

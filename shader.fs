@@ -6,7 +6,22 @@ in vec3 worldPos;
 
 out vec4 FragColor;
 
-uniform vec3 CAMERA;  
+struct AmbientLight
+{
+    vec3 Color;
+    float Intensity;
+};
+
+struct DirectionalLight
+{
+    vec3 Color;
+    float Intensity;
+    vec3 Direction;
+};
+
+uniform AmbientLight ambientLight;
+uniform DirectionalLight directionalLight;
+uniform vec3 CAMERA;
 
 void main()                                                                         
 {    
@@ -15,15 +30,21 @@ void main()
     vec3 LightDirection = vec3(3,0.1,1);
     float DiffuseIntensity = 1.0f;
 
-    float DiffuseFactor = dot(Normal, LightDirection); 
+
+
     vec4 DiffuseColor  = vec4(0, 0, 0, 0);
 
+    
+   
+    vec4 AmbientColor = vec4(ambientLight.Color * ambientLight.Intensity, 1.0f);
+
+    float DiffuseFactor = dot(Normal, LightDirection); 
     if (DiffuseFactor > 0) {                                                        
         DiffuseColor = vec4(vec3(1.0f,1.0f,1.0f) * DiffuseIntensity * DiffuseFactor, 1.0f); 
-
+        
     }  
     /*                                                                       
-    vec4 AmbientColor = vec4(gDirectionalLight.Color * gDirectionalLight.AmbientIntensity, 1.0f);
+    
     vec3 LightDirection = -gDirectionalLight.Direction;                             
                               
                                                                                                                        
@@ -41,5 +62,5 @@ void main()
     }                                                                               
                                                                                     
     FragColor = color * (AmbientColor + DiffuseColor + SpecularColor);        */                                                                                                                               
-    FragColor = color * (DiffuseColor);                   
+    FragColor = color * (AmbientColor + DiffuseColor);                   
 }
