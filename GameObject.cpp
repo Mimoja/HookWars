@@ -126,6 +126,52 @@ void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights li
             glUniform1f(falloffExponentialID,  light.falloff.exponential);
             
         }
+        
+        // Spot Lights
+        GLuint SpottLightCountID = glGetUniformLocation(shaderID, "spotLightCount");
+        glUniform1i(SpottLightCountID, lights.pointLights.size());
+
+        for(unsigned int i = 0; i<lights.spotLights.size(); i++){
+            
+            SpotLight light = lights.spotLights[i];
+            std::string lightName = "spotLight["+std::to_string(i)+"]";
+            
+            GLuint colorID = glGetUniformLocation(shaderID, (lightName+".Color").c_str());
+            glUniform3f(colorID,light.lightColor.r, 
+                                light.lightColor.g, 
+                                light.lightColor.b);
+
+            GLuint positionID = glGetUniformLocation(shaderID, (lightName+".Position").c_str());
+            glUniform3f(positionID, light.position.x, 
+                                     light.position.y, 
+                                     light.position.z);
+            
+            GLuint intensityID = glGetUniformLocation(shaderID, (lightName+".Intensity").c_str());
+            glUniform1f(intensityID,  light.intensity);
+            
+            GLuint specIntensityID = glGetUniformLocation(shaderID, (lightName+".SpecularIntensity").c_str());
+            glUniform1f(specIntensityID,  light.specular.intensity);
+            
+            GLuint specPowerID = glGetUniformLocation(shaderID, (lightName+".SpecularPower").c_str());
+            glUniform1i(specPowerID,  light.specular.power);
+            
+            GLuint falloffConstantID = glGetUniformLocation(shaderID, (lightName+".Falloff.constant").c_str());
+            glUniform1f(falloffConstantID,  light.falloff.constant);
+            
+            GLuint falloffLinearID = glGetUniformLocation(shaderID, (lightName+".Falloff.linear").c_str());
+            glUniform1f(falloffLinearID,  light.falloff.linear);
+            
+            GLuint falloffExponentialID = glGetUniformLocation(shaderID, (lightName+".Falloff.exponential").c_str());
+            glUniform1f(falloffExponentialID,  light.falloff.exponential);
+            
+            GLuint directionID = glGetUniformLocation(shaderID, (lightName+".Direction").c_str());
+            glUniform3f(directionID, light.direction.x, 
+                                     light.direction.y, 
+                                     light.direction.z);
+            GLuint cutoffID = glGetUniformLocation(shaderID, (lightName+".Cutoff").c_str());
+            glUniform1f(cutoffID,  light.cutoff);
+            
+        }
 
         mModel.render();
 }

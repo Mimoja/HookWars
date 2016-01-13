@@ -25,14 +25,11 @@ int joysticks = 0;
 GLuint basicShaderID;
 Lights allLightSources;
 
-void window_size_callback(GLFWwindow* window, int width, int height)
-{
-    Projection = glm::perspective(45.0f,
-        (float) width / (float) height,
-        0.1f, 100.0f);
-    glViewport(0, 0,   width,   height);
+void window_size_callback(GLFWwindow* window, int width, int height) {
+    glfwMakeContextCurrent(window);
+    Projection = glm::perspective(45.0f, (float) width / (float) height, 0.1f, 100.0f);
+    glViewport(0, 0, width, height);
 }
-
 
 int main(void) {
 
@@ -123,14 +120,14 @@ int main(void) {
 
     // Create map
 
-    
+
     GameObject player1(PLAYER_MODEL);
-    player1.mModel.setScaling(PLAYER_SCALING,PLAYER_SCALING,PLAYER_SCALING);
+    player1.mModel.setScaling(PLAYER_SCALING, PLAYER_SCALING, PLAYER_SCALING);
     player1.mModel.setPosition(0, 0, 0);
     player1.mModel.setRotation(0, 0, 0);
 
     allGameObjects.push_back(player1);
-    
+
 #define loadCube
 #ifndef loadCube
     GameObject map(MAP_MODEL);
@@ -144,7 +141,7 @@ int main(void) {
     map.mModel.setRotation(0, 0, 0);
 #endif
     allGameObjects.push_back(map);
-    
+
     // Create lights
     allLightSources.ambient.intensity = 0.05f;
     allLightSources.ambient.lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -155,40 +152,43 @@ int main(void) {
     dir1.lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
     dir1.specular.intensity = 1.0f;
     dir1.specular.power = 32;
-    
+
     DirectionLight dir2;
     dir2.direction = glm::vec3(-3.0f, 3.0f, -1.0f);
     dir2.intensity = 0.05f;
     dir2.lightColor = glm::vec3(1.0f, 0.0f, 0.0f);
     dir2.specular.intensity = 0.7f;
     dir2.specular.power = 32;
-    
+
     allLightSources.directionalLights.push_back(dir1);
     allLightSources.directionalLights.push_back(dir2);
-    
+
     PointLight point1;
     point1.lightColor = glm::vec3(0.1f, 0.3f, 0.8f);
     point1.intensity = 5.0f;
     point1.position = glm::vec3(0.0f, 4.5f, 3.0f);
-    point1.falloff.linear=0.0f;
-    point1.falloff.exponential=1.0f;
+    point1.falloff.linear = 0.0f;
+    point1.falloff.exponential = 1.0f;
     point1.specular.intensity = 2.7f;
     point1.specular.power = 32;
-    
-    allLightSources.pointLights.push_back(point1);
-    
-    
-    SpotLight spot1;
-    spot1.lightColor = glm::vec3(0.9f, 0.3f, 0.1f);
-    spot1.intensity = 1.0f;
-    spot1.position = glm::vec3(-3.0f, 0.0f, 1.0f);
-    spot1.falloff.linear=1.0f;
-    spot1.Cutoff = 1.0f;
-    spot1.Direction = glm::vec3(3.0f, 0.0f, -1.0f);
-    
-    //allLightSources.pointLights.push_back(point1);
 
-    FPS_init(2000);
+    allLightSources.pointLights.push_back(point1);
+
+
+    SpotLight spot1;
+    spot1.lightColor = glm::vec3(0.1f, 0.3f, 0.8f);
+    spot1.intensity = 5.0f;
+    spot1.position = glm::vec3(0.0f, 4.5f, 3.0f);
+    spot1.falloff.linear = 0.0f;
+    spot1.falloff.exponential = 1.0f;
+    spot1.specular.intensity = 2.7f;
+    spot1.specular.power = 32;
+    spot1.cutoff = 1.0f;
+    spot1.direction = glm::vec3(3.0f, 0.0f, -1.0f);
+
+    allLightSources.pointLights.push_back(point1);
+
+    FPS_init(2);
     long frameCount = 0;
     do {
         mainLoop();
@@ -219,7 +219,7 @@ int joyButtonsCount2;
 
 void mainLoop(void) {
 
-    nowTime = glfwGetTime();
+    //nowTime = glfwGetTime();
     if (joysticks >= 1) {
         joyAxis1 = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &joyAxisCount1);
         joyButtons1 = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &joyButtonsCount1);
@@ -235,12 +235,12 @@ void mainLoop(void) {
     // Clear the screen
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    if (nowTime - lastUpdateTime > (1 / 61)) {
+   /* if (nowTime - lastUpdateTime > (1 / 61)) {
         for (GameObject o : allGameObjects) {
             o.update();
         }
         lastUpdateTime = glfwGetTime();
-    }
+    }*/
     cam.handleKeyboard(window);
     allGameObjects[0].mModel.rotation.y += 0.01f;
 
@@ -251,5 +251,5 @@ void mainLoop(void) {
     // Swap buffers
     glfwSwapBuffers(window);
     glfwPollEvents();
-
+    FPS_count();
 }
