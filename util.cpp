@@ -37,10 +37,23 @@ void FPS_count() {
 void calculateNormals( std::vector<glm::vec3> & vertices, 
                        std::vector<glm::vec3> & normals,
                        std::vector<unsigned short> & indices,
-                       int faceCount) {
+                       unsigned int faceCount) {
 
+    assert(indices.size() >= 3*faceCount);
+
+    normals = std::vector<glm::vec3>(vertices.size());
     for (unsigned int i = 0; i < faceCount; i++) {
-        //glm::vec3 Normal = glm::normalize(glm::cross(v1, v2));
+        auto i1 = indices[ faceCount*3    ];
+        auto i2 = indices[ faceCount*3 + 1];
+        auto i3 = indices[ faceCount*3 + 2];
+
+        auto facenormal = glm::cross(
+            vertices[i3] - vertices[i1],
+            vertices[i2] - vertices[i1]);
+
+        normals[i1] += facenormal;
+        normals[i2] += facenormal;
+        normals[i3] += facenormal;
     }
 }
 
