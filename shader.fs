@@ -20,7 +20,11 @@ struct DirectionalLight
 };
 
 uniform AmbientLight ambientLight;
-uniform DirectionalLight directionalLight;
+
+uniform int directionalLightCount;
+uniform DirectionalLight directionalLight[10];
+
+
 uniform vec3 CAMERA;
 
 void main()                                                                         

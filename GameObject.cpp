@@ -21,7 +21,9 @@ void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights li
         GLuint CameraPositionID = glGetUniformLocation(shaderID, "CAMERA");
         GLuint AmbientLightColorID = glGetUniformLocation(shaderID, "ambientLight.Color");
         GLuint AmbientLightIntensityID = glGetUniformLocation(shaderID, "ambientLight.Intensity");
-        
+        GLuint DirectionalLightCountID = glGetUniformLocation(shaderID, "directionalLightCount");
+
+
         // Transformations Matricies
         glUniformMatrix4fv(WorldMatrixID, 1, GL_FALSE, &MVP[0][0]);
         glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &(mModel.getMatr()[0][0]));
@@ -47,13 +49,34 @@ void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights li
         }
         
         // Lights
-        // Amabient
+        // Ambient
         glUniform3f(AmbientLightColorID, 
                 lights.ambient.lightColor.r, 
                 lights.ambient.lightColor.g, 
                 lights.ambient.lightColor.b);
         glUniform1f(AmbientLightIntensityID, lights.ambient.intensity);
 
+        // DirectionalLights
+        glUniform1i(DirectionalLightCountID, lights.directionalLights.size());
+        for(unsigned int i = 0; i<lights.directionalLights.size(); i++){
+            DirectionLight light = lights.directionalLights[i];
+            
+            GLuint colorID = glGetUniformLocation(shaderID, "directionalLight[0].Color");
+            glUniform3f(colorID,light.lightColor.r, 
+                                light.lightColor.g, 
+                                light.lightColor.b);
+            GLuint positionID = glGetUniformLocation(shaderID, "directionalLight[0].Position");
+            glUniform3f(positionID, light.position.x, 
+                                    light.position.y, 
+                                    light.position.z);
+
+            GLuint directionID = glGetUniformLocation(shaderID, "directionalLight[0].Position");
+            glUniform3f(directionID, light.direction.x, 
+                                     light.direction.y, 
+                                     light.direction.z);
+
+            glUniform1f(AmbientLightIntensityID, lights.ambient.intensity);
+        }
 
         mModel.render();
 }

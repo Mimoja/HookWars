@@ -44,6 +44,7 @@ typedef struct _SpotLight{
 
 typedef struct _Lights{
     AmbientLight ambient;
+    std::vector<DirectionLight> directionalLights;
     std::vector<PointLight> pointLights;
     std::vector<SpotLight>  spotLights;
 } Lights;
