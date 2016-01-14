@@ -23,12 +23,16 @@ Camera cam;
 int joysticks = 0;
 
 GLuint basicShaderID;
+GLuint shadowShaderID;
+ShadowMap map;
+    
 Lights allLightSources;
 
 void window_size_callback(GLFWwindow* window, int width, int height) {
     glfwMakeContextCurrent(window);
     Projection = glm::perspective(45.0f, (float) width / (float) height, 0.1f, 100.0f);
     glViewport(0, 0, width, height);
+    map.create(width, height);
 }
 
 int main(void) {
@@ -55,6 +59,7 @@ int main(void) {
     }
     glfwMakeContextCurrent(window);
     glfwSetWindowSizeCallback(window, window_size_callback);
+    
 
     // Initialize GLEW
     glewExperimental = true; // Needed for core profile
@@ -117,14 +122,16 @@ int main(void) {
     printf("Compiling Shaders\n");
 
     basicShaderID = buildShader("shader.vs", "shader.fs");
-
-    // Create map
-
-
+    shadowShaderID = buildShader("shadows.vs", "shadows.fs");
+    
+    // Create ShadowMap
+    map.create(WINDOW_WIDTH, WINDOW_HEIGHT);
+    
+    // Create Player
     GameObject player1(PLAYER_MODEL);
     player1.mModel.setScaling(PLAYER_SCALING, PLAYER_SCALING, PLAYER_SCALING);
-    player1.mModel.setPosition(0, 0, 0);
-    player1.mModel.setRotation(0, 0, 0);
+    player1.mModel.setPosition(0, 0.0f, 0);
+    player1.mModel.setRotation(0.0f, 0, 0);
 
     allGameObjects.push_back(player1);
 
@@ -165,7 +172,7 @@ int main(void) {
 
     PointLight point1;
     point1.lightColor = glm::vec3(0.1f, 0.3f, 0.8f);
-    point1.intensity = 10.0f;
+    point1.intensity = 12.0f;
     point1.position = glm::vec3(0.0f, 4.5f, 3.0f);
     point1.falloff.linear = 0.0f;
     point1.falloff.exponential = 1.0f;
@@ -237,16 +244,16 @@ void mainLoop(void) {
     // Clear the screen
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-   /* if (nowTime - lastUpdateTime > (1 / 61)) {
-        for (GameObject o : allGameObjects) {
-            o.update();
-        }
-        lastUpdateTime = glfwGetTime();
-    }*/
+    /* if (nowTime - lastUpdateTime > (1 / 61)) {
+         for (GameObject o : allGameObjects) {
+             o.update();
+         }
+         lastUpdateTime = glfwGetTime();
+     }*/
     cam.handleKeyboard(window);
     allGameObjects[0].mModel.rotation.y += 0.01f;
-    
-    allLightSources.spotLights[0].hardness=(sin(frameCount/100.0f)+1.0f)/2;
+
+    allLightSources.spotLights[0].hardness = (sin(frameCount / 100.0f) + 1.0f) / 2;
 
     for (GameObject o : allGameObjects) {
         o.render(basicShaderID, Projection * cam.getView(), cam, allLightSources);

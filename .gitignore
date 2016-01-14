@@ -1,5 +1,7 @@
 game
 *~
+nbproject/private/configurations.xml
+
 # Compiled Object files
 *.slo
 *.lo

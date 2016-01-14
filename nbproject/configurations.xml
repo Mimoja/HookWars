@@ -7,6 +7,8 @@
       <in>Hook.cpp</in>
       <in>Model.cpp</in>
       <in>Shader.cpp</in>
+      <in>ShadowMap.cpp</in>
+      <in>ShadowMap.h</in>
       <in>Texture.cpp</in>
       <in>lodepng.cpp</in>
       <in>main.cpp</in>
@@ -74,6 +76,10 @@
       <item path="Shader.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
         </ccTool>
+      </item>
+      <item path="ShadowMap.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="ShadowMap.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Texture.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
