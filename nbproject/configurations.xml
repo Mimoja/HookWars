@@ -8,7 +8,6 @@
       <in>Model.cpp</in>
       <in>Shader.cpp</in>
       <in>ShadowMap.cpp</in>
-      <in>ShadowMap.h</in>
       <in>Texture.cpp</in>
       <in>lodepng.cpp</in>
       <in>main.cpp</in>
@@ -35,6 +34,8 @@
       </toolsSet>
       <flagsDictionary>
         <element flagsID="0" commonFlags="-O3 -std=c++11"/>
+        <element flagsID="1"
+                 commonFlags="-mtune=generic -march=x86-64 -O3 -std=c++11 -fstack-protector-strong"/>
       </flagsDictionary>
       <codeAssistance>
       </codeAssistance>
@@ -44,13 +45,6 @@
           <buildCommand>${MAKE} -f Makefile</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
           <executablePath>game</executablePath>
-          <ccTool>
-            <preprocessorList>
-              <Elem>GLM_FORCE_RADIANS</Elem>
-              <Elem>LINUX</Elem>
-              <Elem>PROG_NAME="game"</Elem>
-            </preprocessorList>
-          </ccTool>
         </makeTool>
         <preBuild>
           <preBuildCommandWorkingDir>.</preBuildCommandWorkingDir>
@@ -58,43 +52,106 @@
         </preBuild>
       </makefileType>
       <item path="Camera.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>/usr/include/glm/detail</pElem>
+            <pElem>/usr/include/glm/gtc</pElem>
+            <pElem>/usr/include/glm</pElem>
+            <pElem>/usr/include/GLFW</pElem>
+            <pElem>.</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="GameObject.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>/usr/include/glm/detail</pElem>
+            <pElem>/usr/include/GL</pElem>
+            <pElem>/usr/include/glm</pElem>
+            <pElem>/usr/include/GLFW</pElem>
+            <pElem>.</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="Hook.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>/usr/include/glm/detail</pElem>
+            <pElem>/usr/include/GL</pElem>
+            <pElem>/usr/include/glm</pElem>
+            <pElem>/usr/include/GLFW</pElem>
+            <pElem>.</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="Model.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>/usr/include/glm/detail</pElem>
+            <pElem>/usr/include/glm/gtc</pElem>
+            <pElem>/usr/include/GL</pElem>
+            <pElem>/usr/include/glm</pElem>
+            <pElem>.</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="Shader.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>/usr/include/GL</pElem>
+            <pElem>/usr/include/glm/detail</pElem>
+            <pElem>/usr/include/glm</pElem>
+            <pElem>.</pElem>
+          </incDir>
         </ccTool>
       </item>
-      <item path="ShadowMap.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="ShadowMap.h" ex="false" tool="3" flavor2="0">
+      <item path="ShadowMap.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <preprocessorList>
+            <Elem>GLM_FORCE_RADIANS</Elem>
+            <Elem>LINUX</Elem>
+            <Elem>PROG_NAME="game"</Elem>
+          </preprocessorList>
+        </ccTool>
       </item>
       <item path="Texture.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>/usr/include/GL</pElem>
+            <pElem>/usr/include/glm/detail</pElem>
+            <pElem>/usr/include/glm</pElem>
+            <pElem>.</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="lodepng.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>/usr/include/glm/detail</pElem>
+            <pElem>/usr/include/glm/gtc</pElem>
+            <pElem>/usr/include/GL</pElem>
+            <pElem>/usr/include/glm</pElem>
+            <pElem>/usr/include/GLFW</pElem>
+            <pElem>.</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="util.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>/usr/include/glm/detail</pElem>
+            <pElem>/usr/include/assimp</pElem>
+            <pElem>/usr/include/glm</pElem>
+            <pElem>/usr/include/GLFW</pElem>
+            <pElem>.</pElem>
+          </incDir>
         </ccTool>
       </item>
     </conf>

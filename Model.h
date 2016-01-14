@@ -7,6 +7,7 @@
 #include <GLFW/glfw3.h>
 
 #include "Texture.h"
+#include "ShadowMap.h"
 
 class Model{
     public:
@@ -21,6 +22,7 @@ class Model{
         Texture* diffuseTexture=0;
         Texture* normalTexture=0;
         Texture* specularTexture=0;
+        ShadowMap* shadowMap = 0;
     private:
         GLuint indexBuffer;
         GLuint vertexBuffer;

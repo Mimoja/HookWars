@@ -3,6 +3,7 @@
 in vec4 color;
 in vec3 normal;
 in vec3 worldPos;
+in vec4 lightPos;
 in vec2 UV;
 
 out vec4 FragColor;
@@ -67,8 +68,21 @@ uniform mat4 WORLD;
 uniform sampler2D DiffuseTextureSampler;
 uniform sampler2D NormalTextureSampler;
 uniform sampler2D SpecularTextureSampler;
+uniform sampler2D ShadowMapSampler;
 
-
+float calculateShadow(vec4 position)                                                  
+{                                                                                           
+    vec3 ProjectionPosition = position.xyz / position.w;                                  
+    vec2 UVs;                                                                          
+    UVs.x = 0.5 * ProjectionPosition.x + 0.5;                                                  
+    UVs.y = 0.5 * ProjectionPosition.y + 0.5;                                                  
+    float z = 0.5 * ProjectionPosition.z + 0.5;                                                     
+    float Depth = texture(ShadowMapSampler, UVs).x;                                          
+    if (Depth < z + 0.00001)                                                                 
+        return 0.5;                                                                         
+    else                                                                                    
+        return 1.0;                                                                         
+}
 
 void main(){
 
@@ -134,8 +148,8 @@ void main(){
         }
 
         float falloff = light.Falloff.constant + light.Falloff.linear * Distance + light.Falloff.exponential * Distance * Distance;
-        DiffuseColor += PointLightDiffuseColor / falloff;
-        SpecularColor += PointLightSpecularColor / falloff;
+        DiffuseColor += calculateShadow(lightPos)*PointLightDiffuseColor / falloff;
+        SpecularColor += calculateShadow(lightPos)*PointLightSpecularColor / falloff;
     }
 
     // SpotLights

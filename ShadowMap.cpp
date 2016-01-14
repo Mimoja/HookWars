@@ -47,11 +47,11 @@ void ShadowMap::destroy() {
     }
 }
 
-void ShadowMap::Bind() {
+void ShadowMap::bind() {
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, frameBuffer);
 }
 
-void ShadowMap::Bind(GLenum texUnit) {
+void ShadowMap::bind(GLenum texUnit) {
     glActiveTexture(texUnit);
     glBindTexture(GL_TEXTURE_2D, shadowMap);
 }

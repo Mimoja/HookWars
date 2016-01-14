@@ -7,9 +7,8 @@ class ShadowMap {
 public:
     void create(int width, int height);
     void destroy();
-    void setShader(GLuint ShaderID);
-    void Bind();
-    void Bind(GLenum texUnit);
+    void bind();
+    void bind(GLenum texUnit);
 
 private:
     GLuint frameBuffer;

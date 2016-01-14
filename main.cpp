@@ -25,7 +25,7 @@ int joysticks = 0;
 GLuint basicShaderID;
 GLuint shadowShaderID;
 ShadowMap map;
-    
+
 Lights allLightSources;
 
 void window_size_callback(GLFWwindow* window, int width, int height) {
@@ -59,7 +59,7 @@ int main(void) {
     }
     glfwMakeContextCurrent(window);
     glfwSetWindowSizeCallback(window, window_size_callback);
-    
+
 
     // Initialize GLEW
     glewExperimental = true; // Needed for core profile
@@ -123,10 +123,10 @@ int main(void) {
 
     basicShaderID = buildShader("shader.vs", "shader.fs");
     shadowShaderID = buildShader("shadows.vs", "shadows.fs");
-    
+
     // Create ShadowMap
     map.create(WINDOW_WIDTH, WINDOW_HEIGHT);
-    
+
     // Create Player
     GameObject player1(PLAYER_MODEL);
     player1.mModel.setScaling(PLAYER_SCALING, PLAYER_SCALING, PLAYER_SCALING);
@@ -241,8 +241,6 @@ void mainLoop(void) {
         joyButtons2 = glfwGetJoystickButtons(GLFW_JOYSTICK_2, &joyButtonsCount2);
     }
 
-    // Clear the screen
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     /* if (nowTime - lastUpdateTime > (1 / 61)) {
          for (GameObject o : allGameObjects) {
@@ -255,6 +253,19 @@ void mainLoop(void) {
 
     allLightSources.spotLights[0].hardness = (sin(frameCount / 100.0f) + 1.0f) / 2;
 
+    glClear(GL_DEPTH_BUFFER_BIT);
+    Camera PointLightCamera(allLightSources.pointLights[0].position,
+        glm::vec3(0.0f, -1.0f, 0.0f),
+        glm::vec3(0.0f, 1.0f, 0.0f));
+    
+    for (GameObject o : allGameObjects) {
+        o.renderToShadowMap(shadowShaderID, glm::perspective(20.0f,
+        (float) WINDOW_WIDTH / (float) WINDOW_HEIGHT,
+        0.1f, 100.0f) * cam.getView(), map);
+    }
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     for (GameObject o : allGameObjects) {
         o.render(basicShaderID, Projection * cam.getView(), cam, allLightSources);
     }
