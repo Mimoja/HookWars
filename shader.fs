@@ -3,6 +3,7 @@
 in vec4 color;
 in vec3 normal;
 in vec3 worldPos;
+in vec4 lightPos;
 in vec2 UV;
 
 out vec4 FragColor;
@@ -37,12 +38,28 @@ struct PointLight {
     int SpecularPower;
 };
 
+struct SpotLight {
+    vec3 Color;
+    vec3 Position;
+    float Intensity;
+    Attenuation Falloff;
+    float SpecularIntensity;
+    int SpecularPower;
+    vec3 Direction;
+    float Cutoff;
+    float Hardness;
+};
+
+
 uniform AmbientLight ambientLight;
 
 uniform int directionalLightCount;
 uniform DirectionalLight directionalLight[10];
 
 uniform int pointLightCount;
+uniform SpotLight spotLight[10];
+
+uniform int spotLightCount;
 uniform PointLight pointLight[10];
 
 uniform vec3 CAMERA;
@@ -51,7 +68,21 @@ uniform mat4 WORLD;
 uniform sampler2D DiffuseTextureSampler;
 uniform sampler2D NormalTextureSampler;
 uniform sampler2D SpecularTextureSampler;
+uniform sampler2D ShadowMapSampler;
 
+float calculateShadow(vec4 position)                                                  
+{                                                                                           
+    vec3 ProjectionPosition = position.xyz / position.w;                                  
+    vec2 UVs;                                                                          
+    UVs.x = 0.5 * ProjectionPosition.x + 0.5;                                                  
+    UVs.y = 0.5 * ProjectionPosition.y + 0.5;                                                  
+    float z = 0.5 * ProjectionPosition.z + 0.5;                                                     
+    float Depth = texture(ShadowMapSampler, UVs).x;                                          
+    if (Depth < z + 0.00001)                                                                 
+        return 0.5;                                                                         
+    else                                                                                    
+        return 1.0;                                                                         
+}
 
 void main(){
 
@@ -117,10 +148,48 @@ void main(){
         }
 
         float falloff = light.Falloff.constant + light.Falloff.linear * Distance + light.Falloff.exponential * Distance * Distance;
-        DiffuseColor += PointLightDiffuseColor / falloff;
-        SpecularColor += PointLightSpecularColor / falloff;
+        DiffuseColor += calculateShadow(lightPos)*PointLightDiffuseColor / falloff;
+        SpecularColor += calculateShadow(lightPos)*PointLightSpecularColor / falloff;
     }
 
+    // SpotLights
+    for(int i=0; i<spotLightCount; i++){
+        SpotLight light = spotLight[i];
+        light.Position = (WORLD*vec4(light.Position,1.0f)).xyz;
+
+        vec3 LightDirection = (worldPos - light.Position);
+        vec3 LightToPixel = normalize(LightDirection);                             
+        float SpotFactor = dot(LightToPixel, light.Direction);   
+        if (SpotFactor  > light.Cutoff) { 
+            float Distance = length(LightDirection);
+
+            vec4 SpotLightDiffuseColor  = vec4(0, 0, 0, 0);
+            vec4 SpotLightSpecularColor  = vec4(0, 0, 0, 0);
+
+            // DiffuseColor
+            float DiffuseFactor = dot(Normal, -LightDirection);
+            if (DiffuseFactor > 0) {
+                SpotLightDiffuseColor += vec4(light.Color * light.Intensity *  DiffuseFactor, 1.0f);
+
+                // Specular Reflection
+                vec3 VertexToEye = normalize(CAMERA - worldPos);
+                vec3 LightReflect = normalize(reflect(LightToPixel, Normal));
+                float SpecularFactor = dot(VertexToEye, LightReflect);
+                if (SpecularFactor > 0) {
+                    SpecularFactor = pow(SpecularFactor, light.SpecularPower);
+                    SpotLightSpecularColor = vec4(light.Color * SpecularFactor * light.SpecularIntensity , 1.0f);
+                }
+            }
+
+            float falloff = light.Falloff.constant + light.Falloff.linear * Distance + light.Falloff.exponential * Distance * Distance;
+            float blurFactor = SpotFactor-light.Cutoff;
+            if(blurFactor<light.Hardness){
+                SpotLightDiffuseColor *= blurFactor;
+            }
+            DiffuseColor += SpotLightDiffuseColor  / falloff;
+            SpecularColor += SpotLightSpecularColor  / falloff;
+        }
+    }
 
     FragColor = color * (AmbientColor + DiffuseColor +  SpecularColor);
 }

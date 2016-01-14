@@ -45,12 +45,14 @@ typedef struct _PointLight : public BaseLight {
 } PointLight;
 
 typedef struct _SpotLight : public PointLight {
-    glm::vec3 Direction;
-    float Cutoff;
+    glm::vec3 direction;
+    float cutoff;
+    float hardness;
 
     _SpotLight() {
-        Direction = glm::vec3(0.0f, 0.0f, 0.0f);
-        Cutoff = 0.0f;
+        direction = glm::vec3(0.0f, 0.0f, 0.0f);
+        cutoff = 0.0f;
+        hardness = 0.0f;
     }
 } SpotLight;
 
