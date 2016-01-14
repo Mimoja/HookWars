@@ -171,6 +171,9 @@ void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights li
             GLuint cutoffID = glGetUniformLocation(shaderID, (lightName+".Cutoff").c_str());
             glUniform1f(cutoffID,  light.cutoff);
             
+            GLuint hardnessID = glGetUniformLocation(shaderID, (lightName+".Hardness").c_str());
+            glUniform1f(hardnessID,  light.hardness);
+            
         }
 
         mModel.render();

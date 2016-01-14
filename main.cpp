@@ -165,7 +165,7 @@ int main(void) {
 
     PointLight point1;
     point1.lightColor = glm::vec3(0.1f, 0.3f, 0.8f);
-    point1.intensity = 5.0f;
+    point1.intensity = 10.0f;
     point1.position = glm::vec3(0.0f, 4.5f, 3.0f);
     point1.falloff.linear = 0.0f;
     point1.falloff.exponential = 1.0f;
@@ -176,17 +176,17 @@ int main(void) {
 
 
     SpotLight spot1;
-    spot1.lightColor = glm::vec3(0.1f, 0.3f, 0.8f);
-    spot1.intensity = 5.0f;
-    spot1.position = glm::vec3(0.0f, 4.5f, 3.0f);
-    spot1.falloff.linear = 0.0f;
-    spot1.falloff.exponential = 1.0f;
-    spot1.specular.intensity = 2.7f;
+    spot1.lightColor = glm::vec3(0.3f, 0.8f, 0.1f);
+    spot1.intensity = 10.0f;
+    spot1.position = glm::vec3(6.0f, 4.5f, 13.0f);
+    spot1.falloff.linear = 1.2f;
+    spot1.falloff.exponential = 2.9f;
+    spot1.specular.intensity = 0.7f;
     spot1.specular.power = 32;
-    spot1.cutoff = 1.0f;
-    spot1.direction = glm::vec3(3.0f, 0.0f, -1.0f);
+    spot1.cutoff = 5.0f;
+    spot1.direction = glm::vec3(0.0f, -1.0f, 7.0f);
 
-    allLightSources.pointLights.push_back(point1);
+    allLightSources.spotLights.push_back(spot1);
 
     FPS_init(2);
     long frameCount = 0;
@@ -217,6 +217,8 @@ int joyAxisCount2;
 int joyButtonsCount1;
 int joyButtonsCount2;
 
+long frameCount = 0;
+
 void mainLoop(void) {
 
     //nowTime = glfwGetTime();
@@ -243,6 +245,8 @@ void mainLoop(void) {
     }*/
     cam.handleKeyboard(window);
     allGameObjects[0].mModel.rotation.y += 0.01f;
+    
+    allLightSources.spotLights[0].hardness=(sin(frameCount/100.0f)+1.0f)/2;
 
     for (GameObject o : allGameObjects) {
         o.render(basicShaderID, Projection * cam.getView(), cam, allLightSources);
@@ -252,4 +256,5 @@ void mainLoop(void) {
     glfwSwapBuffers(window);
     glfwPollEvents();
     FPS_count();
+    frameCount++;
 }

@@ -74,6 +74,7 @@ GLuint buildShader(const char * vertex_file_path,const char * fragment_file_path
         std::vector<char> FragmentShaderErrorMessage(resultString+1);
         glGetShaderInfoLog(FragmentShaderID, resultString, NULL, &FragmentShaderErrorMessage[0]);
         printf("%s\n", &FragmentShaderErrorMessage[0]);
+        exit(-1);
     }
 
     // Link the program
@@ -90,6 +91,7 @@ GLuint buildShader(const char * vertex_file_path,const char * fragment_file_path
         std::vector<char> ProgramErrorMessage(resultString+1);
         glGetProgramInfoLog(ProgramID, resultString, NULL, &ProgramErrorMessage[0]);
         printf("%s\n", &ProgramErrorMessage[0]);
+        exit(-1);
     }
 
     glDetachShader(ProgramID, VertexShaderID);
