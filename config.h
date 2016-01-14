@@ -16,4 +16,9 @@
 
 #define LINK_DISTANCE (0.1f)
 
+enum PlayerColor {
+    blue = 1,
+    red  = 2,
+};
+
 #endif

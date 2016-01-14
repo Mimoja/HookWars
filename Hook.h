@@ -1,14 +1,13 @@
-#include "GameObject.h"
+#include "Chain.h"
 #include <vector>
 
-class Hook : GameObject {
+class Hook : public Chain {
     private:
-        std::vector<glm::vec3> linkpositions;
-        bool pulling;
+        GameObject* next = NULL;
+        int player;
 
     public:
         Hook(int player, glm::vec3 origin, glm::vec3 velocity);
         void update();
         void pull();
-        glm::vec3 origin();
 };
