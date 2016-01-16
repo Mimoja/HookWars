@@ -3,15 +3,15 @@
 #include "stdio.h"
 #include <string>
 
-GameObject::GameObject(const char* path) {
+GameObject::GameObject(const char* path) : mModel(path) {
     printf("Building GameObject from %s\n", path);
-    mModel.readFile(path);
 }
 
 GameObject::GameObject() {
 }
 
 void GameObject::update() {
+
 }
 
 void GameObject::renderToShadowMap(GLuint shaderID, glm::mat4 MVP, ShadowMap map) {
@@ -39,6 +39,7 @@ void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights li
 
     // Use our shader
     glUseProgram(shaderID);
+
     if (shaderID != lastShader) {
 
         WorldMatrixID = glGetUniformLocation(shaderID, "WORLD");
@@ -50,8 +51,9 @@ void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights li
     } else lastShader = shaderID;
 
     // Transformations Matricies
+    glm::mat4 modelMatrix = mModel.getMatr();
     glUniformMatrix4fv(WorldMatrixID, 1, GL_FALSE, &MVP[0][0]);
-    glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &(mModel.getMatr()[0][0]));
+    glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &(modelMatrix[0][0]));
     glUniform3f(CameraPositionID, camera.mPos.x, camera.mPos.y, camera.mPos.z);
 
     // Textures

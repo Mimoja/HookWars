@@ -3,7 +3,7 @@
 
 #include "stdio.h"
 
-void Model::readFile(const char* path){
+Model::Model(const char* path){
     printf("Loading Model 0  from %s\n",path);
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
@@ -42,15 +42,6 @@ void Model::readFile(const char* path){
 
 }
 
-void Model::setPosition(float x,float y,float z){
-    translation=glm::vec3(x,y,z);
-}
-void Model::setRotation(float x, float y, float z){
-    rotation=glm::vec3(x,y,z);
-}
-void Model::setScaling(float x, float y, float z){
-    scaling=glm::vec3(x,y,z);
-}
 glm::mat4 Model::getMatr(){
     sum=glm::mat4(1.0f);
     sum=glm::scale(sum,scaling);
@@ -58,7 +49,7 @@ glm::mat4 Model::getMatr(){
     sum=glm::rotate(sum,rotation[1],glm::vec3(0,1,0));
     sum=glm::rotate(sum,rotation[2],glm::vec3(0,0,1));
 
-    sum=glm::translate(sum,translation);
+    sum=glm::translate(sum,position);
     return sum;
 }
 

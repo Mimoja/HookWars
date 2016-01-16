@@ -12,6 +12,7 @@
 #include "Camera.h"
 #include "BoundingBox.h"
 #include "Shader.h"
+#include "Player.h"
 
 std::vector<GameObject> allGameObjects;
 
@@ -20,7 +21,7 @@ void mainLoop(void);
 
 glm::mat4 Projection;
 Camera cam;
-int joysticks = 0;
+std::vector<Player> allPlayers;
 
 GLuint basicShaderID;
 GLuint shadowShaderID;
@@ -90,18 +91,18 @@ int main(void) {
 
 
     // Joystick handle
-    const char* joy1Name = glfwGetJoystickName(GLFW_JOYSTICK_1);
-    const char* joy2Name = glfwGetJoystickName(GLFW_JOYSTICK_2);
-
-    if (joy1Name != 0) {
-        printf("Found Joystick %s\n", joy1Name);
-        joysticks++;
+    for (int x = 0; x < 16; x++) {
+        const char* joystickName = glfwGetJoystickName(GLFW_JOYSTICK_1 + x);
+        if (joystickName != 0) {
+            printf("Found Joystick %s\n", joystickName);
+            Player newPlayer(PLAYER_MODEL);
+            newPlayer.CONTROLER_NAME = joystickName;
+            newPlayer.mModel.scaling = glm::vec3(PLAYER_SCALING, PLAYER_SCALING, PLAYER_SCALING);
+            allPlayers.push_back(newPlayer);
+            allGameObjects.push_back(newPlayer);
+        }
     }
-    if (joy2Name != 0) {
-        printf("Found Joystick %s\n", joy1Name);
-        joysticks++;
-    }
-    printf("%d Joysticks found\n", joysticks);
+    printf("%d Player found\n", (int) allPlayers.size());
 
     // Black background
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -116,7 +117,7 @@ int main(void) {
         glm::vec3(0.0f, -7.0f, -5.0f),
         glm::vec3(0.0f, 1.0f, 0.0f));
 
-    cam.setDomain(glm::vec3(-5.0f, 0.0f, 0.0f), glm::vec3(5.0f, 10.0f, 15.0f));
+    cam.setDomain(glm::vec3(-5.0f, 3.0f, 0.0f), glm::vec3(5.0f, 20.0f, 15.0f));
 
     // Compile Shaders
     printf("Compiling Shaders\n");
@@ -127,13 +128,6 @@ int main(void) {
     // Create ShadowMap
     map.create(WINDOW_WIDTH, WINDOW_HEIGHT);
 
-    // Create Player
-    GameObject player1(PLAYER_MODEL);
-    player1.mModel.setScaling(PLAYER_SCALING, PLAYER_SCALING, PLAYER_SCALING);
-    player1.mModel.setPosition(0, 0.0f, 0);
-    player1.mModel.setRotation(0.0f, 0, 0);
-
-    allGameObjects.push_back(player1);
 
 #define loadCube
 #ifndef loadCube
@@ -143,9 +137,9 @@ int main(void) {
     map.mModel.setRotation(0, 0, 0);
 #else
     GameObject map("assets/testcube.obj");
-    map.mModel.setScaling(10.0f, 0.5f, 10.0f);
-    map.mModel.setPosition(0, -0.5, 0);
-    map.mModel.setRotation(0, 0, 0);
+    map.mModel.scaling = glm::vec3(10.0f, 0.5f, 10.0f);
+    map.mModel.position = glm::vec3(0, -1.5, 0);
+    map.mModel.rotation = glm::vec3(0, 0, 0);
 #endif
     allGameObjects.push_back(map);
 
@@ -195,6 +189,9 @@ int main(void) {
 
     allLightSources.spotLights.push_back(spot1);
 
+    
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    
     FPS_init(2);
     long frameCount = 0;
     do {
@@ -214,56 +211,29 @@ int main(void) {
 double lastUpdateTime;
 double nowTime;
 
-const float* joyAxis1;
-const float* joyAxis2;
-const unsigned char* joyButtons1;
-const unsigned char* joyButtons2;
-
-int joyAxisCount1;
-int joyAxisCount2;
-int joyButtonsCount1;
-int joyButtonsCount2;
-
 long frameCount = 0;
 
 void mainLoop(void) {
 
-    //nowTime = glfwGetTime();
-    if (joysticks >= 1) {
-        joyAxis1 = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &joyAxisCount1);
-        joyButtons1 = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &joyButtonsCount1);
-        //for(int a = 0; a<joyAxisCount1; a++)
-        //printf("%f from asix %d\n",joyAxis1[a],a);
-    }
-
-    if (joysticks == 2) {
-        joyAxis2 = glfwGetJoystickAxes(GLFW_JOYSTICK_2, &joyAxisCount2);
-        joyButtons2 = glfwGetJoystickButtons(GLFW_JOYSTICK_2, &joyButtonsCount2);
+    nowTime = glfwGetTime();
+    for (unsigned int j = 0; j < allPlayers.size(); j++) {
+        allPlayers[j].joystickAxis = glfwGetJoystickAxes(GLFW_JOYSTICK_1,
+            &allPlayers[j].joystickAxisCount);
+        allPlayers[j].joystickButtons = glfwGetJoystickButtons(GLFW_JOYSTICK_1,
+            &allPlayers[j].joystickButtonsCount);
     }
 
 
-    /* if (nowTime - lastUpdateTime > (1 / 61)) {
-         for (GameObject o : allGameObjects) {
-             o.update();
-         }
-         lastUpdateTime = glfwGetTime();
-     }*/
+    if (nowTime - lastUpdateTime > (1 / 61)) {
+        for (GameObject o : allGameObjects) {
+            o.update();
+        }
+        for (Player p : allPlayers) {
+            p.update();
+        }
+        lastUpdateTime = glfwGetTime();
+    }
     cam.handleKeyboard(window);
-    allGameObjects[0].mModel.rotation.y += 0.01f;
-
-    allLightSources.spotLights[0].hardness = (sin(frameCount / 100.0f) + 1.0f) / 2;
-
-    glClear(GL_DEPTH_BUFFER_BIT);
-    Camera PointLightCamera(allLightSources.pointLights[0].position,
-        glm::vec3(0.0f, -1.0f, 0.0f),
-        glm::vec3(0.0f, 1.0f, 0.0f));
-    
-    for (GameObject o : allGameObjects) {
-        o.renderToShadowMap(shadowShaderID, glm::perspective(20.0f,
-        (float) WINDOW_WIDTH / (float) WINDOW_HEIGHT,
-        0.1f, 100.0f) * cam.getView(), map);
-    }
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     for (GameObject o : allGameObjects) {

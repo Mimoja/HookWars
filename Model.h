@@ -12,11 +12,8 @@
 class Model{
     public:
         Model(){}
-        void readFile(const char* file);
-        void setPosition(float x,float y,float z);
-        void setRotation(float x, float y, float z);
-        void setScaling(float x, float y, float z);
-        glm::vec3 rotation,scaling, translation;
+        Model(const char* file);
+        glm::vec3 rotation,scaling, position;
         glm::mat4 getMatr();
         void render();
         Texture* diffuseTexture=0;
