@@ -25,8 +25,11 @@ void Player::update() {
         rotationVector.y = joystickAxis[TURN_UP_DOWN] - joystickCalibration[1].y;
     } else rotationVector.y = 0.0f;
 
-
-    mModel.rotation.y = 0.0f; //TODO WANJA, RECHNE MAL BITTE DIE TRIGONOMETRIE ZUSAMMEN
+    if(rotationVector.x == 0.0f) {
+        mModel.rotation.y = rotationVector.y < 0.0f ? 3*glm::half_pi<float>() : glm::half_pi<float>();
+	} else {
+        mModel.rotation.y = glm::atan(rotationVector.y / rotationVector.x);
+    }
     // map 2 werte zwischen -1 und 1 für x und y auf einen rotationswert
     mModel.position += movementVector*PLAYER_MAXSPEED;
 
