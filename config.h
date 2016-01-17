@@ -16,7 +16,7 @@
 
 #define LINK_DISTANCE (0.1f)
 
-#define HOOK_COOLDOWN (0.300f); //seconds
+#define HOOK_COOLDOWN (1.500f) //seconds
 #define PLAYER_MAXSPEED (0.50f)
 #define GAMEPAD_CUTOFF (0.15f)
 

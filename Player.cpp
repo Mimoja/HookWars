@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "config.h"
 #include "stdio.h"
+#include "Hook.h"
 
 void Player::calibrate() {
     joystickCalibration[0].x = joystickAxis[MOVE_LEFT_RIGHT];
@@ -28,5 +29,14 @@ void Player::update() {
     mModel.rotation.y = 0.0f; //TODO WANJA, RECHNE MAL BITTE DIE TRIGONOMETRIE ZUSAMMEN
     // map 2 werte zwischen -1 und 1 für x und y auf einen rotationswert
     mModel.position += movementVector*PLAYER_MAXSPEED;
+
+    // Fire
+    double now  = glfwGetTime();
+    if (joystickAxis[FIRE] > 0 
+        && now - lastHookTime > HOOK_COOLDOWN) {
+        lastHookTime = now;
+        printf("Hook fired\n");
+        //TODO Spawn Hook
+    }
 
 }

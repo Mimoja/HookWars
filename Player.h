@@ -14,5 +14,6 @@ public:
     const unsigned char* joystickButtons;
     int joystickButtonsCount;
     private:
+        double lastHookTime;
         glm::vec3 joystickCalibration[2];
 };
