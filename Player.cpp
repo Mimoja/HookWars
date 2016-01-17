@@ -6,8 +6,8 @@
 void Player::calibrate() {
     joystickCalibration[0].x = joystickAxis[MOVE_LEFT_RIGHT];
     joystickCalibration[0].z = joystickAxis[MOVE_UP_DOWN];
-    joystickCalibration[1].y = joystickAxis[TURN_LEFT_RIGHT];
-    joystickCalibration[1].z = joystickAxis[TURN_UP_DOWN];
+    joystickCalibration[1].x = joystickAxis[TURN_LEFT_RIGHT];
+    joystickCalibration[1].y = joystickAxis[TURN_UP_DOWN];
 }
 
 void Player::update() {
@@ -19,10 +19,10 @@ void Player::update() {
         movementVector.z = joystickAxis[MOVE_UP_DOWN] - joystickCalibration[0].z;
     } else movementVector.z = 0.0f;
     if (fabs(joystickAxis[TURN_LEFT_RIGHT]) > GAMEPAD_CUTOFF) {
-        rotationVector.y = joystickAxis[TURN_LEFT_RIGHT] - joystickCalibration[1].y;
-    } else rotationVector.y = 0.0f;
+        rotationVector.x = joystickAxis[TURN_LEFT_RIGHT] - joystickCalibration[1].x;
+    } else rotationVector.x = 0.0f;
     if (fabs(joystickAxis[TURN_UP_DOWN]) > GAMEPAD_CUTOFF) {
-        rotationVector.y -= joystickAxis[TURN_UP_DOWN] - joystickCalibration[1].z;
+        rotationVector.y = joystickAxis[TURN_UP_DOWN] - joystickCalibration[1].y;
     } else rotationVector.y = 0.0f;
 
 
