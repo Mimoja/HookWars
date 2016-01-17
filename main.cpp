@@ -118,11 +118,11 @@ int main(void) {
         (float) WINDOW_WIDTH / (float) WINDOW_HEIGHT,
         0.1f, 100.0f);
 
-    cam = Camera(glm::vec3(0.0f, 10.0f, 4.0f),
+    cam = Camera(glm::vec3(-2.0f, 20.0f, 15.0f),
         glm::vec3(0.0f, -7.0f, -5.0f),
         glm::vec3(0.0f, 1.0f, 0.0f));
 
-    cam.setDomain(glm::vec3(-5.0f, 3.0f, 0.0f), glm::vec3(5.0f, 20.0f, 15.0f));
+    cam.setDomain(glm::vec3(-7.0f, 3.0f, 0.0f), glm::vec3(5.0f, 30.0f, 20.0f));
 
     // Compile Shaders
     printf("Compiling Shaders\n");

@@ -2,6 +2,7 @@
 #include "config.h"
 
 #include <glm/gtc/matrix_transform.hpp>
+#include <stdio.h>
 
 Camera::Camera(){
     Camera(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0f,0.0f,0.0f));
