@@ -6,13 +6,14 @@
 
 #define PLAYER_MODEL "assets/derp.obj"
 #define PLAYER_SCALING 3
+#define PLAYER_BASE_ROTATION glm::half_pi<float>()
 
 #define MAP_MODEL "assets/map1.obj"
 #define MAP_SCALING 1
 
 #define WINDOW_NAME  GAME_NAME
-#define WINDOW_WIDTH 1024
-#define WINDOW_HEIGHT 768
+#define WINDOW_WIDTH 2500
+#define WINDOW_HEIGHT 1600
 
 #define LINK_DISTANCE (0.1f)
 

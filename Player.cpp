@@ -18,20 +18,14 @@ void Player::update() {
     if (fabs(joystickAxis[MOVE_UP_DOWN]) > GAMEPAD_CUTOFF) {
         movementVector.z = joystickAxis[MOVE_UP_DOWN] - joystickCalibration[0].z;
     } else movementVector.z = 0.0f;
-    if (fabs(joystickAxis[TURN_LEFT_RIGHT]) > GAMEPAD_CUTOFF) {
-        rotationVector.x = joystickAxis[TURN_LEFT_RIGHT] - joystickCalibration[1].x;
-    } else rotationVector.x = 0.0f;
-    if (fabs(joystickAxis[TURN_UP_DOWN]) > GAMEPAD_CUTOFF) {
-        rotationVector.y = joystickAxis[TURN_UP_DOWN] - joystickCalibration[1].y;
-    } else rotationVector.y = 0.0f;
 
-    if(rotationVector.x == 0.0f) {
-        mModel.rotation.y = rotationVector.y < 0.0f ? 3*glm::half_pi<float>() : glm::half_pi<float>();
-	} else {
-        mModel.rotation.y = glm::atan(rotationVector.y / rotationVector.x);
-    }
+    rotationVector.x = joystickAxis[TURN_LEFT_RIGHT] - joystickCalibration[1].x;
+    rotationVector.y = joystickAxis[TURN_UP_DOWN] - joystickCalibration[1].y;
+
+
     // map 2 werte zwischen -1 und 1 für x und y auf einen rotationswert
     mModel.position += movementVector*PLAYER_MAXSPEED;
+    mModel.rotation.y = glm::atan( rotationVector.x,rotationVector.y )+PLAYER_BASE_ROTATION;
 
     // Fire
     double now  = glfwGetTime();
