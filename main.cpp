@@ -98,8 +98,10 @@ int main(void) {
             Player newPlayer(PLAYER_MODEL);
             newPlayer.CONTROLER_NAME = joystickName;
             newPlayer.mModel.scaling = glm::vec3(PLAYER_SCALING, PLAYER_SCALING, PLAYER_SCALING);
+            newPlayer.joystickAxis = glfwGetJoystickAxes(GLFW_JOYSTICK_1 + x,
+                &newPlayer.joystickAxisCount);
+
             allPlayers.push_back(newPlayer);
-            allGameObjects.push_back(newPlayer);
         }
     }
     printf("%d Player found\n", (int) allPlayers.size());
@@ -113,7 +115,7 @@ int main(void) {
         (float) WINDOW_WIDTH / (float) WINDOW_HEIGHT,
         0.1f, 100.0f);
 
-    cam = Camera(glm::vec3(0.0f, 8.0f, 6.0f),
+    cam = Camera(glm::vec3(0.0f, 10.0f, 4.0f),
         glm::vec3(0.0f, -7.0f, -5.0f),
         glm::vec3(0.0f, 1.0f, 0.0f));
 
@@ -189,9 +191,9 @@ int main(void) {
 
     allLightSources.spotLights.push_back(spot1);
 
-    
+
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    
+
     FPS_init(2);
     long frameCount = 0;
     do {
@@ -217,28 +219,33 @@ void mainLoop(void) {
 
     nowTime = glfwGetTime();
     for (unsigned int j = 0; j < allPlayers.size(); j++) {
-        allPlayers[j].joystickAxis = glfwGetJoystickAxes(GLFW_JOYSTICK_1,
+        allPlayers[j].joystickAxis = glfwGetJoystickAxes(GLFW_JOYSTICK_1 + j,
             &allPlayers[j].joystickAxisCount);
-        allPlayers[j].joystickButtons = glfwGetJoystickButtons(GLFW_JOYSTICK_1,
+        allPlayers[j].joystickButtons = glfwGetJoystickButtons(GLFW_JOYSTICK_1 + j,
             &allPlayers[j].joystickButtonsCount);
     }
 
 
     if (nowTime - lastUpdateTime > (1 / 61)) {
-        for (GameObject o : allGameObjects) {
-            o.update();
+        for (unsigned int i = 0; i < allGameObjects.size(); i++) {
+            allGameObjects[i].update();
         }
-        for (Player p : allPlayers) {
-            p.update();
+        for (unsigned int i = 0; i < allPlayers.size(); i++) {
+            allPlayers[i].update();
         }
         lastUpdateTime = glfwGetTime();
     }
     cam.handleKeyboard(window);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    for (GameObject o : allGameObjects) {
-        o.render(basicShaderID, Projection * cam.getView(), cam, allLightSources);
+
+    for (unsigned int i = 0; i < allGameObjects.size(); i++) {
+        allGameObjects[i].render(basicShaderID, Projection * cam.getView(), cam, allLightSources);
     }
+    for (unsigned int i = 0; i < allPlayers.size(); i++) {
+        allPlayers[i].render(basicShaderID, Projection * cam.getView(), cam, allLightSources);
+    }
+
 
     // Swap buffers
     glfwSwapBuffers(window);

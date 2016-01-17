@@ -35,7 +35,7 @@
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <flagsDictionary>
-        <element flagsID="0" commonFlags="-O3 -std=c++11"/>
+        <element flagsID="0" commonFlags="-O2 -std=c++11"/>
       </flagsDictionary>
       <codeAssistance>
       </codeAssistance>

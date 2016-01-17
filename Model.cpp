@@ -44,12 +44,13 @@ Model::Model(const char* path){
 
 glm::mat4 Model::getMatr(){
     sum=glm::mat4(1.0f);
+    sum=glm::translate(sum,position);
     sum=glm::scale(sum,scaling);
     sum=glm::rotate(sum,rotation[0],glm::vec3(1,0,0));
     sum=glm::rotate(sum,rotation[1],glm::vec3(0,1,0));
     sum=glm::rotate(sum,rotation[2],glm::vec3(0,0,1));
 
-    sum=glm::translate(sum,position);
+
     return sum;
 }
 
