@@ -98,6 +98,9 @@ int main(void) {
             Player newPlayer(PLAYER_MODEL);
             newPlayer.CONTROLER_NAME = joystickName;
             newPlayer.mModel.scaling = glm::vec3(PLAYER_SCALING, PLAYER_SCALING, PLAYER_SCALING);
+            float x = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+            float z = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+            newPlayer.mModel.position = glm::vec3(x, 2.0f, z);
             newPlayer.joystickAxis = glfwGetJoystickAxes(GLFW_JOYSTICK_1 + x,
                 &newPlayer.joystickAxisCount);
 
@@ -130,13 +133,11 @@ int main(void) {
     // Create ShadowMap
     map.create(WINDOW_WIDTH, WINDOW_HEIGHT);
 
-
-#define loadCube
 #ifndef loadCube
     GameObject map(MAP_MODEL);
-    map.mModel.setScaling(MAP_SCALING, MAP_SCALING, MAP_SCALING);
-    map.mModel.setPosition(0, 0, 0);
-    map.mModel.setRotation(0, 0, 0);
+    map.mModel.scaling = glm::vec3(MAP_SCALING, MAP_SCALING, MAP_SCALING);
+    map.mModel.position = glm::vec3(0, 0, 0);
+    map.mModel.rotation = glm::vec3(0, 0, 0);
 #else
     GameObject map("assets/testcube.obj");
     map.mModel.scaling = glm::vec3(10.0f, 0.5f, 10.0f);

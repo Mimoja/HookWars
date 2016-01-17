@@ -25,7 +25,7 @@ void Player::update() {
 
     // map 2 werte zwischen -1 und 1 für x und y auf einen rotationswert
     mModel.position += movementVector*PLAYER_MAXSPEED;
-    mModel.rotation.y = glm::atan( rotationVector.x,rotationVector.y )+PLAYER_BASE_ROTATION;
+    mModel.rotation.y   = glm::atan( rotationVector.x,rotationVector.y )+PLAYER_BASE_ROTATION;
 
     // Fire
     double now  = glfwGetTime();
