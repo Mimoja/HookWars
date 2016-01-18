@@ -8,9 +8,15 @@
 #define PLAYER_SCALING 1
 #define PLAYER_BASE_ROTATION glm::half_pi<float>()
 
+#define HOOK_MODEL "assets/hook.obj"
+#define HOOK_SCALING 1
+#define HOOK_BASE_ROTATION glm::half_pi<float>()
+
 //#define loadCube
 #define MAP_MODEL "assets/map1.obj"
 #define MAP_SCALING 4
+
+#define NAVIGATION_MAP "assets/Navigation.png"
 
 #define WINDOW_NAME  GAME_NAME
 #define WINDOW_WIDTH 1024

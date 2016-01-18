@@ -6,6 +6,7 @@
 #include <vector>
 #include <stdio.h>
 
+#include "lodepng.h"
 #include "GameObject.h"
 #include "util.h"
 #include "config.h"
@@ -17,7 +18,7 @@
 std::vector<GameObject> allGameObjects;
 
 GLFWwindow* window;
-void mainLoop(void);
+void mainLoop(long frameCount);
 
 glm::mat4 Projection;
 Camera cam;
@@ -28,6 +29,12 @@ GLuint shadowShaderID;
 ShadowMap map;
 
 Lights allLightSources;
+
+std::vector<unsigned char> navigationMap;
+unsigned navigationMapHeight;
+unsigned navigationMapWidth;
+
+GameObject* map_ptr;
 
 void window_size_callback(GLFWwindow* window, int width, int height) {
     glfwMakeContextCurrent(window);
@@ -90,6 +97,15 @@ int main(void) {
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
 
+    // Read Navigation Map
+    unsigned int res = lodepng::decode(navigationMap, navigationMapWidth, navigationMapHeight, NAVIGATION_MAP);
+    
+    if(res != 0)
+    {
+        printf("error %d : %s\n",res,lodepng_error_text(res));
+        exit(-1);
+    }
+    
     // Joystick handle
     for (int x = 0; x < 16; x++) {
         const char* joystickName = glfwGetJoystickName(GLFW_JOYSTICK_1 + x);
@@ -103,7 +119,7 @@ int main(void) {
             newPlayer.mModel.position = glm::vec3(x, 2.0f, z);
             newPlayer.joystickAxis = glfwGetJoystickAxes(GLFW_JOYSTICK_1 + x,
                 &newPlayer.joystickAxisCount);
-
+            newPlayer.calibrate();
             allPlayers.push_back(newPlayer);
         }
     }
@@ -144,13 +160,14 @@ int main(void) {
     map.mModel.position = glm::vec3(0, -1.5, 0);
     map.mModel.rotation = glm::vec3(0, 0, 0);
 #endif
+    map_ptr = &map;
     allGameObjects.push_back(map);
 
     // Create lights
     allLightSources.ambient.intensity = 0.05f;
     allLightSources.ambient.lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
-    DirectionLight dir1;
+    /*DirectionLight dir1;
     dir1.direction = glm::vec3(3.0f, 0.0f, -1.0f);
     dir1.intensity = 0.3f;
     dir1.lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -166,7 +183,7 @@ int main(void) {
 
     allLightSources.directionalLights.push_back(dir1);
     allLightSources.directionalLights.push_back(dir2);
-
+     */
     PointLight point1;
     point1.lightColor = glm::vec3(0.1f, 0.3f, 0.8f);
     point1.intensity = 12.0f;
@@ -178,16 +195,48 @@ int main(void) {
 
     allLightSources.pointLights.push_back(point1);
 
+    
+        point1.lightColor = glm::vec3(0.5f, 0.3f, 0.8f);
+    point1.intensity = 12.0f;
+    point1.position = glm::vec3(4.0f, 7.5f, -5.0f);
+    point1.falloff.linear = 0.0f;
+    point1.falloff.exponential = 1.0f;
+    point1.specular.intensity = 2.7f;
+    point1.specular.power = 32;
 
+    allLightSources.pointLights.push_back(point1);
+    
+        point1.lightColor = glm::vec3(0.4f, 0.3f, 0.1f);
+    point1.intensity = 28.0f;
+    point1.position = glm::vec3(-9.0f, 7.5f, -8.0f);
+    point1.falloff.linear = 0.0f;
+    point1.falloff.exponential = 0.7f;
+    point1.specular.intensity = 2.7f;
+    point1.specular.power = 32;
+
+    allLightSources.pointLights.push_back(point1);
+    
+        point1.lightColor = glm::vec3(0.1f, 0.3f, 0.8f);
+    point1.intensity = 13.0f;
+    point1.position = glm::vec3(3.0f, 4.5f, 7.0f);
+    point1.falloff.linear = 0.0f;
+    point1.falloff.exponential = 1.0f;
+    point1.specular.intensity = 2.7f;
+    point1.specular.power = 32;
+
+    allLightSources.pointLights.push_back(point1);
+
+    
     SpotLight spot1;
-    spot1.lightColor = glm::vec3(0.3f, 0.8f, 0.1f);
-    spot1.intensity = 10.0f;
-    spot1.position = glm::vec3(6.0f, 4.5f, 13.0f);
+    spot1.lightColor = glm::vec3(0.5f, 0.1f, 0.1f);
+    spot1.intensity = 25.0f;
+    spot1.position = glm::vec3(-2.0f, 14.5f, 10.0f);
     spot1.falloff.linear = 1.2f;
-    spot1.falloff.exponential = 2.9f;
+    spot1.falloff.exponential = 4.9f;
     spot1.specular.intensity = 0.7f;
     spot1.specular.power = 32;
-    spot1.cutoff = 5.0f;
+    spot1.cutoff = 3.5f;
+    spot1.hardness=1.0f;
     spot1.direction = glm::vec3(0.0f, -1.0f, 7.0f);
 
     allLightSources.spotLights.push_back(spot1);
@@ -198,7 +247,7 @@ int main(void) {
     FPS_init(2);
     long frameCount = 0;
     do {
-        mainLoop();
+        mainLoop(frameCount);
         frameCount++;
         FPS_count();
     }// Check if the ESC key was pressed or the window was closed
@@ -214,9 +263,7 @@ int main(void) {
 double lastUpdateTime;
 double nowTime;
 
-long frameCount = 0;
-
-void mainLoop(void) {
+void mainLoop(long frameCount) {
 
     nowTime = glfwGetTime();
     for (unsigned int j = 0; j < allPlayers.size(); j++) {
@@ -251,6 +298,4 @@ void mainLoop(void) {
     // Swap buffers
     glfwSwapBuffers(window);
     glfwPollEvents();
-    FPS_count();
-    frameCount++;
 }
