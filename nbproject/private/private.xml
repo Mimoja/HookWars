@@ -4,4 +4,26 @@
         <activeConfTypeElem>0</activeConfTypeElem>
         <activeConfIndexElem>0</activeConfIndexElem>
     </data>
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/home/maximilian/HookWars/GameObject.h</file>
+            <file>file:/home/maximilian/HookWars/Hook.cpp</file>
+            <file>file:/home/maximilian/HookWars/shader.fs</file>
+            <file>file:/home/maximilian/HookWars/util.cpp</file>
+            <file>file:/home/maximilian/HookWars/Model.cpp</file>
+            <file>file:/home/maximilian/HookWars/Chain.cpp</file>
+            <file>file:/home/maximilian/HookWars/Player.cpp</file>
+            <file>file:/home/maximilian/HookWars/LightSources.h</file>
+            <file>file:/home/maximilian/HookWars/Camera.h</file>
+            <file>file:/home/maximilian/HookWars/Hook.h</file>
+            <file>file:/home/maximilian/HookWars/Chain.h</file>
+            <file>file:/home/maximilian/HookWars/Player.h</file>
+            <file>file:/home/maximilian/HookWars/Camera.cpp</file>
+            <file>file:/home/maximilian/HookWars/Makefile</file>
+            <file>file:/home/maximilian/HookWars/config.h</file>
+            <file>file:/home/maximilian/HookWars/main.cpp</file>
+            <file>file:/home/maximilian/HookWars/GameObject.cpp</file>
+        </group>
+    </open-files>
 </project-private>

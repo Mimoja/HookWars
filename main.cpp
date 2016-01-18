@@ -6,6 +6,7 @@
 #include <vector>
 #include <stdio.h>
 
+#include "lodepng.h"
 #include "GameObject.h"
 #include "util.h"
 #include "config.h"
@@ -28,6 +29,12 @@ GLuint shadowShaderID;
 ShadowMap map;
 
 Lights allLightSources;
+
+std::vector<unsigned char> navigationMap;
+unsigned navigationMapHeight;
+unsigned navigationMapWidth;
+
+GameObject* map_ptr;
 
 void window_size_callback(GLFWwindow* window, int width, int height) {
     glfwMakeContextCurrent(window);
@@ -90,6 +97,15 @@ int main(void) {
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
 
+    // Read Navigation Map
+    unsigned int res = lodepng::decode(navigationMap, navigationMapWidth, navigationMapHeight, NAVIGATION_MAP);
+    
+    if(res != 0)
+    {
+        printf("error %d : %s\n",res,lodepng_error_text(res));
+        exit(-1);
+    }
+    
     // Joystick handle
     for (int x = 0; x < 16; x++) {
         const char* joystickName = glfwGetJoystickName(GLFW_JOYSTICK_1 + x);
@@ -103,7 +119,7 @@ int main(void) {
             newPlayer.mModel.position = glm::vec3(x, 2.0f, z);
             newPlayer.joystickAxis = glfwGetJoystickAxes(GLFW_JOYSTICK_1 + x,
                 &newPlayer.joystickAxisCount);
-
+            newPlayer.calibrate();
             allPlayers.push_back(newPlayer);
         }
     }
@@ -144,6 +160,7 @@ int main(void) {
     map.mModel.position = glm::vec3(0, -1.5, 0);
     map.mModel.rotation = glm::vec3(0, 0, 0);
 #endif
+    map_ptr = &map;
     allGameObjects.push_back(map);
 
     // Create lights

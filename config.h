@@ -16,6 +16,8 @@
 #define MAP_MODEL "assets/map1.obj"
 #define MAP_SCALING 4
 
+#define NAVIGATION_MAP "assets/Navigation.png"
+
 #define WINDOW_NAME  GAME_NAME
 #define WINDOW_WIDTH 2500
 #define WINDOW_HEIGHT 1600

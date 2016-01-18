@@ -9,26 +9,29 @@
 #include "Texture.h"
 #include "ShadowMap.h"
 
-class Model{
-    public:
-        Model(){}
-        Model(const char* file);
-        glm::vec3 rotation,scaling, position;
-        glm::mat4 getMatr();
-        void render();
-        Texture* diffuseTexture=0;
-        Texture* normalTexture=0;
-        Texture* specularTexture=0;
-        ShadowMap* shadowMap = 0;
-    private:
-        GLuint indexBuffer;
-        GLuint vertexBuffer;
-        GLuint normalBuffer;
-        GLuint uvBuffer;
-        GLuint VertexArrayID;
-        int indicesCount;
+class Model {
+public:
 
-        glm::mat4 sum = glm::mat4(1.0f);
+    Model() {}
+    Model(const char* file);
+    glm::vec3 rotation, scaling, position;
+    glm::mat4 getMatr();
+    void render();
+    Texture* diffuseTexture = 0;
+    Texture* normalTexture = 0;
+    Texture* specularTexture = 0;
+    ShadowMap* shadowMap = 0;
+    glm::vec3 max;
+    glm::vec3 min;
+private:
+    GLuint indexBuffer;
+    GLuint vertexBuffer;
+    GLuint normalBuffer;
+    GLuint uvBuffer;
+    GLuint VertexArrayID;
+    int indicesCount;
+
+    glm::mat4 sum = glm::mat4(1.0f);
 
 };
 #endif
