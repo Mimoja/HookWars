@@ -2,10 +2,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <GLFW/glfw3.h>
 
 #include "util.h"
+#include "GameObject.h"
+#include "config.h"
 
 // Include AssImp
 #include <assimp/Importer.hpp>      // C++ importer interface
@@ -34,18 +37,18 @@ void FPS_count() {
     }
 }
 
-void calculateNormals( std::vector<glm::vec3> & vertices, 
-                       std::vector<glm::vec3> & normals,
-                       std::vector<unsigned short> & indices,
-                       unsigned int faceCount) {
+void calculateNormals(std::vector<glm::vec3> & vertices,
+    std::vector<glm::vec3> & normals,
+    std::vector<unsigned short> & indices,
+    unsigned int faceCount) {
 
-    assert(indices.size() >= 3*faceCount);
+    assert(indices.size() >= 3 * faceCount);
 
     normals = std::vector<glm::vec3>(vertices.size());
     for (unsigned int i = 0; i < faceCount; i++) {
-        auto i1 = indices[ i*3    ];
-        auto i2 = indices[ i*3 + 1];
-        auto i3 = indices[ i*3 + 2];
+        auto i1 = indices[ i * 3 ];
+        auto i2 = indices[ i * 3 + 1];
+        auto i3 = indices[ i * 3 + 2];
 
         auto facenormal = glm::cross(
             vertices[i3] - vertices[i1],
@@ -113,9 +116,34 @@ bool loadModelFromFile(const char * path,
             aiVector3D n = mesh->mNormals[i];
             normals.push_back(glm::vec3(n.x, n.y, n.z));
         }
-    }else{
+    } else {
         printf("No Normals Found. Calculating manual\n");
         calculateNormals(vertices, normals, indices, mesh->mNumFaces);
     }
     return true;
+}
+
+glm::vec3 getNavigationEntry(glm::vec3 position) {
+
+    extern std::vector<unsigned char> navigationMap;
+    extern unsigned navigationMapHeight;
+    extern unsigned navigationMapWidth;
+    extern GameObject* map_ptr;
+
+    glm::vec3 relativePosition = position - (map_ptr->mModel.min * MAP_SCALING);
+    relativePosition /= (map_ptr->mModel.max - (map_ptr->mModel.min)) * MAP_SCALING;
+
+    glm::vec3 rgb(-1.0f);
+    if (relativePosition.x < 0 || relativePosition.x > 1
+        || relativePosition.z < 0 || relativePosition.z > 1)return rgb;
+
+    unsigned int navPosition = ((int) (relativePosition.z * navigationMapHeight) * navigationMapWidth) + relativePosition.x * navigationMapWidth;
+    navPosition *= 4; // RGBA
+
+    rgb.r = navigationMap[navPosition];
+    rgb.g = navigationMap[navPosition + 1];
+    rgb.b = navigationMap[navPosition + 2];
+    rgb /= 255;
+
+    return rgb;
 }

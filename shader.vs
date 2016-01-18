@@ -14,12 +14,18 @@ out vec3 worldPos;
 out vec4 lightPos; 
 out vec2 UV;
 
+uniform vec3 teamColor;
+uniform int useTeamColor; 
 
 void main()
 {
     gl_Position = (WORLD*MODEL)*vec4(Position, 1.0);
     normal = ((WORLD*MODEL)* vec4(Normal, 0.0)).xyz;
-    color = vec4(0.8f,0.8f,0.8f,1.0f);
+    if(vec4(teamColor,0.0f)!=vec4(0.0f)){
+        color = vec4(teamColor, 1.0f);
+    }else{
+        color = vec4(0.8f,0.8f,0.8f,1.0f);
+    }
     worldPos   = ((WORLD*MODEL)*vec4(Position, 1.0)).xyz;  
     lightPos = LIGHT * vec4(Position, 1.0); 
     UV = UVs;

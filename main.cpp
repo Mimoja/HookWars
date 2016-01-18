@@ -120,6 +120,10 @@ int main(void) {
             newPlayer.joystickAxis = glfwGetJoystickAxes(GLFW_JOYSTICK_1 + x,
                 &newPlayer.joystickAxisCount);
             newPlayer.calibrate();
+            newPlayer.color.r  = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+            newPlayer.color.g  = 1.0f;
+            newPlayer.color.b  = 0.0f;
+            newPlayer.useColor = true;
             allPlayers.push_back(newPlayer);
         }
     }

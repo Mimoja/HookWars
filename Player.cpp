@@ -2,11 +2,7 @@
 #include "config.h"
 #include "stdio.h"
 #include "Hook.h"
-
-extern std::vector<unsigned char> navigationMap;
-extern unsigned navigationMapHeight;
-extern unsigned navigationMapWidth;
-extern GameObject* map_ptr;
+#include "util.h"
 
 void Player::calibrate() {
     joystickCalibration[0].x = joystickAxis[MOVE_LEFT_RIGHT];
@@ -28,11 +24,19 @@ void Player::update() {
     rotationVector.y = joystickAxis[TURN_UP_DOWN] - joystickCalibration[1].y;
 
     
-    // TODO Map NavigationMap to map_ptr->mModel.min and map_ptr->mModel.max
+
     // TODO check collision
-    //printf("Navigation RGB: %d %d %d\n",navigationMap[0],navigationMap[1],navigationMap[2]);
-    //printf("Model reaches from (%f,%f,%f) to (%f,%f,%f) \n",map_ptr->mModel.min.x,map_ptr->mModel.min.y,map_ptr->mModel.min.z,map_ptr->mModel.max.x,map_ptr->mModel.max.y,map_ptr->mModel.max.z);
-    mModel.position += movementVector*PLAYER_MAXSPEED;
+
+    glm::vec3 navEntry = getNavigationEntry(mModel.position+movementVector*PLAYER_MAXSPEED);
+    if(navEntry.r != -1.0f && navEntry.r != 1.0f){
+        mModel.position += movementVector*PLAYER_MAXSPEED;
+    }
+    if (navEntry.g == 1.0f){
+        printf("In River!\n");
+    }
+    if(navEntry.b > 0.9f){
+        printf("In Trap\n");
+    }
     mModel.rotation.y   = glm::atan( rotationVector.x,rotationVector.y )+PLAYER_BASE_ROTATION;
 
     // Fire

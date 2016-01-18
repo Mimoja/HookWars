@@ -15,7 +15,7 @@ void GameObject::update() {
 }
 
 void GameObject::renderToShadowMap(GLuint shaderID, glm::mat4 MVP, ShadowMap map) {
-    
+
     // Use our shader
     glUseProgram(shaderID);
     if (shaderID != lastShader) {
@@ -23,15 +23,15 @@ void GameObject::renderToShadowMap(GLuint shaderID, glm::mat4 MVP, ShadowMap map
         WorldMatrixID = glGetUniformLocation(shaderID, "WORLD");
         ModelMatrixID = glGetUniformLocation(shaderID, "MODEL");
     } else lastShader = shaderID;
-    
+
     // Transformations Matricies
     glUniformMatrix4fv(WorldMatrixID, 1, GL_FALSE, &MVP[0][0]);
     glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &(mModel.getMatr()[0][0]));
-    
+
     map.bind(GL_TEXTURE0);
     GLuint normalID = glGetUniformLocation(shaderID, "ShadowMapSampler");
     glUniform1i(normalID, 0);
-    
+
     mModel.render();
 }
 
@@ -55,6 +55,14 @@ void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights li
     glUniformMatrix4fv(WorldMatrixID, 1, GL_FALSE, &MVP[0][0]);
     glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &(modelMatrix[0][0]));
     glUniform3f(CameraPositionID, camera.mPos.x, camera.mPos.y, camera.mPos.z);
+
+    // Color
+    if (useColor) {
+        GLuint colorID = glGetUniformLocation(shaderID, "teamColor");
+        GLuint useColorID = glGetUniformLocation(shaderID, "useTeamColor");
+        glUniform3f(colorID, color.r, color.g, color.b);
+        glUniform1d(useColorID, 1);
+    }
 
     // Textures
     if (mModel.diffuseTexture != 0) {

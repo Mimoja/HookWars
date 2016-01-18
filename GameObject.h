@@ -27,6 +27,8 @@ class GameObject{
         void kill();
         glm::vec3 rotationVector;
         glm::vec3 movementVector;
+        glm::vec3 color;
+        bool useColor;
     private:
         GLuint lastShader = 1024;
         GLuint WorldMatrixID;
