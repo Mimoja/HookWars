@@ -48,7 +48,10 @@ Model::Model(const char* path) {
         if (v.y < min.y)min.y = v.y;
         if (v.z < min.z)min.z = v.z;
     }
-    printf("Model reaches from (%f,%f,%f) to (%f,%f,%f) \n",min.x,min.y,min.z,max.x,max.y,max.z);
+    printf("Model reaches from (%f,%f,%f) to (%f,%f,%f) \n", min.x, min.y, min.z, max.x, max.y, max.z);
+    scaling = glm::vec3(1.0f);
+    position = glm::vec3(0.0f);
+    rotation = glm::vec3(0.0f);
 
 }
 
