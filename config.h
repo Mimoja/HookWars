@@ -10,6 +10,7 @@
 
 #define HOOK_MODEL "assets/hook.obj"
 #define HOOK_SCALING 1.0f
+#define HOOK_SPEED 0.01f
 #define HOOK_BASE_ROTATION glm::half_pi<float>()
 
 //#define loadCube

@@ -11,6 +11,11 @@ void Player::calibrate() {
     joystickCalibration[1].y = joystickAxis[TURN_UP_DOWN];
 }
 
+Player::Player(const char* file) : GameObject(file) {
+	hook = NULL;
+	hookModel = Model("assets/derp.obj");
+}
+
 void Player::update() {
 
     if (fabs(joystickAxis[MOVE_LEFT_RIGHT]) > GAMEPAD_CUTOFF) {
@@ -42,10 +47,13 @@ void Player::update() {
     // Fire
     double now = glfwGetTime();
     if (joystickAxis[FIRE] > 0
-        && now - lastHookTime > HOOK_COOLDOWN) {
+        && now - lastHookTime > HOOK_COOLDOWN
+		/* && hook == NULL */) {
         lastHookTime = now;
         printf("Hook fired\n");
-        //TODO Spawn Hook
+		hook->kill();
+        hook = new Hook(playerNumber, mModel.position, rotationVector);
+		hook->mModel = hookModel;
     }
     sight->position.x = mModel.position.x;
     sight->position.z = mModel.position.z;
