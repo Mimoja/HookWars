@@ -14,27 +14,6 @@ void GameObject::update() {
 
 }
 
-void GameObject::renderToShadowMap(GLuint shaderID, glm::mat4 MVP, ShadowMap map) {
-
-    // Use our shader
-    glUseProgram(shaderID);
-    if (shaderID != lastShader) {
-
-        WorldMatrixID = glGetUniformLocation(shaderID, "WORLD");
-        ModelMatrixID = glGetUniformLocation(shaderID, "MODEL");
-    } else lastShader = shaderID;
-
-    // Transformations Matricies
-    glUniformMatrix4fv(WorldMatrixID, 1, GL_FALSE, &MVP[0][0]);
-    glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &(mModel.getMatr()[0][0]));
-
-    map.bind(GL_TEXTURE0);
-    GLuint normalID = glGetUniformLocation(shaderID, "ShadowMapSampler");
-    glUniform1i(normalID, 0);
-
-    mModel.render();
-}
-
 void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights lights) {
 
     // Use our shader
@@ -81,12 +60,6 @@ void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights li
         mModel.specularTexture->bindToUnit(GL_TEXTURE2);
         GLuint specularID = glGetUniformLocation(shaderID, "specularTextureSampler");
         glUniform1i(specularID, 2);
-    }
-    // Shaodws
-    if (mModel.shadowMap != 0) {
-        mModel.shadowMap->bind(GL_TEXTURE0);
-        GLuint shadowMapID = glGetUniformLocation(shaderID, "shadowMapSampler");
-        glUniform1i(shadowMapID, 3);
     }
 
     // Lights

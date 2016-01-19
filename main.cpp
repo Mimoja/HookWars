@@ -25,8 +25,6 @@ Camera cam;
 std::vector<Player> allPlayers;
 
 GLuint basicShaderID;
-GLuint shadowShaderID;
-ShadowMap map;
 
 Lights allLightSources;
 
@@ -40,7 +38,6 @@ void window_size_callback(GLFWwindow* window, int width, int height) {
     glfwMakeContextCurrent(window);
     Projection = glm::perspective(45.0f, (float) width / (float) height, 0.1f, 100.0f);
     glViewport(0, 0, width, height);
-    map.create(width, height);
 }
 
 int main(void) {
@@ -148,22 +145,11 @@ int main(void) {
     printf("Compiling Shaders\n");
 
     basicShaderID = buildShader("shader.vs", "shader.fs");
-    shadowShaderID = buildShader("shadows.vs", "shadows.fs");
 
-    // Create ShadowMap
-    map.create(WINDOW_WIDTH, WINDOW_HEIGHT);
-
-#ifndef loadCube
     GameObject map(MAP_MODEL);
     map.mModel.scaling = glm::vec3(MAP_SCALING, MAP_SCALING, MAP_SCALING);
     map.mModel.position = glm::vec3(0, 0, 0);
     map.mModel.rotation = glm::vec3(0, 0, 0);
-#else
-    GameObject map("assets/testcube.obj");
-    map.mModel.scaling = glm::vec3(10.0f, 0.5f, 10.0f);
-    map.mModel.position = glm::vec3(0, -1.5, 0);
-    map.mModel.rotation = glm::vec3(0, 0, 0);
-#endif
     map_ptr = &map;
     allGameObjects.push_back(map);
 
