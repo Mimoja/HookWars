@@ -96,13 +96,12 @@ int main(void) {
 
     // Read Navigation Map
     unsigned int res = lodepng::decode(navigationMap, navigationMapWidth, navigationMapHeight, NAVIGATION_MAP);
-    
-    if(res != 0)
-    {
-        printf("error %d : %s\n",res,lodepng_error_text(res));
+
+    if (res != 0) {
+        printf("error %d : %s\n", res, lodepng_error_text(res));
         exit(-1);
     }
-    
+
     // Joystick handle
     for (int x = 0; x < 16; x++) {
         const char* joystickName = glfwGetJoystickName(GLFW_JOYSTICK_1 + x);
@@ -115,10 +114,22 @@ int main(void) {
             newPlayer->joystickAxis = glfwGetJoystickAxes(GLFW_JOYSTICK_1 + x,
                 &newPlayer->joystickAxisCount);
             newPlayer->calibrate();
-            newPlayer->color = glm::vec3(0.9f,0.0f,0.1f);
+            newPlayer->color = glm::vec3(0.9f, 0.0f, 0.1f);
             newPlayer->useColor = true;
             allPlayers.push_back(newPlayer);
             allGameObjects.push_back(newPlayer);
+
+            PointLight* point1 = new PointLight();
+            point1->lightColor = glm::vec3(0.7f,0.7f,1.0f);
+            point1->intensity = 12.0f;
+            point1->position = glm::vec3(0.0f, 4.5f, 3.0f);
+            point1->falloff.linear = 0.0f;
+            point1->falloff.exponential = 1.0f;
+            point1->specular.intensity = 0.0f;
+            point1->specular.power = 32;
+            newPlayer->sight = point1;
+            allLightSources.pointLights.push_back(point1);
+
         }
     }
     printf("%d Player found\n", (int) allPlayers.size());
@@ -153,23 +164,18 @@ int main(void) {
     allLightSources.ambient.intensity = 0.05f;
     allLightSources.ambient.lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
-    /*DirectionLight dir1;
-    dir1.direction = glm::vec3(3.0f, 0.0f, -1.0f);
+    DirectionLight dir1;
+    dir1.direction = glm::vec3(0.0f, -1.0f, 0.0f);
     dir1.intensity = 0.3f;
     dir1.lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
     dir1.specular.intensity = 1.0f;
     dir1.specular.power = 32;
 
     DirectionLight dir2;
-    dir2.direction = glm::vec3(-3.0f, 3.0f, -1.0f);
-    dir2.intensity = 0.05f;
-    dir2.lightColor = glm::vec3(1.0f, 0.0f, 0.0f);
-    dir2.specular.intensity = 0.7f;
-    dir2.specular.power = 32;
 
-    allLightSources.directionalLights.push_back(dir1);
-    allLightSources.directionalLights.push_back(dir2);
-     */
+    allLightSources.directionalLights.push_back(&dir1);
+
+
     PointLight point1;
     point1.lightColor = glm::vec3(0.1f, 0.3f, 0.8f);
     point1.intensity = 12.0f;
@@ -179,40 +185,42 @@ int main(void) {
     point1.specular.intensity = 2.7f;
     point1.specular.power = 32;
 
-    allLightSources.pointLights.push_back(point1);
+    allLightSources.pointLights.push_back(&point1);
 
-    
-        point1.lightColor = glm::vec3(0.5f, 0.3f, 0.8f);
-    point1.intensity = 12.0f;
-    point1.position = glm::vec3(4.0f, 7.5f, -5.0f);
-    point1.falloff.linear = 0.0f;
-    point1.falloff.exponential = 1.0f;
-    point1.specular.intensity = 2.7f;
-    point1.specular.power = 32;
+    PointLight point2;
+    point2.lightColor = glm::vec3(0.5f, 0.3f, 0.8f);
+    point2.intensity = 12.0f;
+    point2.position = glm::vec3(4.0f, 7.5f, -5.0f);
+    point2.falloff.linear = 0.0f;
+    point2.falloff.exponential = 1.0f;
+    point2.specular.intensity = 2.7f;
+    point2.specular.power = 32;
 
-    allLightSources.pointLights.push_back(point1);
-    
-        point1.lightColor = glm::vec3(0.4f, 0.3f, 0.1f);
-    point1.intensity = 28.0f;
-    point1.position = glm::vec3(-9.0f, 7.5f, -8.0f);
-    point1.falloff.linear = 0.0f;
-    point1.falloff.exponential = 0.7f;
-    point1.specular.intensity = 2.7f;
-    point1.specular.power = 32;
+    allLightSources.pointLights.push_back(&point2);
 
-    allLightSources.pointLights.push_back(point1);
-    
-        point1.lightColor = glm::vec3(0.1f, 0.3f, 0.8f);
-    point1.intensity = 13.0f;
-    point1.position = glm::vec3(3.0f, 4.5f, 7.0f);
-    point1.falloff.linear = 0.0f;
-    point1.falloff.exponential = 1.0f;
-    point1.specular.intensity = 2.7f;
-    point1.specular.power = 32;
+    PointLight point3;
+    point3.lightColor = glm::vec3(0.4f, 0.3f, 0.1f);
+    point3.intensity = 28.0f;
+    point3.position = glm::vec3(-9.0f, 7.5f, -8.0f);
+    point3.falloff.linear = 0.0f;
+    point3.falloff.exponential = 0.7f;
+    point3.specular.intensity = 2.7f;
+    point3.specular.power = 32;
 
-    allLightSources.pointLights.push_back(point1);
+    allLightSources.pointLights.push_back(&point3);
 
-    
+    PointLight point4;
+    point4.lightColor = glm::vec3(0.1f, 0.3f, 0.8f);
+    point4.intensity = 13.0f;
+    point4.position = glm::vec3(3.0f, 4.5f, 7.0f);
+    point4.falloff.linear = 0.0f;
+    point4.falloff.exponential = 1.0f;
+    point4.specular.intensity = 2.7f;
+    point4.specular.power = 32;
+
+    allLightSources.pointLights.push_back(&point4);
+
+
     SpotLight spot1;
     spot1.lightColor = glm::vec3(0.5f, 0.1f, 0.1f);
     spot1.intensity = 25.0f;
@@ -222,10 +230,10 @@ int main(void) {
     spot1.specular.intensity = 0.7f;
     spot1.specular.power = 32;
     spot1.cutoff = 3.5f;
-    spot1.hardness=1.0f;
+    spot1.hardness = 1.0f;
     spot1.direction = glm::vec3(0.0f, -1.0f, 7.0f);
 
-    allLightSources.spotLights.push_back(spot1);
+    allLightSources.spotLights.push_back(&spot1);
 
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);

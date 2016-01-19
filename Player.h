@@ -13,6 +13,7 @@ public:
     int joystickAxisCount;
     const unsigned char* joystickButtons;
     int joystickButtonsCount;
+    PointLight* sight;
     private:
         double lastHookTime;
         glm::vec3 joystickCalibration[2];

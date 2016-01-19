@@ -77,7 +77,7 @@ void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights li
 
     for (unsigned int i = 0; i < lights.directionalLights.size(); i++) {
 
-        DirectionLight light = lights.directionalLights[i];
+        DirectionLight light = *lights.directionalLights[i];
         std::string lightName = "directionalLight[" + std::to_string(i) + "]";
 
         GLuint colorID = glGetUniformLocation(shaderID, (lightName + ".Color").c_str());
@@ -106,7 +106,7 @@ void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights li
 
     for (unsigned int i = 0; i < lights.pointLights.size(); i++) {
 
-        PointLight light = lights.pointLights[i];
+        PointLight light = *(lights.pointLights[i]);
         std::string lightName = "pointLight[" + std::to_string(i) + "]";
 
         GLuint colorID = glGetUniformLocation(shaderID, (lightName + ".Color").c_str());
@@ -145,7 +145,7 @@ void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights li
 
     for (unsigned int i = 0; i < lights.spotLights.size(); i++) {
 
-        SpotLight light = lights.spotLights[i];
+        SpotLight light = *(lights.spotLights[i]);
         std::string lightName = "spotLight[" + std::to_string(i) + "]";
 
         GLuint colorID = glGetUniformLocation(shaderID, (lightName + ".Color").c_str());

@@ -58,9 +58,9 @@ typedef struct _SpotLight : public PointLight {
 
 typedef struct _Lights {
     BaseLight ambient;
-    std::vector<DirectionLight> directionalLights;
-    std::vector<PointLight> pointLights;
-    std::vector<SpotLight> spotLights;
+    std::vector<DirectionLight*> directionalLights;
+    std::vector<PointLight*> pointLights;
+    std::vector<SpotLight*> spotLights;
 } Lights;
 
 

@@ -23,29 +23,30 @@ void Player::update() {
     rotationVector.x = joystickAxis[TURN_LEFT_RIGHT] - joystickCalibration[1].x;
     rotationVector.y = joystickAxis[TURN_UP_DOWN] - joystickCalibration[1].y;
 
-    
+
 
     // TODO check collision
 
-    glm::vec3 navEntry = getNavigationEntry(mModel.position+movementVector*PLAYER_MAXSPEED);
-    if(navEntry.r != -1.0f && navEntry.r != 1.0f){
+    glm::vec3 navEntry = getNavigationEntry(mModel.position + movementVector * PLAYER_MAXSPEED);
+    if (navEntry.r != -1.0f && navEntry.r != 1.0f) {
         mModel.position += movementVector*PLAYER_MAXSPEED;
     }
-    if (navEntry.g == 1.0f){
+    if (navEntry.g == 1.0f) {
         printf("In River!\n");
     }
-    if(navEntry.b > 0.9f){
+    if (navEntry.b > 0.9f) {
         printf("In Trap\n");
     }
-    mModel.rotation.y   = glm::atan( rotationVector.x,rotationVector.y )+PLAYER_BASE_ROTATION;
+    mModel.rotation.y = glm::atan(rotationVector.x, rotationVector.y) + PLAYER_BASE_ROTATION;
 
     // Fire
-    double now  = glfwGetTime();
-    if (joystickAxis[FIRE] > 0 
+    double now = glfwGetTime();
+    if (joystickAxis[FIRE] > 0
         && now - lastHookTime > HOOK_COOLDOWN) {
         lastHookTime = now;
         printf("Hook fired\n");
         //TODO Spawn Hook
     }
-
+    sight->position.x = mModel.position.x;
+    sight->position.z = mModel.position.z;
 }
