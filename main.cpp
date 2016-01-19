@@ -15,14 +15,14 @@
 #include "Shader.h"
 #include "Player.h"
 
-std::vector<GameObject> allGameObjects;
+std::vector<GameObject*> allGameObjects;
 
 GLFWwindow* window;
 void mainLoop(long frameCount);
 
 glm::mat4 Projection;
 Camera cam;
-std::vector<Player> allPlayers;
+std::vector<Player*> allPlayers;
 
 GLuint basicShaderID;
 
@@ -108,20 +108,17 @@ int main(void) {
         const char* joystickName = glfwGetJoystickName(GLFW_JOYSTICK_1 + x);
         if (joystickName != 0) {
             printf("Found Joystick %s\n", joystickName);
-            Player newPlayer(PLAYER_MODEL);
-            newPlayer.CONTROLER_NAME = joystickName;
-            newPlayer.mModel.scaling = glm::vec3(PLAYER_SCALING, PLAYER_SCALING, PLAYER_SCALING);
-            float x = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-            float z = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-            newPlayer.mModel.position = glm::vec3(x, 2.0f, z);
-            newPlayer.joystickAxis = glfwGetJoystickAxes(GLFW_JOYSTICK_1 + x,
-                &newPlayer.joystickAxisCount);
-            newPlayer.calibrate();
-            newPlayer.color.r  = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-            newPlayer.color.g  = 1.0f;
-            newPlayer.color.b  = 0.0f;
-            newPlayer.useColor = true;
+            Player* newPlayer = new Player(PLAYER_MODEL);
+            newPlayer->CONTROLER_NAME = joystickName;
+            newPlayer->mModel.scaling = glm::vec3(PLAYER_SCALING, PLAYER_SCALING, PLAYER_SCALING);
+            newPlayer->mModel.position = glm::vec3(0.0f, 2.0f, 0.0f);
+            newPlayer->joystickAxis = glfwGetJoystickAxes(GLFW_JOYSTICK_1 + x,
+                &newPlayer->joystickAxisCount);
+            newPlayer->calibrate();
+            newPlayer->color = glm::vec3(0.9f,0.0f,0.1f);
+            newPlayer->useColor = true;
             allPlayers.push_back(newPlayer);
+            allGameObjects.push_back(newPlayer);
         }
     }
     printf("%d Player found\n", (int) allPlayers.size());
@@ -146,12 +143,11 @@ int main(void) {
 
     basicShaderID = buildShader("shader.vs", "shader.fs");
 
-    GameObject map(MAP_MODEL);
-    map.mModel.scaling = glm::vec3(MAP_SCALING, MAP_SCALING, MAP_SCALING);
-    map.mModel.position = glm::vec3(0, 0, 0);
-    map.mModel.rotation = glm::vec3(0, 0, 0);
-    map_ptr = &map;
-    allGameObjects.push_back(map);
+    map_ptr = new GameObject(MAP_MODEL);
+    map_ptr->mModel.scaling = glm::vec3(MAP_SCALING, MAP_SCALING, MAP_SCALING);
+    map_ptr->mModel.position = glm::vec3(0, 0, 0);
+    map_ptr->mModel.rotation = glm::vec3(0, 0, 0);
+    allGameObjects.push_back(map_ptr);
 
     // Create lights
     allLightSources.ambient.intensity = 0.05f;
@@ -257,19 +253,16 @@ void mainLoop(long frameCount) {
 
     nowTime = glfwGetTime();
     for (unsigned int j = 0; j < allPlayers.size(); j++) {
-        allPlayers[j].joystickAxis = glfwGetJoystickAxes(GLFW_JOYSTICK_1 + j,
-            &allPlayers[j].joystickAxisCount);
-        allPlayers[j].joystickButtons = glfwGetJoystickButtons(GLFW_JOYSTICK_1 + j,
-            &allPlayers[j].joystickButtonsCount);
+        allPlayers[j]->joystickAxis = glfwGetJoystickAxes(GLFW_JOYSTICK_1 + j,
+            &allPlayers[j]->joystickAxisCount);
+        allPlayers[j]->joystickButtons = glfwGetJoystickButtons(GLFW_JOYSTICK_1 + j,
+            &allPlayers[j]->joystickButtonsCount);
     }
 
 
     if (nowTime - lastUpdateTime > (1 / 61)) {
         for (unsigned int i = 0; i < allGameObjects.size(); i++) {
-            allGameObjects[i].update();
-        }
-        for (unsigned int i = 0; i < allPlayers.size(); i++) {
-            allPlayers[i].update();
+            allGameObjects[i]->update();
         }
         lastUpdateTime = glfwGetTime();
     }
@@ -278,12 +271,8 @@ void mainLoop(long frameCount) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     for (unsigned int i = 0; i < allGameObjects.size(); i++) {
-        allGameObjects[i].render(basicShaderID, Projection * cam.getView(), cam, allLightSources);
+        allGameObjects[i]->render(basicShaderID, Projection * cam.getView(), cam, allLightSources);
     }
-    for (unsigned int i = 0; i < allPlayers.size(); i++) {
-        allPlayers[i].render(basicShaderID, Projection * cam.getView(), cam, allLightSources);
-    }
-
 
     // Swap buffers
     glfwSwapBuffers(window);
