@@ -4,7 +4,7 @@
 extern std::vector<GameObject*> allGameObjects;
 
 Chain::Chain(int player, glm::vec3 origin, glm::vec3 velocity)
-		: GameObject("assets/hook.obj"){
+		: GameObject(CHAIN_MODEL){
     owner = player;
     pos = origin;
     vel = velocity;
