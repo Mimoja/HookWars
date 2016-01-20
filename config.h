@@ -7,7 +7,7 @@
 #define PLAYER_MODEL "assets/derp.obj"
 #define PLAYER_SCALING 1
 #define PLAYER_BASE_ROTATION (3*glm::half_pi<float>())
-#define PLAYER_RADIUS 0.5f
+#define PLAYER_RADIUS 1.0f
 
 #define HOOK_MODEL "assets/hook.obj"
 #define HOOK_SCALING 0.3f
@@ -33,8 +33,8 @@
 #define LINK_DISTANCE (0.1f)
 
 #define HOOK_COOLDOWN (1.500f) //seconds
-#define PLAYER_MAXSPEED (0.20f)
 #define GAMEPAD_CUTOFF (0.15f)
+#define PLAYER_MAXSPEED (0.20f)
 
 enum XBOX_ONE_GAMEPAD{
     TURN_LEFT_RIGHT = 3,

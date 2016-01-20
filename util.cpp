@@ -159,3 +159,10 @@ glm::vec3 circleCollision(glm::vec3 center, float radius, float samples){
 	}
 	return normal;
 }
+
+glm::vec3 slideAlong(glm::vec3 a, glm::vec3 n){
+	auto b = glm::vec3(-n.z, 0, n.x);
+	auto s = glm::dot(a, glm::normalize(b));
+	return b * s;
+}
+

@@ -31,10 +31,15 @@ void Player::update() {
 
     // TODO check collision
 
+	glm::vec3 normal = circleCollision(mModel.position, PLAYER_RADIUS, 8);
+
+    if (glm::length(normal) == 0 || glm::dot(normal, movementVector) > 0.0f) {
+        mModel.position += PLAYER_MAXSPEED * movementVector;
+    } else {
+		mModel.position += PLAYER_MAXSPEED * slideAlong(movementVector, glm::normalize(normal));
+	}
+
     glm::vec3 navEntry = getNavigationEntry(mModel.position + movementVector * PLAYER_MAXSPEED);
-    if (navEntry.r != -1.0f && navEntry.r != 1.0f) {
-        mModel.position += movementVector*PLAYER_MAXSPEED;
-    }
     if (navEntry.g == 1.0f) {
         printf("In River!\n");
     }

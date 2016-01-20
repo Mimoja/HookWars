@@ -27,12 +27,10 @@ void Hook::update(){
 
 	// check for collisions in circle
 	glm::vec3 normal = circleCollision(pos, HOOK_RADIUS, 8.0f);
-	
-	glm::vec3 navEntry = getNavigationEntry(mModel.position);
-	if (collided == 0 && (navEntry.r == -1.0f || navEntry.r == 1.0f)) {
+
+	if (collided == 0 && glm::length(normal) != 0.0f) {
 		// reflect
 		printf("poop\n");
-		normal = glm::normalize(normal);
 		vel = HOOK_SPEED * glm::normalize(glm::reflect(vel, normal));
 		printf("%f, %f\n", vel.x, vel.z);
 		mModel.rotation.y = glm::atan(vel.x, vel.z) + HOOK_BASE_ROTATION;
