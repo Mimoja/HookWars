@@ -10,14 +10,14 @@
 #define PLAYER_RADIUS 1.0f
 
 #define HOOK_MODEL "assets/hook.obj"
-#define HOOK_SCALING 0.3f
+#define HOOK_SCALING 0.4f
 #define HOOK_SPEED 0.2f
 #define HOOK_RADIUS 0.2f
 #define HOOK_BASE_ROTATION glm::half_pi<float>()
 
 #define CHAIN_MODEL "assets/chain.obj"
-#define CHAIN_SCALING 0.15f
-#define CHAIN_DISTANCE 3
+#define CHAIN_SCALING 0.20f
+#define CHAIN_DISTANCE 1.0f
 #define CHAIN_BASE_ROTATION glm::pi<float>()
 
 //#define loadCube
