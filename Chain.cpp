@@ -38,7 +38,7 @@ void Chain::update(){
 		dif = (hook->mModel.position - mModel.position);
 	}
 	if(glm::length(dif) > CHAIN_DISTANCE) {
-		mModel.position += 0.15f * dif;
+		mModel.position += (glm::length(dif) - CHAIN_DISTANCE) * normalize(dif);
 	}
 	mModel.rotation.y = glm::atan(dif.x, dif.z) + CHAIN_BASE_ROTATION;
 	mModel.position = mModel.position;

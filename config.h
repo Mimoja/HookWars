@@ -11,13 +11,13 @@
 
 #define HOOK_MODEL "assets/hook.obj"
 #define HOOK_SCALING 0.4f
-#define HOOK_SPEED 0.2f
+#define HOOK_SPEED 0.3f
 #define HOOK_RADIUS 0.2f
 #define HOOK_BASE_ROTATION glm::half_pi<float>()
 
 #define CHAIN_MODEL "assets/chain_simple.obj"
 #define CHAIN_SCALING 0.20f
-#define CHAIN_DISTANCE 1.0f
+#define CHAIN_DISTANCE 0.9f
 #define CHAIN_BASE_ROTATION glm::pi<float>()
 
 //#define loadCube
