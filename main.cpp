@@ -16,13 +16,13 @@
 #include "Player.h"
 
 std::vector<GameObject*> allGameObjects;
+std::vector<Player*> allPlayers;
 
 GLFWwindow* window;
 void mainLoop(long frameCount);
 
 glm::mat4 Projection;
 Camera cam;
-std::vector<Player*> allPlayers;
 
 GLuint basicShaderID;
 
@@ -109,13 +109,14 @@ int main(void) {
             printf("Found Joystick %s\n", joystickName);
             Player* newPlayer = new Player(PLAYER_MODEL);
             newPlayer->CONTROLER_NAME = joystickName;
+			newPlayer->playerNumber = x;
             newPlayer->mModel.scaling = glm::vec3(PLAYER_SCALING, PLAYER_SCALING, PLAYER_SCALING);
             newPlayer->mModel.position = glm::vec3(0.0f, 2.0f, 0.0f);
             newPlayer->joystickAxis = glfwGetJoystickAxes(GLFW_JOYSTICK_1 + x,
                 &newPlayer->joystickAxisCount);
             newPlayer->calibrate();
             newPlayer->color = glm::vec3(0.9f, 0.0f, 0.1f);
-            newPlayer->useColor = true;
+            newPlayer->useColor = false;
             allPlayers.push_back(newPlayer);
             allGameObjects.push_back(newPlayer);
 

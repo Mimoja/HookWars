@@ -19,6 +19,7 @@
 #define CHAIN_SCALING 0.20f
 #define CHAIN_DISTANCE 0.9f
 #define CHAIN_BASE_ROTATION glm::pi<float>()
+#define CHAIN_BASE_PULL 0.1f
 
 //#define loadCube
 #define MAP_MODEL "assets/map1.obj"

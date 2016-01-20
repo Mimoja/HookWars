@@ -9,7 +9,7 @@ class Chain;
 class Hook : public GameObject {
     private:
         GameObject* next = NULL;
-        int player;
+        int owner;
 
     public:
         bool pulling;

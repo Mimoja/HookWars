@@ -1,9 +1,12 @@
+#pragma once
+
 #include "GameObject.h"
 #include "Hook.h"
 #include "Chain.h"
 #include <string>
 
-#pragma once
+class Hook;
+class Chain;
 
 class Player : public GameObject{
 	public:
@@ -20,6 +23,7 @@ class Player : public GameObject{
 		PointLight* sight;
 		Hook* hook;
 		Chain* chain;
+		bool pulling;
     private:
         double lastHookTime;
         glm::vec3 joystickCalibration[2];
