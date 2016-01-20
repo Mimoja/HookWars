@@ -12,8 +12,6 @@ class Chain : public GameObject {
     public:
         glm::vec3 pos, vel, rot;
         PlayerColor owner;
-        bool pulling;
-        Chain(PlayerColor player, glm::vec3 origin, glm::vec3 velocity, Chain* next);
-        void pull();
+        Chain(PlayerColor player, glm::vec3 origin, glm::vec3 velocity);
         void kill();
 };

@@ -6,11 +6,12 @@
 
 #define PLAYER_MODEL "assets/derp.obj"
 #define PLAYER_SCALING 1
-#define PLAYER_BASE_ROTATION glm::half_pi<float>()
+#define PLAYER_BASE_ROTATION (3*glm::half_pi<float>())
 
 #define HOOK_MODEL "assets/hook.obj"
-#define HOOK_SCALING 1.0f
-#define HOOK_SPEED 0.01f
+#define HOOK_SCALING 0.3f
+#define HOOK_SPEED 0.2f
+#define HOOK_RADIUS 0.1f
 #define HOOK_BASE_ROTATION glm::half_pi<float>()
 
 //#define loadCube
@@ -30,10 +31,10 @@
 #define GAMEPAD_CUTOFF (0.15f)
 
 enum XBOX_ONE_GAMEPAD{
-    TURN_LEFT_RIGHT = 0,
-    TURN_UP_DOWN = 1,
-    MOVE_LEFT_RIGHT = 3,
-    MOVE_UP_DOWN = 4,
+    TURN_LEFT_RIGHT = 3,
+    TURN_UP_DOWN = 4,
+    MOVE_LEFT_RIGHT = 0,
+    MOVE_UP_DOWN = 1,
     FIRE = 5,
 };
 

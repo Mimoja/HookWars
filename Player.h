@@ -17,7 +17,6 @@ class Player : public GameObject{
 		const unsigned char* joystickButtons;
 		int joystickButtonsCount;
 		PointLight* sight;
-		Model hookModel;
 		Hook* hook;
     private:
         double lastHookTime;

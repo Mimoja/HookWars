@@ -13,7 +13,6 @@ void Player::calibrate() {
 
 Player::Player(const char* file) : GameObject(file) {
 	hook = NULL;
-	hookModel = Model("assets/derp.obj");
 }
 
 void Player::update() {
@@ -52,8 +51,7 @@ void Player::update() {
         lastHookTime = now;
         printf("Hook fired\n");
 		hook->kill();
-        hook = new Hook(playerNumber, mModel.position, rotationVector);
-		hook->mModel = hookModel;
+        hook = new Hook(playerNumber, mModel.position, mModel.rotation.y - PLAYER_BASE_ROTATION);
     }
     sight->position.x = mModel.position.x;
     sight->position.z = mModel.position.z;
