@@ -1,4 +1,5 @@
 #include "GameObject.h"
+#include "Chain.h"
 #include <vector>
 
 #pragma once
@@ -16,4 +17,5 @@ class Hook : public GameObject {
         void pull();
 		void kill();
 		int collided;
+		Chain* prev;
 };

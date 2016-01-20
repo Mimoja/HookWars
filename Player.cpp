@@ -67,7 +67,7 @@ void Player::update() {
 			}
 		} else {
 			if (glm::length(mModel.position -  hook->pos) > CHAIN_DISTANCE){
-				// TODO Spawn first chain link
+				chain = new Chain(playerNumber, mModel.position, hook->pos - mModel.position);
 			}
 		}
 	}

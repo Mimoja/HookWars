@@ -1,5 +1,4 @@
 #include "Hook.h"
-#include "Chain.h"
 #include "config.h"
 #include "util.h"
 #include <string>
@@ -11,12 +10,13 @@ void Hook::pull(){
 
 extern std::vector<GameObject*> allGameObjects;
 
-Hook::Hook(int playerNumber, glm::vec3 pos, float dir) : GameObject(HOOK_MODEL){
-	this->player = playerNumber;
-	this->pos = pos;
+Hook::Hook(int playerNumber, glm::vec3 origin, float dir) : GameObject(HOOK_MODEL){
+	player = playerNumber;
+	pos = pos;
 	printf("%f, %f, %f\nNEU\n", pos.x, pos.y, pos.z);
-	this->vel = HOOK_SPEED * glm::normalize(glm::vec3(sin(dir), 0, cos(dir)));
-	this->collided = 0;
+	vel = HOOK_SPEED * glm::normalize(glm::vec3(sin(dir), 0, cos(dir)));
+	collided = 0;
+	prev = NULL;
 	mModel.rotation.y = dir + HOOK_BASE_ROTATION;
 	mModel.scaling = glm::vec3(HOOK_SCALING, HOOK_SCALING, HOOK_SCALING);
 	allGameObjects.push_back(this);
