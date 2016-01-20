@@ -28,6 +28,7 @@ class GameObject{
         glm::vec3 movementVector;
         glm::vec3 color;
         bool useColor;
+        float radius;
     private:
         GLuint lastShader = 1024;
         GLuint WorldMatrixID;

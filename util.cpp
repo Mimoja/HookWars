@@ -99,7 +99,7 @@ bool loadModelFromFile(const char * path,
         printf("Reading %d UVs\n", mesh->mNumUVComponents[0]);
         for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
             aiVector3D UVW = mesh->mTextureCoords[0][i];
-            uvs.push_back(glm::vec2(UVW.x, UVW.y));
+            uvs.push_back(glm::vec2(UVW.x, UVW.y)); 
         }
     }
     if (mesh->HasFaces()) {
@@ -148,21 +148,40 @@ glm::vec3 getNavigationEntry(glm::vec3 position) {
     return rgb;
 }
 
-glm::vec3 circleCollision(glm::vec3 center, float radius, float samples){
-	glm::vec3 normal = glm::vec3(0);
-	for (float a = 0; a < 2 * glm::pi<float>(); a += glm::half_pi<float>()/samples){
-		glm::vec3 offset = radius * glm::vec3(sin(a), 0, cos(a));
-		glm::vec3 navEntry = getNavigationEntry(center + offset);
-		if (navEntry.r == -1.0f || navEntry.r == 1.0f) {
-        	normal -= offset;
-    	}
-	}
-	return normal;
+glm::vec3 circleCollision(glm::vec3 center, float radius, float samples) {
+    glm::vec3 normal = glm::vec3(0);
+    for (float a = 0; a < 2 * glm::pi<float>(); a += glm::half_pi<float>() / samples) {
+        glm::vec3 offset = radius * glm::vec3(sin(a), 0, cos(a));
+        glm::vec3 navEntry = getNavigationEntry(center + offset);
+        if (navEntry.r == -1.0f || navEntry.r == 1.0f) {
+            normal -= offset;
+        }
+    }
+    return normal;
 }
 
-glm::vec3 slideAlong(glm::vec3 a, glm::vec3 n){
-	auto b = glm::vec3(-n.z, 0, n.x);
-	auto s = glm::dot(a, glm::normalize(b));
-	return b * s;
+glm::vec3 slideAlong(glm::vec3 a, glm::vec3 n) {
+    auto b = glm::vec3(-n.z, 0, n.x);
+    auto s = glm::dot(a, glm::normalize(b));
+    return b * s;
 }
 
+bool isColliding(GameObject o1, GameObject o2) {
+    glm::vec3 pos1 = o1.mModel.position;
+    glm::vec3 pos2 = o2.mModel.position;
+    
+    // Check if near each other (check in a square)
+    if (pos1.x + o1.radius + o2.radius > pos2.x
+        && pos1.x < pos2.x + o1.radius + o2.radius
+        && pos1.y + o1.radius + o2.radius > pos2.y
+        && pos1.y < pos2.y + o1.radius + o2.radius) {
+        
+        // check for collision
+        float distance = glm::sqrt(((pos1.x - pos2.x) * (pos1.x - pos2.x))
+            + ((pos1.y - pos2.y) * (pos1.y - pos2.y)));
+        if (distance < o1.radius + o2.radius) {
+            return true;
+        }
+    }
+    return false;
+}
