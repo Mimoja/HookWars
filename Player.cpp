@@ -62,12 +62,12 @@ void Player::update() {
 	// Extend Hook if needed
 	if (hook != NULL) {
 		if (chain != NULL) {
-			if (glm::length(mModel.position - chain->pos) > CHAIN_DISTANCE){
-				chain = new Chain(playerNumber, mModel.position, hook->pos - mModel.position, chain);
+			if (glm::length(mModel.position - chain->mModel.position) > CHAIN_DISTANCE){
+				chain = new Chain(playerNumber, mModel.position, hook->mModel.position - mModel.position, chain);
 			}
 		} else {
-			if (glm::length(mModel.position -  hook->pos) > CHAIN_DISTANCE){
-				chain = new Chain(playerNumber, mModel.position, hook->pos - mModel.position, hook);
+			if (glm::length(mModel.position -  hook->mModel.position) > CHAIN_DISTANCE){
+				chain = new Chain(playerNumber, mModel.position, hook->mModel.position - mModel.position, hook);
 			}
 		}
 	}
