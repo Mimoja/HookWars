@@ -6,9 +6,8 @@ extern std::vector<GameObject*> allGameObjects;
 Chain::Chain(int player, glm::vec3 origin, glm::vec3 velocity)
 		: GameObject(CHAIN_MODEL){
     owner = player;
-    pos = origin;
+    mModel.position = origin;
     vel = velocity;
-    rot = glm::vec3(0);
 	prev = NULL;
 	next = NULL;
 	hook = NULL;
@@ -34,12 +33,12 @@ void Chain::kill(){
 void Chain::update(){
 	glm::vec3 dif;
 	if(next != NULL) {
-		dif = (next->pos - pos);
+		dif = (next->mModel.position - mModel.position);
 	} else {
-		dif = (hook->mModel.position - pos);
+		dif = (hook->mModel.position - mModel.position);
 	}
-	pos += 0.15f * dif;
+	mModel.position += 0.15f * dif;
 	mModel.rotation.y = 0.3f * mModel.rotation.y + 0.7f * glm::atan(dif.x, dif.z) + 0.7* CHAIN_BASE_ROTATION;
-	mModel.position = pos;
+	mModel.position = mModel.position;
 	
 }

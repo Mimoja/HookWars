@@ -11,7 +11,7 @@ class Chain : public GameObject {
 	private:
         Chain(int player, glm::vec3 origin, glm::vec3 velocity);
     public:
-        glm::vec3 pos, vel, rot;
+        glm::vec3 vel;
         int owner;
         Chain(int player, glm::vec3 origin, glm::vec3 velocity, Chain* next);
         Chain(int player, glm::vec3 origin, glm::vec3 velocity, Hook*  hook);
