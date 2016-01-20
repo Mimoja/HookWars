@@ -7,6 +7,7 @@
 #define PLAYER_MODEL "assets/derp.obj"
 #define PLAYER_SCALING 1
 #define PLAYER_BASE_ROTATION (3*glm::half_pi<float>())
+#define PLAYER_RADIUS 0.5f
 
 #define HOOK_MODEL "assets/hook.obj"
 #define HOOK_SCALING 0.3f
@@ -14,10 +15,10 @@
 #define HOOK_RADIUS 0.2f
 #define HOOK_BASE_ROTATION glm::half_pi<float>()
 
-#define CHAIN_MODEL "assets/hook.obj"
-#define CHAIN_SCALING 0.3f
-#define CHAIN_DISTANCE 5
-#define CHAIN_BASE_ROTATION glm::half_pi<float>()
+#define CHAIN_MODEL "assets/chain.obj"
+#define CHAIN_SCALING 0.15f
+#define CHAIN_DISTANCE 3
+#define CHAIN_BASE_ROTATION glm::pi<float>()
 
 //#define loadCube
 #define MAP_MODEL "assets/map1.obj"

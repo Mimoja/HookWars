@@ -17,7 +17,6 @@ Hook::Hook(int playerNumber, glm::vec3 pos, float dir) : GameObject(HOOK_MODEL){
 	printf("%f, %f, %f\nNEU\n", pos.x, pos.y, pos.z);
 	this->vel = HOOK_SPEED * glm::normalize(glm::vec3(sin(dir), 0, cos(dir)));
 	this->collided = 0;
-	this->link = CHAIN_DISTANCE;
 	mModel.rotation.y = dir + HOOK_BASE_ROTATION;
 	mModel.scaling = glm::vec3(HOOK_SCALING, HOOK_SCALING, HOOK_SCALING);
 	allGameObjects.push_back(this);
@@ -40,6 +39,7 @@ void Hook::update(){
 	if (collided == 0 && (navEntry.r == -1.0f || navEntry.r == 1.0f)) {
 		// reflect
 		printf("poop\n");
+		normal = glm::normalize(normal);
 		vel = HOOK_SPEED * glm::normalize(glm::reflect(vel, normal));
 		printf("%f, %f\n", vel.x, vel.z);
 		mModel.rotation.y = glm::atan(vel.x, vel.z) + HOOK_BASE_ROTATION;
@@ -49,12 +49,6 @@ void Hook::update(){
 		pos += vel;
 		collided = std::max(0, collided - 1);
 	}
-
-	if(!link) {
-		new Chain(player, pos, vel);
-		link = CHAIN_DISTANCE;
-	}
-	link--;
 }
 
 void Hook::kill(){

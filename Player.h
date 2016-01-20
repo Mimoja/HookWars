@@ -1,5 +1,6 @@
 #include "GameObject.h"
 #include "Hook.h"
+#include "Chain.h"
 #include <string>
 
 #pragma once
@@ -18,6 +19,7 @@ class Player : public GameObject{
 		int joystickButtonsCount;
 		PointLight* sight;
 		Hook* hook;
+		Chain* chain;
     private:
         double lastHookTime;
         glm::vec3 joystickCalibration[2];

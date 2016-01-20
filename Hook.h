@@ -16,5 +16,4 @@ class Hook : public GameObject {
         void pull();
 		void kill();
 		int collided;
-		int link;
 };

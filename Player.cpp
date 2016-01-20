@@ -1,7 +1,6 @@
 #include "Player.h"
 #include "config.h"
 #include "stdio.h"
-#include "Hook.h"
 #include "util.h"
 
 void Player::calibrate() {
@@ -13,6 +12,7 @@ void Player::calibrate() {
 
 Player::Player(const char* file) : GameObject(file) {
 	hook = NULL;
+	chain = NULL;
 }
 
 void Player::update() {
@@ -53,6 +53,21 @@ void Player::update() {
 		hook->kill();
         hook = new Hook(playerNumber, mModel.position, mModel.rotation.y - PLAYER_BASE_ROTATION);
     }
+
+	// Extend Hook if needed
+	if (hook != NULL) {
+		if (chain != NULL) {
+			if (glm::length(mModel.position - chain->pos) > CHAIN_DISTANCE){
+				// TODO Spawn additional chain link
+			}
+		} else {
+			if (glm::length(mModel.position -  hook->pos) > CHAIN_DISTANCE){
+				// TODO Spawn first chain link
+			}
+		}
+	}
+
+	// Move Light Source
     sight->position.x = mModel.position.x;
     sight->position.z = mModel.position.z;
 }
