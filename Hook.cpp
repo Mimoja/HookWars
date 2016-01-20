@@ -26,14 +26,7 @@ void Hook::update(){
 	mModel.position = pos;
 
 	// check for collisions in circle
-	glm::vec3 normal = glm::vec3(0, 0, 0);
-	for (float a = 0; a < 2 * glm::pi<float>(); a += glm::quarter_pi<float>()/4){
-		glm::vec3 offset = HOOK_RADIUS * glm::vec3(sin(a), 0, cos(a));
-		glm::vec3 navEntry = getNavigationEntry(mModel.position + offset);
-		if (navEntry.r == -1.0f || navEntry.r == 1.0f) {
-        	normal -= offset;
-    	}
-	}
+	glm::vec3 normal = circleCollision(pos, HOOK_RADIUS, 8.0f);
 	
 	glm::vec3 navEntry = getNavigationEntry(mModel.position);
 	if (collided == 0 && (navEntry.r == -1.0f || navEntry.r == 1.0f)) {
