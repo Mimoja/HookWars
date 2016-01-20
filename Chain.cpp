@@ -36,10 +36,10 @@ void Chain::update(){
 	if(next != NULL) {
 		dif = (next->pos - pos);
 	} else {
-		dif = (hook->pos - pos);
+		dif = (hook->mModel.position - pos);
 	}
 	pos += 0.15f * dif;
-	mModel.rotation.y = glm::atan(dif.x, dif.z) + CHAIN_BASE_ROTATION;
+	mModel.rotation.y = 0.3f * mModel.rotation.y + 0.7f * glm::atan(dif.x, dif.z) + 0.7* CHAIN_BASE_ROTATION;
 	mModel.position = pos;
 	
 }

@@ -13,7 +13,7 @@ class Hook : public GameObject {
 
     public:
         bool pulling;
-        glm::vec3 pos, vel;
+        glm::vec3 vel;
         Hook(int player, glm::vec3 origin, float dir);
         virtual void update();
         void pull();
