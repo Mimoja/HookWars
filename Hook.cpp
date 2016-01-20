@@ -35,11 +35,10 @@ void Hook::update(){
 		printf("%f, %f\n", vel.x, vel.z);
 		mModel.rotation.y = glm::atan(vel.x, vel.z) + HOOK_BASE_ROTATION;
 		collided = 10;
-	} else {
-		// just keep going
-		pos += vel;
-		collided = std::max(0, collided - 1);
 	}
+
+	pos += vel;
+	collided = std::max(0, collided - 1);
 }
 
 void Hook::kill(){
