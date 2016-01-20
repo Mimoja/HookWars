@@ -30,7 +30,6 @@ void Hook::update(){
 
 	if (collided == 0 && glm::length(normal) != 0.0f) {
 		// reflect
-		printf("poop\n");
 		vel = HOOK_SPEED * glm::normalize(glm::reflect(vel, glm::normalize(normal)));
 		printf("%f, %f\n", vel.x, vel.z);
 		mModel.rotation.y = glm::atan(vel.x, vel.z) + HOOK_BASE_ROTATION;
