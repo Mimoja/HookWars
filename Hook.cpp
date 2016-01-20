@@ -12,7 +12,7 @@ extern std::vector<GameObject*> allGameObjects;
 
 Hook::Hook(int playerNumber, glm::vec3 origin, float dir) : GameObject(HOOK_MODEL){
 	player = playerNumber;
-	pos = pos;
+	pos = origin;
 	printf("%f, %f, %f\nNEU\n", pos.x, pos.y, pos.z);
 	vel = HOOK_SPEED * glm::normalize(glm::vec3(sin(dir), 0, cos(dir)));
 	collided = 0;

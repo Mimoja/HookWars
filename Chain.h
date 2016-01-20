@@ -1,8 +1,11 @@
+#pragma once
+
 #include "GameObject.h"
 #include "config.h"
 #include <vector>
+#include "Hook.h"
 
-#pragma once
+class Hook;
 
 class Chain : public GameObject {
 
