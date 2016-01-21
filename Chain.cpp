@@ -57,22 +57,36 @@ void Chain::update(){
 	glm::vec3 dif;
 
 	if(pulling) {
-		// update chain first because we are pulling
-		if(prev != NULL) {
-			prev->update();
-		}
 		// pull
-		if(prev != NULL){
-			follow = prev->mModel.position;
-		} else {
-			follow = allPlayers[owner]->mModel.position;
-		}
-		dif = follow - mModel.position;
+		Chain* p = prev;
+		do {
+			if (p != NULL) {
+				follow = p->mModel.position;
+				p = p->prev;
+			} else {
+				follow = allPlayers[owner]->mModel.position;
+			}
+			dif = follow - mModel.position;
+		} while(glm::length(dif) == 0);
 
-		if(glm::length(dif) != 0) {
+		if(glm::length(dif) > CHAIN_DISTANCE) {
+			mModel.position += CHAIN_PULL * normalize(dif);
+		} else {
 			mModel.position += CHAIN_BASE_PULL * normalize(dif);
 		}
+		// update chain lasst because we are pulling
+		if(next != NULL) {
+			next->update();
+		} else {
+			hook->update();
+		}
 	} else {
+		// update chain first because we are pushing
+		if(next != NULL) {
+			next->update();
+		} else {
+			hook->update();
+		}
 		// push
 		if(next != NULL) {
 			follow = next->mModel.position;
@@ -82,18 +96,15 @@ void Chain::update(){
 		dif = follow - mModel.position;
 		if(glm::length(dif) != 0){
 			if(glm::length(dif) > CHAIN_DISTANCE) {
-				mModel.position += std::min(CHAIN_DISTANCE, (glm::length(dif) - CHAIN_DISTANCE)) * normalize(dif);
+				mModel.position += (glm::length(dif) - CHAIN_DISTANCE) * normalize(dif);
 			} else {
 				mModel.position += CHAIN_BASE_PUSH * normalize(dif);
 			}
 		}
-		// update chain last because we are pushing
-		if(prev != NULL) {
-			prev->update();
-		}
 	}
-
+	glm::vec3 ne = (next != 0) ? next->mModel.position : hook->mModel.position;
+	glm::vec3 pr = (prev != 0) ? prev->mModel.position : allPlayers[owner]->mModel.position;
+	dif = ne-pr;
 	mModel.rotation.y = glm::atan(dif.x, dif.z) + CHAIN_BASE_ROTATION + glm::pi<float>();
-
 
 }

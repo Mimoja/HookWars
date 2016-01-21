@@ -17,6 +17,14 @@ Player::Player(const char* file) : GameObject(file) {
 }
 
 void Player::update() {
+	// update chain first if we are pushing
+	if(hook != NULL && !pulling){
+		if(chain != NULL) {
+			chain->update();
+		} else {
+			hook->update();
+		}
+	}
 
     if (fabs(joystickAxis[MOVE_LEFT_RIGHT]) > GAMEPAD_CUTOFF) {
         movementVector.x = joystickAxis[MOVE_LEFT_RIGHT] - joystickCalibration[0].x;
@@ -97,7 +105,26 @@ void Player::update() {
 		}
 	}
 
+	// update chain last if we are pulling
+	if(hook != NULL && pulling){
+		if(chain != NULL) {
+			chain->update();
+		} else {
+			hook->update();
+		}
+	}
+
 	// Move Light Source
     sight->position.x = mModel.position.x;
     sight->position.z = mModel.position.z;
+}
+
+void Player::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights lights){
+	GameObject::render(shaderID, MVP, camera, lights);
+	if(hook!= NULL) {	
+		hook->GameObject::render(shaderID, MVP, camera, lights);
+		for(Chain* p = chain; p != NULL; p = p->next) {
+			p->render(shaderID, MVP, camera, lights);
+		}
+	}
 }
