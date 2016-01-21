@@ -59,21 +59,19 @@ void Player::update() {
 
     // Fire or Pull
     double now = glfwGetTime();
-    if (joystickAxis[FIRE] > 0 && now - lastHookTime > HOOK_COOLDOWN){
-        if (hook == NULL) {
+    if (joystickAxis[FIRE] > 0){
+		if (hook == NULL && now - lastHookTime > HOOK_COOLDOWN) {
 			// Fire new hook
-        	lastHookTime = now;
-        	hook = new Hook(playerNumber, mModel.position, mModel.rotation.y - PLAYER_BASE_ROTATION);
-		} else {
-			// Pull hook
-			lastHookTime = now;
-			pulling = true;
-			if (chain == NULL) {
-				hook->pull();
-			} else {
-				chain->pull();
-			}
+		    lastHookTime = now;
+		    hook = new Hook(playerNumber, mModel.position, mModel.rotation.y - PLAYER_BASE_ROTATION);
+		} else if (hook != NULL && now - lastHookTime > HOOK_RETRACT_TIME) {
+			pull();
 		}
+	}
+
+	// Pull automatically if Hook too long
+	if (hook != NULL && now - lastHookTime > HOOK_LIFETIME) {
+		pull();
     }
 
 	// Extend/Retract Hook if needed
@@ -117,6 +115,15 @@ void Player::update() {
 	// Move Light Source
     sight->position.x = mModel.position.x;
     sight->position.z = mModel.position.z;
+}
+
+void Player::pull(){
+	pulling = true;
+	if (chain == NULL) {
+		hook->pull();
+	} else {
+		chain->pull();
+	}
 }
 
 void Player::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights lights){

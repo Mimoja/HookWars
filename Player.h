@@ -24,6 +24,7 @@ class Player : public GameObject{
 		PointLight* sight;
 		Hook* hook;
 		Chain* chain;
+		void pull();
 		bool pulling;
     private:
         double lastHookTime;
