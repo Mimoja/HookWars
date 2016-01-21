@@ -14,7 +14,6 @@ extern std::vector<Player*> allPlayers;
 Hook::Hook(int playerNumber, glm::vec3 origin, float dir) : GameObject(HOOK_MODEL){
 	owner = playerNumber;
 	mModel.position = origin;
-	printf("%f, %f, %f\nNEU\n", mModel.position.x, mModel.position.y, mModel.position.z);
 	vel = HOOK_SPEED * glm::normalize(glm::vec3(sin(dir), 0, cos(dir)));
 	collided = 0;
 	prev = NULL;
@@ -74,7 +73,6 @@ void Hook::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights lights){
 }
 
 void Hook::kill(){
-	printf("HOOK KILLED!\n");
 	allGameObjects.erase(std::remove(allGameObjects.begin(), allGameObjects.end(), this), allGameObjects.end());
 	delete this;
 }

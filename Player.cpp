@@ -55,12 +55,10 @@ void Player::update() {
         if (hook == NULL) {
 			// Fire new hook
         	lastHookTime = now;
-        	printf("Hook fired\n");
         	hook = new Hook(playerNumber, mModel.position, mModel.rotation.y - PLAYER_BASE_ROTATION);
 		} else {
 			// Pull hook
 			lastHookTime = now;
-			printf("Retracting Hook\n");
 			pulling = true;
 			if (chain == NULL) {
 				hook->pull();
