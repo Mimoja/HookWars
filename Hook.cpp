@@ -18,30 +18,34 @@ Hook::Hook(int playerNumber, glm::vec3 origin, float dir) : GameObject(HOOK_MODE
 	vel = HOOK_SPEED * glm::normalize(glm::vec3(sin(dir), 0, cos(dir)));
 	collided = 0;
 	prev = NULL;
+	pulling = false;
 	mModel.rotation.y = dir + HOOK_BASE_ROTATION;
 	mModel.scaling = glm::vec3(HOOK_SCALING, HOOK_SCALING, HOOK_SCALING);
 	allGameObjects.push_back(this);
 }
 
 void Hook::update(){
-	mModel.position = mModel.position;
+
 	if(pulling) {
+		// update chain first because we are pulling
+		if(prev != NULL) {
+			prev->update();
+		}
 		// pull
 		glm::vec3 follow;
+		glm::vec3 dif;
+
 		if(prev != NULL){
 			follow = prev->mModel.position;
 		} else {
 			follow = allPlayers[owner]->mModel.position;
 		}
-		glm::vec3 dif = follow - mModel.position;
+		dif = follow - mModel.position;
+		mModel.position += std::min(CHAIN_DISTANCE, (glm::length(dif) - CHAIN_DISTANCE)) * normalize(dif);
 
-		if(glm::length(dif) > CHAIN_DISTANCE) {
-			mModel.position += std::min(CHAIN_DISTANCE*4, (glm::length(dif) - CHAIN_DISTANCE)) * normalize(dif);
-		} else {
-			mModel.position += CHAIN_BASE_PULL * normalize(dif);
-		}
+		mModel.rotation.y = glm::atan(-dif.x, -dif.z) + HOOK_BASE_ROTATION;
 	} else {
-		// check for collisions in circle
+		// push
 		glm::vec3 normal = circleCollision(mModel.position, HOOK_RADIUS, 8.0f);
 
 		if (collided == 0 && glm::length(normal) != 0.0f) {
@@ -55,6 +59,17 @@ void Hook::update(){
 			mModel.position += vel;
 			collided = std::max(0, collided - 1);
 		}
+		// update chain last because we are pushing
+		if(prev != NULL) {
+			prev->update();
+		}
+	}
+}
+
+void Hook::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights lights){
+	GameObject::render(shaderID, MVP, camera, lights);
+	for(Chain* p = prev; p != NULL; p = p->prev) {
+		p->render(shaderID, MVP, camera, lights);
 	}
 }
 

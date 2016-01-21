@@ -15,6 +15,7 @@ class Hook : public GameObject {
         bool pulling;
         glm::vec3 vel;
         Hook(int player, glm::vec3 origin, float dir);
+		virtual void render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights lights);
         virtual void update();
         void pull();
 		void kill();

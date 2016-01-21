@@ -2,7 +2,6 @@
 #include "config.h"
 #include <algorithm>
 
-extern std::vector<GameObject*> allGameObjects;
 extern std::vector<Player*> allPlayers;
 
 Chain::Chain(int player, glm::vec3 origin, glm::vec3 velocity)
@@ -16,7 +15,6 @@ Chain::Chain(int player, glm::vec3 origin, glm::vec3 velocity)
 	pulling = false;
 	mModel.rotation.y = glm::atan(vel.x, vel.z) + CHAIN_BASE_ROTATION;
 	mModel.scaling = glm::vec3(CHAIN_SCALING, CHAIN_SCALING, CHAIN_SCALING);
-	allGameObjects.push_back(this);
 }
 
 Chain::Chain(int player, glm::vec3 origin, glm::vec3 velocity, Chain* next)
@@ -34,11 +32,14 @@ Chain::Chain(int player, glm::vec3 origin, glm::vec3 velocity, Hook*  hook)
 void Chain::kill(){
 	// invalidate pointers
 	if(next != NULL) {
-		next->prev = NULL;
+		next->prev = prev;
 	} else {
-		hook->prev = NULL;
+		hook->prev = prev;
 	}
-	allGameObjects.erase(std::remove(allGameObjects.begin(), allGameObjects.end(), this), allGameObjects.end());
+	if(prev != NULL) {
+		prev->next = next;
+	}
+
 	delete this;
 }
 
@@ -53,12 +54,23 @@ void Chain::pull(){
 
 void Chain::update(){
 	glm::vec3 follow;
+	glm::vec3 dif;
+
 	if(pulling) {
+		// update chain first because we are pulling
+		if(prev != NULL) {
+			prev->update();
+		}
 		// pull
 		if(prev != NULL){
 			follow = prev->mModel.position;
 		} else {
 			follow = allPlayers[owner]->mModel.position;
+		}
+		dif = follow - mModel.position;
+
+		if(glm::length(dif) != 0) {
+			mModel.position += CHAIN_BASE_PULL * normalize(dif);
 		}
 	} else {
 		// push
@@ -67,15 +79,21 @@ void Chain::update(){
 		} else {
 			follow = hook->mModel.position;
 		}
+		dif = follow - mModel.position;
+		if(glm::length(dif) != 0){
+			if(glm::length(dif) > CHAIN_DISTANCE) {
+				mModel.position += std::min(CHAIN_DISTANCE, (glm::length(dif) - CHAIN_DISTANCE)) * normalize(dif);
+			} else {
+				mModel.position += CHAIN_BASE_PUSH * normalize(dif);
+			}
+		}
+		// update chain last because we are pushing
+		if(prev != NULL) {
+			prev->update();
+		}
 	}
 
-	glm::vec3 dif = follow - mModel.position;
+	mModel.rotation.y = glm::atan(dif.x, dif.z) + CHAIN_BASE_ROTATION + glm::pi<float>();
 
-	if(glm::length(dif) > CHAIN_DISTANCE) {
-		mModel.position += std::min(CHAIN_DISTANCE*4, (glm::length(dif) - CHAIN_DISTANCE)) * normalize(dif);
-	} else {
-		mModel.position += CHAIN_BASE_PULL * normalize(dif);
-	}
-	mModel.rotation.y = glm::atan(dif.x, dif.z) + CHAIN_BASE_ROTATION;
-	mModel.position = mModel.position;
+
 }
