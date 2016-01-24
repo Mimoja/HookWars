@@ -40,7 +40,7 @@ void Player::update() {
 
     // TODO check collision
 
-	glm::vec3 normal = circleCollision(mModel.position, PLAYER_RADIUS, 8);
+	glm::vec3 normal = circleCollision(mModel.position, PLAYER_RADIUS, 8, true);
 
     if (glm::length(normal) == 0 || glm::dot(normal, movementVector) > 0.0f) {
         mModel.position += PLAYER_MAXSPEED * movementVector;

@@ -111,7 +111,7 @@ int main(void) {
             newPlayer->CONTROLER_NAME = joystickName;
 			newPlayer->playerNumber = x;
             newPlayer->mModel.scaling = glm::vec3(PLAYER_SCALING, PLAYER_SCALING, PLAYER_SCALING);
-            newPlayer->mModel.position = glm::vec3(0.0f, 2.0f, 0.0f);
+            newPlayer->mModel.position = glm::vec3(-5.0f, 2.0f, 0.0f);
             newPlayer->joystickAxis = glfwGetJoystickAxes(GLFW_JOYSTICK_1 + x,
                 &newPlayer->joystickAxisCount);
             newPlayer->calibrate();

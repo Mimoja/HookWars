@@ -45,7 +45,7 @@ void Hook::update(){
 		mModel.rotation.y = glm::atan(dif.x, dif.z) + HOOK_BASE_ROTATION + glm::pi<float>();
 	} else {
 		// push
-		glm::vec3 normal = circleCollision(mModel.position, radius, 8.0f);
+		glm::vec3 normal = circleCollision(mModel.position, radius, 8.0f, false);
 
 		if (collided == 0 && glm::length(normal) != 0.0f) {
 			// reflect

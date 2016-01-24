@@ -11,8 +11,8 @@
 
 #define HOOK_MODEL "assets/hook.obj"
 #define HOOK_SCALING 0.4f
-#define HOOK_SPEED 0.5f
-#define HOOK_RADIUS 0.2f
+#define HOOK_SPEED 0.4f
+#define HOOK_RADIUS 0.4f
 #define HOOK_BASE_ROTATION glm::half_pi<float>()
 
 #define CHAIN_MODEL "assets/chain_simple.obj"
