@@ -4,6 +4,8 @@
 #include <string>
 #include <algorithm>
 
+extern std::vector<GameObject*> allRenderObjects;
+
 void Hook::pull(){
     pulling = true;
 }
@@ -20,6 +22,7 @@ Hook::Hook(int playerNumber, glm::vec3 origin, float dir) : GameObject(HOOK_MODE
 	mModel.rotation.y = dir + HOOK_BASE_ROTATION;
 	mModel.scaling = glm::vec3(HOOK_SCALING, HOOK_SCALING, HOOK_SCALING);
     radius = HOOK_RADIUS;
+	allRenderObjects.push_back(this);
 }
 
 void Hook::update(){
@@ -67,5 +70,6 @@ void Hook::update(){
 }
 
 void Hook::kill(){
+	allRenderObjects.erase(std::remove(allRenderObjects.begin(), allRenderObjects.end(), this), allRenderObjects.end());
 	delete this;
 }

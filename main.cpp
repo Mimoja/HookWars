@@ -15,7 +15,8 @@
 #include "Shader.h"
 #include "Player.h"
 
-std::vector<GameObject*> allGameObjects;
+std::vector<GameObject*> allUpdateObjects;
+std::vector<GameObject*> allRenderObjects;
 std::vector<Player*> allPlayers;
 
 GLFWwindow* window;
@@ -118,7 +119,8 @@ int main(void) {
             newPlayer->color = glm::vec3(0.9f, 0.0f, 0.1f);
             newPlayer->useColor = false;
             allPlayers.push_back(newPlayer);
-            allGameObjects.push_back(newPlayer);
+            allUpdateObjects.push_back(newPlayer);
+            allRenderObjects.push_back(newPlayer);
 
             PointLight* point1 = new PointLight();
             point1->lightColor = glm::vec3(0.7f,0.7f,1.0f);
@@ -159,7 +161,8 @@ int main(void) {
     map_ptr->mModel.scaling = glm::vec3(MAP_SCALING, MAP_SCALING, MAP_SCALING);
     map_ptr->mModel.position = glm::vec3(0, 0, 0);
     map_ptr->mModel.rotation = glm::vec3(0, 0, 0);
-    allGameObjects.push_back(map_ptr);
+    allUpdateObjects.push_back(map_ptr);
+    allRenderObjects.push_back(map_ptr);
 
     // Create lights
     allLightSources.ambient.intensity = 0.05f;
@@ -270,8 +273,8 @@ void mainLoop(long frameCount) {
 
 
     if (nowTime - lastUpdateTime > (1 / 61)) {
-        for (unsigned int i = 0; i < allGameObjects.size(); i++) {
-            allGameObjects[i]->update();
+        for (unsigned int i = 0; i < allUpdateObjects.size(); i++) {
+            allUpdateObjects[i]->update();
         }
         lastUpdateTime = glfwGetTime();
     }
@@ -279,8 +282,8 @@ void mainLoop(long frameCount) {
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    for (unsigned int i = 0; i < allGameObjects.size(); i++) {
-        allGameObjects[i]->render(basicShaderID, Projection * cam.getView(), cam, allLightSources);
+    for (unsigned int i = 0; i < allRenderObjects.size(); i++) {
+        allRenderObjects[i]->render(basicShaderID, Projection * cam.getView(), cam, allLightSources);
     }
 
     // Swap buffers

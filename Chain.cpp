@@ -3,6 +3,7 @@
 #include <algorithm>
 
 extern std::vector<Player*> allPlayers;
+extern std::vector<GameObject*> allRenderObjects;
 
 Chain::Chain(int player, glm::vec3 origin, glm::vec3 velocity)
 		: GameObject(CHAIN_MODEL){
@@ -15,6 +16,7 @@ Chain::Chain(int player, glm::vec3 origin, glm::vec3 velocity)
 	pulling = false;
 	mModel.rotation.y = glm::atan(vel.x, vel.z) + CHAIN_BASE_ROTATION;
 	mModel.scaling = glm::vec3(CHAIN_SCALING, CHAIN_SCALING, CHAIN_SCALING);
+	allRenderObjects.push_back(this);
 }
 
 Chain::Chain(int player, glm::vec3 origin, glm::vec3 velocity, Chain* next)
@@ -40,6 +42,7 @@ void Chain::kill(){
 		prev->next = next;
 	}
 
+	allRenderObjects.erase(std::remove(allRenderObjects.begin(), allRenderObjects.end(), this), allRenderObjects.end());
 	delete this;
 }
 

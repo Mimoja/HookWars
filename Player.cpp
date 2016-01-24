@@ -125,13 +125,3 @@ void Player::pull(){
 		chain->pull();
 	}
 }
-
-void Player::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights lights){
-	GameObject::render(shaderID, MVP, camera, lights);
-	if(hook!= NULL) {	
-		hook->GameObject::render(shaderID, MVP, camera, lights);
-		for(Chain* p = chain; p != NULL; p = p->next) {
-			p->render(shaderID, MVP, camera, lights);
-		}
-	}
-}

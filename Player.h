@@ -13,7 +13,6 @@ class Player : public GameObject{
 		Player();
 		Player(const char* file);
 		virtual void update();
-		virtual void render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights lights);
 		int playerNumber;
 		std::string CONTROLER_NAME;
 		void calibrate();
