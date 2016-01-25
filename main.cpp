@@ -26,6 +26,7 @@ glm::mat4 Projection;
 Camera cam;
 
 GLuint diffuseShaderID;
+GLuint normalShaderID;
 
 Lights allLightSources;
 
@@ -156,13 +157,16 @@ int main(void) {
     printf("Compiling Shaders\n");
 
     diffuseShaderID = buildShader(DIFFUSE_VERTEX, DIFFUSE_FRAGMENT);
+    normalShaderID = buildShader(NORMAL_VERTEX, NORMAL_FRAGMENT);
 
     map_ptr = new GameObject(MAP_MODEL);
     map_ptr->mModel.scaling = glm::vec3(MAP_SCALING, MAP_SCALING, MAP_SCALING);
     map_ptr->mModel.position = glm::vec3(0, 0, 0);
     map_ptr->mModel.rotation = glm::vec3(0, 0, 0);
     map_ptr->mModel.diffuseTexture = new Texture();
-    map_ptr->mModel.diffuseTexture->loadPNG("assets/Navigation.png");
+    map_ptr->mModel.diffuseTexture->loadPNG(MAP_DIFFUSE);
+    map_ptr->mModel.normalTexture = new Texture();
+    map_ptr->mModel.normalTexture->loadPNG(MAP_NORMAL);
     allRenderObjects.push_back(map_ptr);
 
 
@@ -209,7 +213,11 @@ void mainLoop(long frameCount) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     for (unsigned int i = 0; i < allRenderObjects.size(); i++) {
-        allRenderObjects[i]->renderDiffuse(diffuseShaderID, Projection * cam.getView());
+        //allRenderObjects[i]->renderDiffuse(diffuseShaderID, Projection * cam.getView());
+    }
+    
+    for (unsigned int i = 0; i < allRenderObjects.size(); i++) {
+        allRenderObjects[i]->renderNormals(normalShaderID, Projection * cam.getView());
     }
 
     // Swap buffers

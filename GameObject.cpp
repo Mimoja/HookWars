@@ -13,6 +13,28 @@ GameObject::GameObject() {
 void GameObject::update() {
 
 }
+void GameObject::renderNormals(GLuint shaderID, glm::mat4 MVP){
+    
+    // Use our shader
+    glUseProgram(shaderID);
+
+    GLuint WorldMatrixID = glGetUniformLocation(shaderID, "WORLD");
+    GLuint ModelMatrixID = glGetUniformLocation(shaderID, "MODEL");
+
+    // Transformations Matricies
+    glm::mat4 modelMatrix = mModel.getMatr();
+    glUniformMatrix4fv(WorldMatrixID, 1, GL_FALSE, &MVP[0][0]);
+    glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &(modelMatrix[0][0]));
+
+    if (mModel.normalTexture != 0) {
+        mModel.normalTexture->bindToUnit(GL_TEXTURE1);
+        GLuint normalTextureID = glGetUniformLocation(shaderID, "normal");
+        glUniform1i(normalTextureID, 1);
+        GLuint useNormalID = glGetUniformLocation(shaderID, "useNormalTexture");
+        glUniform1d(useNormalID, 1);
+    }
+    mModel.render();
+}
 
 void GameObject::renderDiffuse(GLuint shaderID, glm::mat4 MVP) {
 

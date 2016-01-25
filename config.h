@@ -26,6 +26,9 @@
 //#define loadCube
 #define MAP_MODEL "assets/map1.obj"
 #define MAP_SCALING 4.0f
+#define MAP_DIFFUSE "assets/diffuse.png"
+#define MAP_NORMAL "assets/normal.png"
+
 
 #define NAVIGATION_MAP "assets/Navigation.png"
 
@@ -44,6 +47,9 @@
 // Shading
 #define DIFFUSE_VERTEX "diffuse.vs"
 #define DIFFUSE_FRAGMENT "diffuse.fs"
+
+#define NORMAL_VERTEX "normal.vs"
+#define NORMAL_FRAGMENT "normal.fs"
 
 enum XBOX_ONE_GAMEPAD{
     TURN_LEFT_RIGHT = 3,
