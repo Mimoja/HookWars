@@ -45,11 +45,14 @@
 #define PLAYER_MAXSPEED (0.20f)
 
 // Shading
-#define DIFFUSE_VERTEX "diffuse.vs"
-#define DIFFUSE_FRAGMENT "diffuse.fs"
+#define DIFFUSE_VERTEX "shader/diffuse.vs"
+#define DIFFUSE_FRAGMENT "shader/diffuse.fs"
 
-#define NORMAL_VERTEX "normal.vs"
-#define NORMAL_FRAGMENT "normal.fs"
+#define NORMAL_VERTEX "shader/normal.vs"
+#define NORMAL_FRAGMENT "shader/normal.fs"
+
+#define SHADOW_VERTEX "shader/shadow.vs"
+#define SHADOW_FRAGMENT "shader/shadow.fs"
 
 enum XBOX_ONE_GAMEPAD{
     TURN_LEFT_RIGHT = 3,

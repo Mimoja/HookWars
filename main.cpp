@@ -27,6 +27,7 @@ Camera cam;
 
 GLuint diffuseShaderID;
 GLuint normalShaderID;
+GLuint shadowShaderID;
 
 Lights allLightSources;
 
@@ -36,10 +37,15 @@ unsigned navigationMapWidth;
 
 GameObject* map_ptr;
 
+int WindowWidth = WINDOW_WIDTH;
+int WindowHeight = WINDOW_HEIGHT;
+
 void window_size_callback(GLFWwindow* window, int width, int height) {
     glfwMakeContextCurrent(window);
     Projection = glm::perspective(45.0f, (float) width / (float) height, 0.1f, 100.0f);
     glViewport(0, 0, width, height);
+    WindowHeight = height;
+    WindowWidth = width;
 }
 
 int main(void) {
@@ -111,11 +117,11 @@ int main(void) {
             printf("Found Joystick %s\n", joystickName);
             Player* newPlayer = new Player(PLAYER_MODEL);
             newPlayer->CONTROLER_NAME = joystickName;
-			newPlayer->playerNumber = x;
+            newPlayer->playerNumber = x;
             newPlayer->mModel.scaling = glm::vec3(PLAYER_SCALING, PLAYER_SCALING, PLAYER_SCALING);
             newPlayer->mModel.position = glm::vec3(-5.0f, 2.0f, 0.0f);
             newPlayer->joystickAxis = glfwGetJoystickAxes(GLFW_JOYSTICK_1 + x,
-                &newPlayer->joystickAxisCount);
+                    &newPlayer->joystickAxisCount);
             newPlayer->calibrate();
             newPlayer->color = glm::vec3(0.9f, 0.0f, 0.1f);
             newPlayer->useColor = false;
@@ -124,7 +130,7 @@ int main(void) {
             allRenderObjects.push_back(newPlayer);
 
             PointLight* point1 = new PointLight();
-            point1->lightColor = glm::vec3(0.7f,0.7f,1.0f);
+            point1->lightColor = glm::vec3(0.7f, 0.7f, 1.0f);
             point1->intensity = 12.0f;
             point1->position = glm::vec3(0.0f, 4.5f, 3.0f);
             point1->falloff.linear = 0.0f;
@@ -144,12 +150,12 @@ int main(void) {
     glDepthFunc(GL_LESS);
 
     Projection = glm::perspective(45.0f,
-        (float) WINDOW_WIDTH / (float) WINDOW_HEIGHT,
-        0.1f, 100.0f);
+            (float) WINDOW_WIDTH / (float) WINDOW_HEIGHT,
+            0.1f, 100.0f);
 
     cam = Camera(glm::vec3(-2.0f, 20.0f, 15.0f),
-        glm::vec3(0.0f, -7.0f, -5.0f),
-        glm::vec3(0.0f, 1.0f, 0.0f));
+            glm::vec3(0.0f, -7.0f, -5.0f),
+            glm::vec3(0.0f, 1.0f, 0.0f));
 
     cam.setDomain(glm::vec3(-7.0f, 3.0f, 0.0f), glm::vec3(5.0f, 30.0f, 20.0f));
 
@@ -158,6 +164,7 @@ int main(void) {
 
     diffuseShaderID = buildShader(DIFFUSE_VERTEX, DIFFUSE_FRAGMENT);
     normalShaderID = buildShader(NORMAL_VERTEX, NORMAL_FRAGMENT);
+    shadowShaderID = buildShader(SHADOW_VERTEX, SHADOW_FRAGMENT);
 
     map_ptr = new GameObject(MAP_MODEL);
     map_ptr->mModel.scaling = glm::vec3(MAP_SCALING, MAP_SCALING, MAP_SCALING);
@@ -169,7 +176,6 @@ int main(void) {
     map_ptr->mModel.normalTexture->loadPNG(MAP_NORMAL);
     allRenderObjects.push_back(map_ptr);
 
-
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     FPS_init(2);
@@ -180,7 +186,7 @@ int main(void) {
         FPS_count();
     }// Check if the ESC key was pressed or the window was closed
     while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
-        glfwWindowShouldClose(window) == 0);
+            glfwWindowShouldClose(window) == 0);
 
     // Close OpenGL window and terminate GLFW
     glfwTerminate();
@@ -196,9 +202,9 @@ void mainLoop(long frameCount) {
     nowTime = glfwGetTime();
     for (unsigned int j = 0; j < allPlayers.size(); j++) {
         allPlayers[j]->joystickAxis = glfwGetJoystickAxes(GLFW_JOYSTICK_1 + j,
-            &allPlayers[j]->joystickAxisCount);
+                &allPlayers[j]->joystickAxisCount);
         allPlayers[j]->joystickButtons = glfwGetJoystickButtons(GLFW_JOYSTICK_1 + j,
-            &allPlayers[j]->joystickButtonsCount);
+                &allPlayers[j]->joystickButtonsCount);
     }
 
 
@@ -210,12 +216,22 @@ void mainLoop(long frameCount) {
     }
     cam.handleKeyboard(window);
 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_DEPTH_BUFFER_BIT);
+    glViewport(0, 0, 1000, 1000);
+    for (unsigned int i = 0; i < allLightSources.spotLights.size(); i++) {
+        SpotLight* s = allLightSources.spotLights[i];
+        Camera lightCam(s->position, s->direction, glm::vec3(0.0f, 1.0f, 0.0f));
+        for (unsigned int i = 0; i < allRenderObjects.size(); i++) {
+            allRenderObjects[i]->renderShadow(shadowShaderID, Projection * lightCam.getView());
+        }
+    }
 
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glViewport(0, 0, WindowWidth, WindowHeight);
     for (unsigned int i = 0; i < allRenderObjects.size(); i++) {
         //allRenderObjects[i]->renderDiffuse(diffuseShaderID, Projection * cam.getView());
     }
-    
+
     for (unsigned int i = 0; i < allRenderObjects.size(); i++) {
         allRenderObjects[i]->renderNormals(normalShaderID, Projection * cam.getView());
     }

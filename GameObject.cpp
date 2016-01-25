@@ -60,6 +60,21 @@ void GameObject::renderDiffuse(GLuint shaderID, glm::mat4 MVP) {
     mModel.render();
 }
 
+void GameObject::renderShadow(GLuint shaderID, glm::mat4 MVP){
+    
+    // Use our shader
+    glUseProgram(shaderID);
+
+    GLuint LightMatrixID = glGetUniformLocation(shaderID, "LIGHT");
+    GLuint ModelMatrixID = glGetUniformLocation(shaderID, "MODEL");
+    
+    // Transformations Matricies
+    glm::mat4 modelMatrix = mModel.getMatr();
+    glUniformMatrix4fv(LightMatrixID, 1, GL_FALSE, &MVP[0][0]);
+    glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &(modelMatrix[0][0]));
+    
+    mModel.render();
+}
 void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights lights) {
 
     // Use our shader

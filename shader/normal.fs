@@ -13,5 +13,5 @@ void main(){
         vec3 normal = texture(normalSampler, UV).rgb;
         normal = normalize(normal * 2.0 - 1.0);  
 
-        FragColor = vec4(Normal,1.0f)*vec4(normal,1.0f);
+        FragColor = vec4(Normal,1.0f)-vec4(normal,1.0f);
 }
