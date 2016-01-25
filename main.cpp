@@ -25,7 +25,7 @@ void mainLoop(long frameCount);
 glm::mat4 Projection;
 Camera cam;
 
-GLuint basicShaderID;
+GLuint diffuseShaderID;
 
 Lights allLightSources;
 
@@ -155,89 +155,15 @@ int main(void) {
     // Compile Shaders
     printf("Compiling Shaders\n");
 
-    basicShaderID = buildShader("shader.vs", "shader.fs");
+    diffuseShaderID = buildShader(DIFFUSE_VERTEX, DIFFUSE_FRAGMENT);
 
     map_ptr = new GameObject(MAP_MODEL);
     map_ptr->mModel.scaling = glm::vec3(MAP_SCALING, MAP_SCALING, MAP_SCALING);
     map_ptr->mModel.position = glm::vec3(0, 0, 0);
     map_ptr->mModel.rotation = glm::vec3(0, 0, 0);
-    allUpdateObjects.push_back(map_ptr);
+    map_ptr->mModel.diffuseTexture = new Texture();
+    map_ptr->mModel.diffuseTexture->loadPNG("assets/Navigation.png");
     allRenderObjects.push_back(map_ptr);
-
-    // Create lights
-    allLightSources.ambient.intensity = 0.05f;
-    allLightSources.ambient.lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
-
-    DirectionLight dir1;
-    dir1.direction = glm::vec3(0.0f, -1.0f, 0.0f);
-    dir1.intensity = 0.3f;
-    dir1.lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
-    dir1.specular.intensity = 1.0f;
-    dir1.specular.power = 32;
-
-    DirectionLight dir2;
-
-    allLightSources.directionalLights.push_back(&dir1);
-
-
-    PointLight point1;
-    point1.lightColor = glm::vec3(0.1f, 0.3f, 0.8f);
-    point1.intensity = 12.0f;
-    point1.position = glm::vec3(0.0f, 4.5f, 3.0f);
-    point1.falloff.linear = 0.0f;
-    point1.falloff.exponential = 1.0f;
-    point1.specular.intensity = 2.7f;
-    point1.specular.power = 32;
-
-    allLightSources.pointLights.push_back(&point1);
-
-    PointLight point2;
-    point2.lightColor = glm::vec3(0.5f, 0.3f, 0.8f);
-    point2.intensity = 12.0f;
-    point2.position = glm::vec3(4.0f, 7.5f, -5.0f);
-    point2.falloff.linear = 0.0f;
-    point2.falloff.exponential = 1.0f;
-    point2.specular.intensity = 2.7f;
-    point2.specular.power = 32;
-
-    allLightSources.pointLights.push_back(&point2);
-
-    PointLight point3;
-    point3.lightColor = glm::vec3(0.4f, 0.3f, 0.1f);
-    point3.intensity = 28.0f;
-    point3.position = glm::vec3(-9.0f, 7.5f, -8.0f);
-    point3.falloff.linear = 0.0f;
-    point3.falloff.exponential = 0.7f;
-    point3.specular.intensity = 2.7f;
-    point3.specular.power = 32;
-
-    allLightSources.pointLights.push_back(&point3);
-
-    PointLight point4;
-    point4.lightColor = glm::vec3(0.1f, 0.3f, 0.8f);
-    point4.intensity = 13.0f;
-    point4.position = glm::vec3(3.0f, 4.5f, 7.0f);
-    point4.falloff.linear = 0.0f;
-    point4.falloff.exponential = 1.0f;
-    point4.specular.intensity = 2.7f;
-    point4.specular.power = 32;
-
-    allLightSources.pointLights.push_back(&point4);
-
-
-    SpotLight spot1;
-    spot1.lightColor = glm::vec3(0.5f, 0.1f, 0.1f);
-    spot1.intensity = 25.0f;
-    spot1.position = glm::vec3(-2.0f, 14.5f, 10.0f);
-    spot1.falloff.linear = 1.2f;
-    spot1.falloff.exponential = 4.9f;
-    spot1.specular.intensity = 0.7f;
-    spot1.specular.power = 32;
-    spot1.cutoff = 3.5f;
-    spot1.hardness = 1.0f;
-    spot1.direction = glm::vec3(0.0f, -1.0f, 7.0f);
-
-    allLightSources.spotLights.push_back(&spot1);
 
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -283,7 +209,7 @@ void mainLoop(long frameCount) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     for (unsigned int i = 0; i < allRenderObjects.size(); i++) {
-        allRenderObjects[i]->render(basicShaderID, Projection * cam.getView(), cam, allLightSources);
+        allRenderObjects[i]->renderDiffuse(diffuseShaderID, Projection * cam.getView());
     }
 
     // Swap buffers

@@ -41,6 +41,10 @@
 #define GAMEPAD_CUTOFF (0.15f)
 #define PLAYER_MAXSPEED (0.20f)
 
+// Shading
+#define DIFFUSE_VERTEX "diffuse.vs"
+#define DIFFUSE_FRAGMENT "diffuse.fs"
+
 enum XBOX_ONE_GAMEPAD{
     TURN_LEFT_RIGHT = 3,
     TURN_UP_DOWN = 4,

@@ -13,7 +13,7 @@ class Texture
 {
     public:
         Texture();
-        bool loadPNG(char* path);
+        bool loadPNG(const char* path);
         void bindToUnit(GLenum TextureUnit);
         GLuint ID;
     private:

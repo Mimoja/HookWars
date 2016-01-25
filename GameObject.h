@@ -22,6 +22,7 @@ class GameObject{
         Model mModel; 
         virtual void update();
         BoundingBox mBox;
+        void renderDiffuse(GLuint shaderID, glm::mat4 MVP);
         virtual void render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights lights);
         void kill();
         glm::vec3 rotationVector;

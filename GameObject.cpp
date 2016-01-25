@@ -1,6 +1,6 @@
 #include "GameObject.h"
 
-#include "stdio.h"
+#include <stdio.h>
 #include <string>
 
 GameObject::GameObject(const char* path) : mModel(path) {
@@ -14,6 +14,30 @@ void GameObject::update() {
 
 }
 
+void GameObject::renderDiffuse(GLuint shaderID, glm::mat4 MVP) {
+
+    // Use our shader
+    glUseProgram(shaderID);
+
+    GLuint WorldMatrixID = glGetUniformLocation(shaderID, "WORLD");
+    GLuint ModelMatrixID = glGetUniformLocation(shaderID, "MODEL");
+
+    // Transformations Matricies
+    glm::mat4 modelMatrix = mModel.getMatr();
+    glUniformMatrix4fv(WorldMatrixID, 1, GL_FALSE, &MVP[0][0]);
+    glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &(modelMatrix[0][0]));
+
+    if (mModel.diffuseTexture != 0) {
+        mModel.diffuseTexture->bindToUnit(GL_TEXTURE0);
+        GLuint diffuseTextureID = glGetUniformLocation(shaderID, "diffuse");
+        glUniform1i(diffuseTextureID, 0);
+    }else{
+        GLuint colorID = glGetUniformLocation(shaderID, "color");
+        glUniform3f(colorID, color.r, color.g, color.b);
+    }
+    mModel.render();
+}
+
 void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights lights) {
 
     // Use our shader
@@ -21,8 +45,7 @@ void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights li
 
     if (shaderID != lastShader) {
 
-        WorldMatrixID = glGetUniformLocation(shaderID, "WORLD");
-        ModelMatrixID = glGetUniformLocation(shaderID, "MODEL");
+
         CameraPositionID = glGetUniformLocation(shaderID, "CAMERA");
         AmbientLightColorID = glGetUniformLocation(shaderID, "ambientLight.Color");
         AmbientLightIntensityID = glGetUniformLocation(shaderID, "ambientLight.Intensity");
@@ -65,9 +88,9 @@ void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights li
     // Lights
     // Ambient
     glUniform3f(AmbientLightColorID,
-        lights.ambient.lightColor.r,
-        lights.ambient.lightColor.g,
-        lights.ambient.lightColor.b);
+            lights.ambient.lightColor.r,
+            lights.ambient.lightColor.g,
+            lights.ambient.lightColor.b);
     glUniform1f(AmbientLightIntensityID, lights.ambient.intensity);
 
 
@@ -82,13 +105,13 @@ void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights li
 
         GLuint colorID = glGetUniformLocation(shaderID, (lightName + ".Color").c_str());
         glUniform3f(colorID, light.lightColor.r,
-            light.lightColor.g,
-            light.lightColor.b);
+                light.lightColor.g,
+                light.lightColor.b);
 
         GLuint directionID = glGetUniformLocation(shaderID, (lightName + ".Direction").c_str());
         glUniform3f(directionID, light.direction.x,
-            light.direction.y,
-            light.direction.z);
+                light.direction.y,
+                light.direction.z);
 
         GLuint intensityID = glGetUniformLocation(shaderID, (lightName + ".Intensity").c_str());
         glUniform1f(intensityID, light.intensity);
@@ -111,13 +134,13 @@ void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights li
 
         GLuint colorID = glGetUniformLocation(shaderID, (lightName + ".Color").c_str());
         glUniform3f(colorID, light.lightColor.r,
-            light.lightColor.g,
-            light.lightColor.b);
+                light.lightColor.g,
+                light.lightColor.b);
 
         GLuint positionID = glGetUniformLocation(shaderID, (lightName + ".Position").c_str());
         glUniform3f(positionID, light.position.x,
-            light.position.y,
-            light.position.z);
+                light.position.y,
+                light.position.z);
 
         GLuint intensityID = glGetUniformLocation(shaderID, (lightName + ".Intensity").c_str());
         glUniform1f(intensityID, light.intensity);
@@ -150,13 +173,13 @@ void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights li
 
         GLuint colorID = glGetUniformLocation(shaderID, (lightName + ".Color").c_str());
         glUniform3f(colorID, light.lightColor.r,
-            light.lightColor.g,
-            light.lightColor.b);
+                light.lightColor.g,
+                light.lightColor.b);
 
         GLuint positionID = glGetUniformLocation(shaderID, (lightName + ".Position").c_str());
         glUniform3f(positionID, light.position.x,
-            light.position.y,
-            light.position.z);
+                light.position.y,
+                light.position.z);
 
         GLuint intensityID = glGetUniformLocation(shaderID, (lightName + ".Intensity").c_str());
         glUniform1f(intensityID, light.intensity);
@@ -178,8 +201,8 @@ void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights li
 
         GLuint directionID = glGetUniformLocation(shaderID, (lightName + ".Direction").c_str());
         glUniform3f(directionID, light.direction.x,
-            light.direction.y,
-            light.direction.z);
+                light.direction.y,
+                light.direction.z);
         GLuint cutoffID = glGetUniformLocation(shaderID, (lightName + ".Cutoff").c_str());
         glUniform1f(cutoffID, light.cutoff);
 
