@@ -9,7 +9,6 @@
       <in>Model.cpp</in>
       <in>Player.cpp</in>
       <in>Shader.cpp</in>
-      <in>ShadowMap.cpp</in>
       <in>Texture.cpp</in>
       <in>lodepng.cpp</in>
       <in>main.cpp</in>
@@ -20,6 +19,7 @@
                    projectFiles="false"
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>Makefile</itemPath>
+      <itemPath>nbproject/private/launcher.properties</itemPath>
     </logicalFolder>
   </logicalFolder>
   <sourceFolderFilter>^(nbproject)$</sourceFolderFilter>
@@ -83,10 +83,6 @@
         </ccTool>
       </item>
       <item path="Shader.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-        </ccTool>
-      </item>
-      <item path="ShadowMap.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
         </ccTool>
       </item>
