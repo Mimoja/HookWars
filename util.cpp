@@ -38,9 +38,9 @@ void FPS_count() {
 }
 
 void calculateNormals(std::vector<glm::vec3> & vertices,
-    std::vector<glm::vec3> & normals,
-    std::vector<unsigned short> & indices,
-    unsigned int faceCount) {
+        std::vector<glm::vec3> & normals,
+        std::vector<unsigned short> & indices,
+        unsigned int faceCount) {
 
     assert(indices.size() >= 3 * faceCount);
 
@@ -51,8 +51,8 @@ void calculateNormals(std::vector<glm::vec3> & vertices,
         auto i3 = indices[ i * 3 + 2];
 
         auto facenormal = glm::cross(
-            vertices[i3] - vertices[i1],
-            vertices[i2] - vertices[i1]);
+                vertices[i3] - vertices[i1],
+                vertices[i2] - vertices[i1]);
 
         normals[i1] -= facenormal;
         normals[i2] -= facenormal;
@@ -61,10 +61,12 @@ void calculateNormals(std::vector<glm::vec3> & vertices,
 }
 
 bool loadModelFromFile(const char * path,
-    std::vector<unsigned short> & indices,
-    std::vector<glm::vec3> & vertices,
-    std::vector<glm::vec2> & uvs,
-    std::vector<glm::vec3> & normals) {
+        std::vector<unsigned short> & indices,
+        std::vector<glm::vec3> & vertices,
+        std::vector<glm::vec2> & uvs,
+        std::vector<glm::vec3> & normals,
+        std::vector<glm::vec3> & tangents,
+        std::vector<glm::vec3> & bitangents) {
 
     Assimp::Importer importer;
     printf("Staring importer\n");
@@ -99,7 +101,7 @@ bool loadModelFromFile(const char * path,
         printf("Reading %d UVs\n", mesh->mNumUVComponents[0]);
         for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
             aiVector3D UVW = mesh->mTextureCoords[0][i];
-            uvs.push_back(glm::vec2(UVW.x, UVW.y)); 
+            uvs.push_back(glm::vec2(UVW.x, UVW.y));
         }
     }
     if (mesh->HasFaces()) {
@@ -120,6 +122,42 @@ bool loadModelFromFile(const char * path,
         printf("No Normals Found. Calculating manual\n");
         calculateNormals(vertices, normals, indices, mesh->mNumFaces);
     }
+    printf("Calculating tangents and bitangents\n");
+
+    tangents = std::vector<glm::vec3>(vertices.size());
+    bitangents = std::vector<glm::vec3>(vertices.size());
+    for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
+        auto i1 = indices[ i * 3 ];
+        auto i2 = indices[ i * 3 + 1];
+        auto i3 = indices[ i * 3 + 2];
+
+        auto v1 = vertices[i1];
+        auto v2 = vertices[i2];
+        auto v3 = vertices[i3];
+
+        auto uv1 = uvs[i1];
+        auto uv2 = uvs[i2];
+        auto uv3 = uvs[i3];
+
+        auto d1 = v2 - v1;
+        auto d2 = v3 - v1;
+
+        auto dUV1 = uv2 - uv1;
+        auto dUV2 = uv3 - uv1;
+
+        float r = 1.0f / (dUV1.x * dUV2.y - dUV1.y * dUV2.x);
+        glm::vec3 tangent = (d1 * dUV2.y - d2 * dUV1.y) * r;
+        glm::vec3 bitangent = (d2 * dUV1.x - d1 * dUV2.x) * r;
+
+        tangents[i1] = tangent;
+        tangents[i2] = tangent;
+        tangents[i3] = tangent;
+        
+        bitangents[i1] = bitangent;
+        bitangents[i2] = bitangent;
+        bitangents[i3] = bitangent;
+    }
+
     return true;
 }
 
@@ -135,7 +173,7 @@ glm::vec3 getNavigationEntry(glm::vec3 position) {
 
     glm::vec3 rgb(-1.0f);
     if (relativePosition.x < 0 || relativePosition.x > 1
-        || relativePosition.z < 0 || relativePosition.z > 1)return rgb;
+            || relativePosition.z < 0 || relativePosition.z > 1)return rgb;
 
     unsigned int navPosition = ((int) (relativePosition.z * navigationMapHeight) * navigationMapWidth) + relativePosition.x * navigationMapWidth;
     navPosition *= 4; // RGBA
@@ -169,16 +207,16 @@ glm::vec3 slideAlong(glm::vec3 a, glm::vec3 n) {
 bool isColliding(GameObject o1, GameObject o2) {
     glm::vec3 pos1 = o1.mModel.position;
     glm::vec3 pos2 = o2.mModel.position;
-    
+
     // Check if near each other (check in a square)
     if (pos1.x + o1.radius + o2.radius > pos2.x
-        && pos1.x < pos2.x + o1.radius + o2.radius
-        && pos1.y + o1.radius + o2.radius > pos2.y
-        && pos1.y < pos2.y + o1.radius + o2.radius) {
-        
+            && pos1.x < pos2.x + o1.radius + o2.radius
+            && pos1.y + o1.radius + o2.radius > pos2.y
+            && pos1.y < pos2.y + o1.radius + o2.radius) {
+
         // check for collision
         float distance = glm::sqrt(((pos1.x - pos2.x) * (pos1.x - pos2.x))
-            + ((pos1.y - pos2.y) * (pos1.y - pos2.y)));
+                + ((pos1.y - pos2.y) * (pos1.y - pos2.y)));
         if (distance < o1.radius + o2.radius) {
             return true;
         }
