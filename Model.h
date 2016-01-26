@@ -27,6 +27,8 @@ private:
     GLuint vertexBuffer;
     GLuint normalBuffer;
     GLuint uvBuffer;
+    GLuint tangentBuffer;
+    GLuint bitangentBuffer;
     GLuint VertexArrayID;
     int indicesCount;
 

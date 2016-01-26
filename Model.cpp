@@ -13,7 +13,9 @@ Model::Model(const char* path) {
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec2> uvs;
     std::vector<glm::vec3> normals;
-    bool res = loadModelFromFile(path, indices, vertices, uvs, normals);
+    std::vector<glm::vec3> tangents;
+    std::vector<glm::vec3> bitangents;
+    bool res = loadModelFromFile(path, indices, vertices, uvs, normals, tangents, bitangents);
 
     if (!res) {
         printf("Could not load model %s\n", path);
@@ -32,6 +34,16 @@ Model::Model(const char* path) {
     glGenBuffers(1, &normalBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
     glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof (glm::vec3), &normals[0], GL_STATIC_DRAW);
+
+
+    glGenBuffers(1, &tangentBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, tangentBuffer);
+    glBufferData(GL_ARRAY_BUFFER, tangents.size() * sizeof (glm::vec3), &tangents[0], GL_STATIC_DRAW);
+
+
+    glGenBuffers(1, &bitangentBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, bitangentBuffer);
+    glBufferData(GL_ARRAY_BUFFER, bitangents.size() * sizeof (glm::vec3), &bitangents[0], GL_STATIC_DRAW);
 
     glGenBuffers(1, &indexBuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
@@ -74,51 +86,35 @@ void Model::render() {
     // VAA 0 Verticies
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-    glVertexAttribPointer(
-        0, // attribute
-        3, // size
-        GL_FLOAT, // type
-        GL_FALSE, // normalized?
-        0, // stride
-        (void*) 0 // array buffer offset
-        );
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*) 0);
 
     // VAA 1 Normals
     glEnableVertexAttribArray(1);
     glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
-    glVertexAttribPointer(
-        1, // attribute
-        3, // size
-        GL_FLOAT, // type
-        GL_FALSE, // normalized?
-        0, // stride
-        (void*) 0 // array buffer offset
-        );
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*) 0);
 
     // VAA 2 UVs
     glEnableVertexAttribArray(2);
     glBindBuffer(GL_ARRAY_BUFFER, uvBuffer);
-    glVertexAttribPointer(
-        2, // attribute
-        2, // size
-        GL_FLOAT, // type
-        GL_FALSE, // normalized?
-        0, // stride
-        (void*) 0 // array buffer offset
-        );
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
 
-    // Index buffer
+    // VAA 3 Tangents
+    glEnableVertexAttribArray(3);
+    glBindBuffer(GL_ARRAY_BUFFER, tangentBuffer);
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, (void*) 0);
+
+    // VAA 4 Bitangents
+    glEnableVertexAttribArray(4);
+    glBindBuffer(GL_ARRAY_BUFFER, bitangentBuffer);
+    glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 0, (void*) 0);
+
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
 
-    // Draw the triangles !
-    glDrawElements(
-        GL_TRIANGLES, // mode
-        indicesCount, // count
-        GL_UNSIGNED_SHORT, // type
-        (void*) 0 // element array buffer offset
-        );
+    glDrawElements(GL_TRIANGLES, indicesCount, GL_UNSIGNED_SHORT, (void*) 0);
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
+    glDisableVertexAttribArray(3);
+    glDisableVertexAttribArray(4);
 }
