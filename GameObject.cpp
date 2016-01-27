@@ -53,9 +53,6 @@ void GameObject::renderDiffuse(GLuint shaderID, glm::mat4 MVP) {
         mModel.diffuseTexture->bindToUnit(GL_TEXTURE0);
         GLuint diffuseTextureID = glGetUniformLocation(shaderID, "diffuse");
         glUniform1i(diffuseTextureID, 0);
-    }else{
-        GLuint colorID = glGetUniformLocation(shaderID, "color");
-        glUniform3f(colorID, color.r, color.g, color.b);
     }
     mModel.render();
 }
