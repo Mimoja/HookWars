@@ -3,7 +3,7 @@
 in vec2 UV;
 in vec3 Normal;
 in vec3 Tangent;
-in vec3 Bitanget;
+in vec3 Bitangent;
 
 out vec4 FragColor;
 
