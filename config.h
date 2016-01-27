@@ -26,8 +26,8 @@
 //#define loadCube
 #define MAP_MODEL "assets/map1.obj"
 #define MAP_SCALING 4.0f
-#define MAP_DIFFUSE "assets/diffuse.png"
-#define MAP_NORMAL "assets/normal.png"
+#define MAP_DIFFUSE "T_Tile_Sandstone_02_4096_D.png"
+#define MAP_NORMAL "T_Tile_Sandstone_02_4096_N.png"
 
 
 #define NAVIGATION_MAP "assets/Navigation.png"
