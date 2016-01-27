@@ -11,14 +11,14 @@ uniform mat4 MODEL;
 
 out vec2 UV;
 out vec3 Normal;
-out vec3 Tanget;
+out vec3 Tangent;
 out vec3 Bitanget;
 
 void main()
 {
     gl_Position = (WORLD*MODEL)*vec4(Position, 1.0);
     Normal = ((WORLD*MODEL)* vec4(Normals, 0.0)).xyz;
-    Tanget = ((WORLD*MODEL)* vec4(Tangets, 0.0)).xyz;
+    Tangent = ((WORLD*MODEL)* vec4(Tangents, 0.0)).xyz;
     Bitanget = ((WORLD*MODEL)* vec4(Bitangets, 0.0)).xyz;
     UV = UVs;
 }
