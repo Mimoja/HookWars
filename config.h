@@ -26,6 +26,9 @@
 //#define loadCube
 #define MAP_MODEL "assets/map1.obj"
 #define MAP_SCALING 4.0f
+#define MAP_DIFFUSE "T_Tile_Sandstone_02_4096_D.png"
+#define MAP_NORMAL "T_Tile_Sandstone_02_4096_N.png"
+
 
 #define NAVIGATION_MAP "assets/Navigation.png"
 
@@ -40,6 +43,16 @@
 #define HOOK_RETRACT_TIME (0.300f) //seconds
 #define GAMEPAD_CUTOFF (0.15f)
 #define PLAYER_MAXSPEED (0.20f)
+
+// Shading
+#define DIFFUSE_VERTEX "shader/diffuse.vs"
+#define DIFFUSE_FRAGMENT "shader/diffuse.fs"
+
+#define NORMAL_VERTEX "shader/normal.vs"
+#define NORMAL_FRAGMENT "shader/normal.fs"
+
+#define SHADOW_VERTEX "shader/shadow.vs"
+#define SHADOW_FRAGMENT "shader/shadow.fs"
 
 enum XBOX_ONE_GAMEPAD{
     TURN_LEFT_RIGHT = 3,
