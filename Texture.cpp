@@ -14,6 +14,7 @@ void Texture::bindToUnit(GLenum textureUnir){
 }
 
 bool Texture::loadPNG(const char* path){
+    printf("Loading Texture from %s\n",path);
     unsigned int res = lodepng::decode(image, width, height, path);
 
     if(res != 0)
