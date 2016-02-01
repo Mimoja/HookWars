@@ -11,5 +11,6 @@ out vec2 UV;
 void main()
 {
     gl_Position = (WORLD*MODEL)*vec4(Position, 1.0);
-    UV = UVs;
+    UV.x = UVs.x;
+    UV.y = 1-UVs.y;
 }
