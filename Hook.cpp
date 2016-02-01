@@ -37,13 +37,9 @@ void Hook::update(){
 		} else {
 			follow = allPlayers[owner]->mModel.position;
 		}
-		dif = follow - mModel.position;
+		dif = moveTowards(mModel.position, follow, CHAIN_BASE_PULL) - mModel.position;
 
-		if(glm::length(dif) > CHAIN_DISTANCE) {
-			mModel.position += CHAIN_PULL * normalize(dif);
-		} else {
-			mModel.position += CHAIN_BASE_PULL * normalize(dif);
-		}
+		mModel.position += dif;
 
 		mModel.rotation.y = glm::atan(dif.x, dif.z) + HOOK_BASE_ROTATION + glm::pi<float>();
 	} else {

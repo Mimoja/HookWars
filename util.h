@@ -21,5 +21,6 @@ bool loadModelFromFile(const char * path,
 glm::vec3 getNavigationEntry(glm::vec3 position);
 glm::vec3 circleCollision(glm::vec3 center, float radius, float samples, bool collideWithGreen);
 glm::vec3 slideAlong(glm::vec3 a, glm::vec3 n);
+glm::vec3 moveTowards(glm::vec3 pos, glm::vec3 target, float minspeed);
 bool isColliding(GameObject o1, GameObject o2);
 #endif

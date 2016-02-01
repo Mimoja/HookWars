@@ -12,7 +12,6 @@ class Chain : public GameObject {
         Chain(int player, glm::vec3 origin, glm::vec3 velocity);
 		bool pulling;
 		void updateChainLinks();
-		void moveTowards(glm::vec3 target, float maxspeed, float minspeed);
     public:
         glm::vec3 vel;
         int owner;

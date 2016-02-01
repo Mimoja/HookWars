@@ -75,13 +75,13 @@ void Player::update() {
 	if (hook != NULL) {
 		if (pulling) {
 			if (chain != NULL) {
-				if (glm::length(mModel.position - chain->mModel.position) < 1.2f*CHAIN_DISTANCE){
+				if (glm::length(mModel.position - chain->mModel.position) < 1.5f*CHAIN_DISTANCE){
 					auto next = chain->next;
 					chain->kill();
 					chain = next;
 				}
 			} else {
-				if (glm::length(mModel.position -  hook->mModel.position) < 1.2f*CHAIN_DISTANCE){
+				if (glm::length(mModel.position -  hook->mModel.position) < 1.5f*CHAIN_DISTANCE){
 					hook->kill();
 					hook = NULL;
 					pulling = false;

@@ -2,6 +2,7 @@
 #include "config.h"
 #include "util.h"
 #include <algorithm>
+#include <vector>
 
 extern std::vector<Player*> allPlayers;
 extern std::vector<GameObject*> allRenderObjects;
@@ -71,8 +72,12 @@ void Chain::update(){
 				follow = allPlayers[owner]->mModel.position;
 			}
 		} while(glm::length(follow - mModel.position) == 0);
-		
-		this->moveTowards(follow, CHAIN_PULL, CHAIN_BASE_PULL);
+
+		if (p == NULL) {
+			mModel.position += glm::normalize(follow - mModel.position) * CHAIN_PULL;
+		} else {
+			mModel.position = moveTowards(mModel.position, follow, CHAIN_BASE_PULL);
+		}
 
 		// update chain lasst because we are pulling
 		this->updateChainLinks();
@@ -87,7 +92,7 @@ void Chain::update(){
 			follow = hook->mModel.position;
 		}
 
-		this->moveTowards(follow, HOOK_SPEED, CHAIN_BASE_PUSH);
+		mModel.position = moveTowards(mModel.position, follow, CHAIN_BASE_PUSH);
 	}
 	glm::vec3 ne = (next != 0) ? next->mModel.position : hook->mModel.position;
 	glm::vec3 pr = (prev != 0) ? prev->mModel.position : allPlayers[owner]->mModel.position;
@@ -100,27 +105,5 @@ void Chain::updateChainLinks(){
 		next->update();
 	} else {
 		hook->update();
-	}
-}
-
-void Chain::moveTowards(glm::vec3 target, float maxspeed, float minspeed) {
-	float speed;
-	glm::vec3 dif = target - mModel.position;
-	glm::vec3 normal = circleCollision(mModel.position, HOOK_RADIUS, 4, false);
-
-	if(glm::length(normal) > 0) {
-		maxspeed *= 1.5f;
-	}
-
-	if(glm::length(dif) > CHAIN_DISTANCE) {
-		speed = std::min(maxspeed, glm::length(dif) - CHAIN_DISTANCE);
-	} else {
-		speed = minspeed;
-	}
-
-	if (glm::length(normal) == 0 || glm::dot(normal, dif) > 0.0f) {
-		mModel.position += speed * glm::normalize(dif);
-	} else {
-		mModel.position += speed * slideAlong(glm::normalize(dif), glm::normalize(normal));
 	}
 }
