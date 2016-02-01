@@ -1,5 +1,6 @@
 #include "Chain.h"
 #include "config.h"
+#include "util.h"
 #include <algorithm>
 
 extern std::vector<Player*> allPlayers;
@@ -55,9 +56,9 @@ void Chain::pull(){
 	}
 }
 
+
 void Chain::update(){
 	glm::vec3 follow;
-	glm::vec3 dif;
 
 	if(pulling) {
 		// pull
@@ -69,45 +70,57 @@ void Chain::update(){
 			} else {
 				follow = allPlayers[owner]->mModel.position;
 			}
-			dif = follow - mModel.position;
-		} while(glm::length(dif) == 0);
+		} while(glm::length(follow - mModel.position) == 0);
+		
+		this->moveTowards(follow, CHAIN_PULL, CHAIN_BASE_PULL);
 
-		if(glm::length(dif) > CHAIN_DISTANCE) {
-			mModel.position += CHAIN_PULL * normalize(dif);
-		} else {
-			mModel.position += CHAIN_BASE_PULL * normalize(dif);
-		}
 		// update chain lasst because we are pulling
-		if(next != NULL) {
-			next->update();
-		} else {
-			hook->update();
-		}
+		this->updateChainLinks();
 	} else {
 		// update chain first because we are pushing
-		if(next != NULL) {
-			next->update();
-		} else {
-			hook->update();
-		}
+		this->updateChainLinks();
+
 		// push
 		if(next != NULL) {
 			follow = next->mModel.position;
 		} else {
 			follow = hook->mModel.position;
 		}
-		dif = follow - mModel.position;
-		if(glm::length(dif) != 0){
-			if(glm::length(dif) > CHAIN_DISTANCE) {
-				mModel.position += (glm::length(dif) - CHAIN_DISTANCE) * normalize(dif);
-			} else {
-				mModel.position += CHAIN_BASE_PUSH * normalize(dif);
-			}
-		}
+
+		this->moveTowards(follow, HOOK_SPEED, CHAIN_BASE_PUSH);
 	}
 	glm::vec3 ne = (next != 0) ? next->mModel.position : hook->mModel.position;
 	glm::vec3 pr = (prev != 0) ? prev->mModel.position : allPlayers[owner]->mModel.position;
-	dif = ne-pr;
+	glm::vec3 dif = ne-pr;
 	mModel.rotation.y = glm::atan(dif.x, dif.z) + CHAIN_BASE_ROTATION + glm::pi<float>();
+}
 
+void Chain::updateChainLinks(){
+	if(next != NULL) {
+		next->update();
+	} else {
+		hook->update();
+	}
+}
+
+void Chain::moveTowards(glm::vec3 target, float maxspeed, float minspeed) {
+	float speed;
+	glm::vec3 dif = target - mModel.position;
+	glm::vec3 normal = circleCollision(mModel.position, HOOK_RADIUS, 4, false);
+
+	if(glm::length(normal) > 0) {
+		maxspeed *= 1.5f;
+	}
+
+	if(glm::length(dif) > CHAIN_DISTANCE) {
+		speed = std::min(maxspeed, glm::length(dif) - CHAIN_DISTANCE);
+	} else {
+		speed = minspeed;
+	}
+
+	if (glm::length(normal) == 0 || glm::dot(normal, dif) > 0.0f) {
+		mModel.position += speed * glm::normalize(dif);
+	} else {
+		mModel.position += speed * slideAlong(glm::normalize(dif), glm::normalize(normal));
+	}
 }

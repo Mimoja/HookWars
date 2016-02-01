@@ -54,7 +54,7 @@ void Hook::update(){
 			// reflect
 			vel = HOOK_SPEED * glm::normalize(glm::reflect(vel, glm::normalize(normal)));
 			mModel.rotation.y = glm::atan(vel.x, vel.z) + HOOK_BASE_ROTATION;
-			collided = 10;
+			collided = 3;
 		} else {
 			// just keep going
 			mModel.position += vel;
