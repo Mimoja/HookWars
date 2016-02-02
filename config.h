@@ -45,11 +45,8 @@
 #define PLAYER_MAXSPEED (0.20f)
 
 // Shading
-#define DIFFUSE_VERTEX "shader/diffuse.vs"
-#define DIFFUSE_FRAGMENT "shader/diffuse.fs"
-
-#define NORMAL_VERTEX "shader/normal.vs"
-#define NORMAL_FRAGMENT "shader/normal.fs"
+#define GEOMETRIE_VERTEX "shader/geometrie.vs"
+#define GEOMETRIE_FRAGMENT "shader/geometrie.fs"
 
 #define SHADOW_VERTEX "shader/shadow.vs"
 #define SHADOW_FRAGMENT "shader/shadow.fs"

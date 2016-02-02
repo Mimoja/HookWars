@@ -22,8 +22,6 @@ class GameObject{
         Model mModel; 
         virtual void update();
         BoundingBox mBox;
-        void renderDiffuse(GLuint shaderID, glm::mat4 MVP);
-        void renderNormals(GLuint shaderID, glm::mat4 MVP);
         void renderShadow(GLuint shaderID, glm::mat4 MVP);
         virtual void render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights lights);
         void kill();
@@ -32,13 +30,6 @@ class GameObject{
         glm::vec3 color;
         bool useColor;
         float radius;
-    private:
-        GLuint lastShader = 1024;
-        GLuint WorldMatrixID;
-        GLuint ModelMatrixID;
-        GLuint CameraPositionID;
-        GLuint AmbientLightColorID;
-        GLuint AmbientLightIntensityID;
 };
 
 #endif

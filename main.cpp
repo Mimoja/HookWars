@@ -25,8 +25,7 @@ void mainLoop(long frameCount);
 glm::mat4 Projection;
 Camera cam;
 
-GLuint diffuseShaderID;
-GLuint normalShaderID;
+GLuint geometrieShaderID;
 GLuint shadowShaderID;
 
 Lights allLightSources;
@@ -162,8 +161,7 @@ int main(void) {
     // Compile Shaders
     printf("Compiling Shaders\n");
 
-    diffuseShaderID = buildShader(DIFFUSE_VERTEX, DIFFUSE_FRAGMENT);
-    normalShaderID = buildShader(NORMAL_VERTEX, NORMAL_FRAGMENT);
+    geometrieShaderID = buildShader(GEOMETRIE_VERTEX, GEOMETRIE_FRAGMENT);
     shadowShaderID = buildShader(SHADOW_VERTEX, SHADOW_FRAGMENT);
 
     map_ptr = new GameObject(MAP_MODEL);
@@ -175,6 +173,19 @@ int main(void) {
     map_ptr->mModel.normalTexture = new Texture();
     map_ptr->mModel.normalTexture->loadPNG(MAP_NORMAL);
     allRenderObjects.push_back(map_ptr);
+
+    allLightSources.ambient.intensity = 0.2f;
+    allLightSources.ambient.lightColor = glm::vec3(1.0f);
+
+    PointLight* point1 = new PointLight();
+    point1->lightColor = glm::vec3(0.7f, 0.7f, 1.0f);
+    point1->intensity = 22.0f;
+    point1->position = glm::vec3(0.0f, 4.5f, 3.0f);
+    point1->falloff.linear = 0.0f;
+    point1->falloff.exponential = 1.0f;
+    point1->specular.intensity = 0.0f;
+    point1->specular.power = 32;
+    allLightSources.pointLights.push_back(point1);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -229,12 +240,7 @@ void mainLoop(long frameCount) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glViewport(0, 0, WindowWidth, WindowHeight);
     for (unsigned int i = 0; i < allRenderObjects.size(); i++) {
-        allRenderObjects[i]->renderDiffuse(diffuseShaderID, Projection * cam.getView());
-    }
-
-    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    for (unsigned int i = 0; i < allRenderObjects.size(); i++) {
-        //allRenderObjects[i]->renderNormals(normalShaderID, Projection * cam.getView());
+        allRenderObjects[i]->render(geometrieShaderID, Projection * cam.getView(), cam, allLightSources);
     }
 
     // Swap buffers

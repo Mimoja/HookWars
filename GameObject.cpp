@@ -13,78 +13,33 @@ GameObject::GameObject() {
 void GameObject::update() {
 
 }
-void GameObject::renderNormals(GLuint shaderID, glm::mat4 MVP){
-    
-    // Use our shader
-    glUseProgram(shaderID);
 
-    GLuint WorldMatrixID = glGetUniformLocation(shaderID, "WORLD");
-    GLuint ModelMatrixID = glGetUniformLocation(shaderID, "MODEL");
+void GameObject::renderShadow(GLuint shaderID, glm::mat4 MVP) {
 
-    // Transformations Matricies
-    glm::mat4 modelMatrix = mModel.getMatr();
-    glUniformMatrix4fv(WorldMatrixID, 1, GL_FALSE, &MVP[0][0]);
-    glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &(modelMatrix[0][0]));
-
-    if (mModel.normalTexture != 0) {
-        mModel.normalTexture->bindToUnit(GL_TEXTURE1);
-        GLuint normalTextureID = glGetUniformLocation(shaderID, "normal");
-        glUniform1i(normalTextureID, 1);
-        GLuint useNormalID = glGetUniformLocation(shaderID, "useNormalTexture");
-        glUniform1d(useNormalID, 1);
-    }
-    mModel.render();
-}
-
-void GameObject::renderDiffuse(GLuint shaderID, glm::mat4 MVP) {
-
-    // Use our shader
-    glUseProgram(shaderID);
-
-    GLuint WorldMatrixID = glGetUniformLocation(shaderID, "WORLD");
-    GLuint ModelMatrixID = glGetUniformLocation(shaderID, "MODEL");
-
-    // Transformations Matricies
-    glm::mat4 modelMatrix = mModel.getMatr();
-    glUniformMatrix4fv(WorldMatrixID, 1, GL_FALSE, &MVP[0][0]);
-    glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &(modelMatrix[0][0]));
-
-    if (mModel.diffuseTexture != 0) {
-        mModel.diffuseTexture->bindToUnit(GL_TEXTURE0);
-        GLuint diffuseTextureID = glGetUniformLocation(shaderID, "diffuse");
-        glUniform1i(diffuseTextureID, 0);
-    }
-    mModel.render();
-}
-
-void GameObject::renderShadow(GLuint shaderID, glm::mat4 MVP){
-    
     // Use our shader
     glUseProgram(shaderID);
 
     GLuint LightMatrixID = glGetUniformLocation(shaderID, "LIGHT");
     GLuint ModelMatrixID = glGetUniformLocation(shaderID, "MODEL");
-    
+
     // Transformations Matricies
     glm::mat4 modelMatrix = mModel.getMatr();
     glUniformMatrix4fv(LightMatrixID, 1, GL_FALSE, &MVP[0][0]);
     glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &(modelMatrix[0][0]));
-    
+
     mModel.render();
 }
+
 void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights lights) {
 
     // Use our shader
     glUseProgram(shaderID);
 
-    if (shaderID != lastShader) {
-
-
-        CameraPositionID = glGetUniformLocation(shaderID, "CAMERA");
-        AmbientLightColorID = glGetUniformLocation(shaderID, "ambientLight.Color");
-        AmbientLightIntensityID = glGetUniformLocation(shaderID, "ambientLight.Intensity");
-
-    } else lastShader = shaderID;
+    GLuint WorldMatrixID = glGetUniformLocation(shaderID, "WORLD");
+    GLuint ModelMatrixID = glGetUniformLocation(shaderID, "MODEL");
+    GLuint CameraPositionID = glGetUniformLocation(shaderID, "CAMERA");
+    GLuint AmbientLightColorID = glGetUniformLocation(shaderID, "ambientLight.Color");
+    GLuint AmbientLightIntensityID = glGetUniformLocation(shaderID, "ambientLight.Intensity");
 
     // Transformations Matricies
     glm::mat4 modelMatrix = mModel.getMatr();
@@ -92,30 +47,22 @@ void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights li
     glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &(modelMatrix[0][0]));
     glUniform3f(CameraPositionID, camera.mPos.x, camera.mPos.y, camera.mPos.z);
 
-    // Color
-    if (useColor) {
-        GLuint colorID = glGetUniformLocation(shaderID, "teamColor");
-        GLuint useColorID = glGetUniformLocation(shaderID, "useTeamColor");
-        glUniform3f(colorID, color.r, color.g, color.b);
-        glUniform1d(useColorID, 1);
-    }
-
     // Textures
     if (mModel.diffuseTexture != 0) {
         mModel.diffuseTexture->bindToUnit(GL_TEXTURE0);
-        GLuint diffuseID = glGetUniformLocation(shaderID, "diffuseTextureSampler");
+        GLuint diffuseID = glGetUniformLocation(shaderID, "DiffuseTextureSampler");
         glUniform1i(diffuseID, 0);
     }
 
     if (mModel.normalTexture != 0) {
         mModel.normalTexture->bindToUnit(GL_TEXTURE1);
-        GLuint normalID = glGetUniformLocation(shaderID, "normalTextureSampler");
+        GLuint normalID = glGetUniformLocation(shaderID, "NormalTextureSampler");
         glUniform1i(normalID, 1);
     }
 
     if (mModel.specularTexture != 0) {
         mModel.specularTexture->bindToUnit(GL_TEXTURE2);
-        GLuint specularID = glGetUniformLocation(shaderID, "specularTextureSampler");
+        GLuint specularID = glGetUniformLocation(shaderID, "SpecularTextureSampler");
         glUniform1i(specularID, 2);
     }
 
