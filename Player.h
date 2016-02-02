@@ -25,6 +25,7 @@ class Player : public GameObject{
 		Chain* chain;
 		void pull();
 		bool pulling;
+		float health;
     private:
         double lastHookTime;
         glm::vec3 joystickCalibration[2];
