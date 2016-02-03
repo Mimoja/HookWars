@@ -11,10 +11,13 @@ uniform mat4 MODEL;
 
 
 uniform float HEALTH;
+uniform vec3 TOP;
+
 
 void main()
 {
     vec3 pos = Position;
+    if(pos.y != 0.0f)pos += normalize(TOP);
     pos.x *= HEALTH;
     pos.x -= 1.0f;
     gl_Position = (WORLD*MODEL)*vec4(pos, 1.0);

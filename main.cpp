@@ -194,7 +194,7 @@ int main(void) {
     allLightSources.pointLights.push_back(point1);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
+    
     printf("Entering Main Loop\n");
     FPS_init(2);
     long frameCount = 0;
@@ -225,14 +225,13 @@ void mainLoop(long frameCount) {
                 &allPlayers[j]->joystickButtonsCount);
     }
 
-
-    if (nowTime - lastUpdateTime > (1 / 61)) {
+    if (nowTime - lastUpdateTime > (1 / 60)) {
         for (unsigned int i = 0; i < allUpdateObjects.size(); i++) {
             allUpdateObjects[i]->update();
         }
+        cam.handleKeyboard(window);
         lastUpdateTime = glfwGetTime();
     }
-    cam.handleKeyboard(window);
 
     glClear(GL_DEPTH_BUFFER_BIT);
     glViewport(0, 0, 1000, 1000);

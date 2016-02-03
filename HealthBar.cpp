@@ -1,16 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/* 
- * File:   HealthBar.cpp
- * Author: maximilian
- * 
- * Created on 3. Februar 2016, 11:11
- */
-
 #include "HealthBar.h"
 #include "util.h"
 
@@ -27,7 +14,7 @@ void HealthBar::update() {
     if (origin != 0) {
         mModel.position = origin->mModel.position;
         mModel.position.y += HEALTHBAR_HEIGHT;
-    } 
+    }
 }
 
 void HealthBar::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights lights) {
@@ -37,6 +24,12 @@ void HealthBar::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights lig
     GLint healthID = glGetUniformLocation(healthBarShaderID, "HEALTH");
     if (origin != 0) {
         if (healthID != -1) glUniform1f(healthID, origin->health);
-    }
+    } else if (healthID != -1) glUniform1f(healthID, 1.0f);
+
+    glm::vec3 top = glm::cross(camera.mPos, glm::vec3(1.0f, 0.0f, 0.0f));
+
+    GLint rotationID = glGetUniformLocation(healthBarShaderID, "TOP");
+    if (rotationID != -1) glUniform3f(rotationID, top.x, top.y, top.z);
+
     GameObject::render(healthBarShaderID, MVP, camera, *(new Lights()));
 }

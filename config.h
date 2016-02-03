@@ -11,8 +11,8 @@
 #define PLAYER_RADIUS 1.0f
 
 #define HEALTHBAR_MODEL "assets/health.obj"
-#define HEALTHBAR_SCALING 0.8f
-#define HEALTHBAR_LENGTH 6.0f
+#define HEALTHBAR_SCALING 0.3f
+#define HEALTHBAR_LENGTH 4.0f
 #define HEALTHBAR_HEIGHT 2.0f
 
 #define HOOK_MODEL "assets/hook.obj"
