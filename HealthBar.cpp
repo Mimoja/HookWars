@@ -26,10 +26,5 @@ void HealthBar::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights lig
         if (healthID != -1) glUniform1f(healthID, origin->health);
     } else if (healthID != -1) glUniform1f(healthID, 1.0f);
 
-    glm::vec3 top = glm::cross(camera.mPos, glm::vec3(1.0f, 0.0f, 0.0f));
-
-    GLint rotationID = glGetUniformLocation(healthBarShaderID, "TOP");
-    if (rotationID != -1) glUniform3f(rotationID, top.x, top.y, top.z);
-
     GameObject::render(healthBarShaderID, MVP, camera, *(new Lights()));
 }
