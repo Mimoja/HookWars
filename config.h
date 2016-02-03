@@ -34,7 +34,7 @@
 #define MAP_SCALING 4.0f
 #define MAP_DIFFUSE "assets/T_Tile_Sandstone_02_4096_D.png"
 #define MAP_NORMAL "assets/T_Tile_Sandstone_02_4096_N.png"
-
+#define MAP_AO "assets/T_Tile_Sandstone_02_4096_AO.png"
 
 #define NAVIGATION_MAP "assets/Navigation.png"
 

@@ -14,6 +14,10 @@ uniform sampler2D DiffuseTextureSampler;
 uniform sampler2D NormalTextureSampler;
 uniform sampler2D SpecularTextureSampler;
 uniform sampler2D ShadowMapSampler;
+uniform sampler2D SSAOTextureSampler;
+uniform sampler2DShadow ShadowTextureSampler;
+
+
 
 uniform vec3 CAMERA;
 uniform mat4 WORLD;
@@ -75,13 +79,14 @@ uniform PointLight pointLight[10];
 
 void main(){
         vec4 color = vec4(texture(DiffuseTextureSampler, UV).rgb, 1.0f);
+        vec4 ssao =  vec4(texture(SSAOTextureSampler, UV).rgb, 1.0f);
 
         vec3 normal = normalize(Normal);
         vec3 tangent = normalize(Tangent);
         vec3 bitangent = normalize(Bitangent);
 
         vec3 textureNormal = texture(NormalTextureSampler, UV).xyz;
-        textureNormal = 2.0 * textureNormal - vec3(1.0, 1.0, 1.0);
+        textureNormal = 2.0 * textureNormal -1.0f;
         vec3 finalNormal;
         mat3 TBN = mat3(Tangent, Bitangent, Normal);
         finalNormal = TBN * textureNormal;
@@ -129,7 +134,7 @@ void main(){
             // DiffuseColor
             float DiffuseFactor = dot(finalNormal, -LightDirection);
             if (DiffuseFactor > 0) {
-                PointLightDiffuseColor += vec4(light.Color * light.Intensity *  DiffuseFactor, 1.0f);
+                PointLightDiffuseColor += vec4(light.Color * light.Intensity *  DiffuseFactor*0.8, 1.0f);
 
                 // Specular Reflection
                 vec3 VertexToEye = normalize(CAMERA - worldPos);
@@ -185,5 +190,5 @@ void main(){
             }
         }
 
-        FragColor = color * (AmbientColor + DiffuseColor + SpecularColor);
+        FragColor = color * ssao * (AmbientColor + DiffuseColor + SpecularColor);
 }

@@ -8,14 +8,14 @@ layout (location = 4) in vec3 Bitangents;
 
 uniform mat4 WORLD;
 uniform mat4 MODEL;
-uniform mat4 LIGHT; 
+uniform mat4 SHADOW;
 
 out vec2 UV;
 out vec3 Normal;
 out vec3 Tangent;
 out vec3 Bitangent;
 out vec3 worldPos;
-out vec4 lightPos; 
+out vec4 lightPos;
 
 void main()
 {
@@ -24,7 +24,7 @@ void main()
     Tangent = ((WORLD*MODEL)* vec4(Tangents, 0.0)).xyz;
     Bitangent = ((WORLD*MODEL)* vec4(Bitangents, 0.0)).xyz;
     worldPos   = ((WORLD*MODEL)*vec4(Position, 1.0)).xyz;  
-    lightPos = LIGHT * vec4(Position, 1.0); 
+    lightPos = SHADOW * vec4(Position, 1.0); 
     UV = UVs;
     UV.y = 1-UVs.y;
 }

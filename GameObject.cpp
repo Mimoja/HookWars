@@ -30,13 +30,14 @@ void GameObject::renderShadow(GLuint shaderID, glm::mat4 MVP) {
     mModel.render();
 }
 
-void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights lights) {
+void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights lights, Camera shadowCamera) {
 
     // Use our shader
     glUseProgram(shaderID);
 
     GLint WorldMatrixID = glGetUniformLocation(shaderID, "WORLD");
     GLint ModelMatrixID = glGetUniformLocation(shaderID, "MODEL");
+    GLint ShadowMatrixID = glGetUniformLocation(shaderID, "SHADOW");
     GLint CameraPositionID = glGetUniformLocation(shaderID, "CAMERA");
     GLint AmbientLightColorID = glGetUniformLocation(shaderID, "ambientLight.Color");
     GLint AmbientLightIntensityID = glGetUniformLocation(shaderID, "ambientLight.Intensity");
@@ -45,6 +46,7 @@ void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights li
     glm::mat4 modelMatrix = mModel.getMatr();
     if (WorldMatrixID != -1)glUniformMatrix4fv(WorldMatrixID, 1, GL_FALSE, &MVP[0][0]);
     if (ModelMatrixID != -1)glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &(modelMatrix[0][0]));
+    if (ShadowMatrixID != -1)glUniformMatrix4fv(ShadowMatrixID, 1, GL_FALSE, &(shadowCamera.getView()[0][0]));
     if (CameraPositionID != -1)glUniform3f(CameraPositionID, camera.mPos.x, camera.mPos.y, camera.mPos.z);
 
     // Textures
@@ -65,6 +67,20 @@ void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights li
         GLint specularID = glGetUniformLocation(shaderID, "SpecularTextureSampler");
         if (specularID != -1)glUniform1i(specularID, 2);
     }
+
+    if (mModel.ssaoTexture != 0) {
+        mModel.ssaoTexture->bindToUnit(GL_TEXTURE3);
+        GLint ssaoID = glGetUniformLocation(shaderID, "SSAOTextureSampler");
+        if (ssaoID != -1)glUniform1i(ssaoID, 3);
+    }
+
+
+    extern GLuint shadowTexture;
+    glActiveTexture(GL_TEXTURE4);
+    glBindTexture(GL_TEXTURE_2D, shadowTexture);
+    GLint shadowID = glGetUniformLocation(shaderID, "ShadowTextureSampler");
+    if (shadowID != -1)glUniform1i(shadowID, 4);
+
 
     // Lights
     // Ambient

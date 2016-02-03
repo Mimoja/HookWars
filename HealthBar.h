@@ -15,7 +15,7 @@ class HealthBar : public GameObject {
 public:
     HealthBar(Player * o);
     virtual void update();
-    virtual void render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights lights);
+    virtual void render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights lights, Camera shadowCamera);
 private:
     Player* origin = 0;
 };

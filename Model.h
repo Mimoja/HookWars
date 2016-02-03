@@ -26,6 +26,7 @@ public:
     Texture* diffuseTexture = 0;
     Texture* normalTexture = 0;
     Texture* specularTexture = 0;
+    Texture* ssaoTexture = 0;
     glm::vec3 max;
     glm::vec3 min;
 private:

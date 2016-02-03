@@ -11,7 +11,6 @@
 #include "util.h"
 #include "config.h"
 #include "Camera.h"
-#include "BoundingBox.h"
 #include "Shader.h"
 #include "Player.h"
 #include "HealthBar.h"
@@ -40,6 +39,9 @@ GameObject* map_ptr;
 
 int WindowWidth = WINDOW_WIDTH;
 int WindowHeight = WINDOW_HEIGHT;
+
+GLuint shadowTexture;
+GLuint frameBuffer;
 
 void window_size_callback(GLFWwindow* window, int width, int height) {
     glfwMakeContextCurrent(window);
@@ -119,7 +121,7 @@ int main(void) {
             Player* newPlayer = new Player(PLAYER_MODEL);
             newPlayer->CONTROLER_NAME = joystickName;
             newPlayer->playerNumber = x;
-    		newPlayer->mModel.position = glm::vec3(-5.0f, 2.0f, 0.0f);
+            newPlayer->mModel.position = glm::vec3(-5.0f, 2.0f, 0.0f);
             newPlayer->joystickAxis = glfwGetJoystickAxes(GLFW_JOYSTICK_1 + x,
                     &newPlayer->joystickAxisCount);
             newPlayer->calibrate();
@@ -177,23 +179,63 @@ int main(void) {
     map_ptr->mModel.diffuseTexture->loadPNG(MAP_DIFFUSE);
     map_ptr->mModel.normalTexture = new Texture();
     map_ptr->mModel.normalTexture->loadPNG(MAP_NORMAL);
+    map_ptr->mModel.ssaoTexture = new Texture();
+    map_ptr->mModel.ssaoTexture->loadPNG(MAP_AO);
     allRenderObjects.push_back(map_ptr);
 
-    allLightSources.ambient.intensity = 0.1f;
+    allLightSources.ambient.intensity = 0.6f;
     allLightSources.ambient.lightColor = glm::vec3(1.0f);
 
     PointLight* point1 = new PointLight();
-    point1->lightColor = glm::vec3(1.0f, 1.0f, 0.3f);
-    point1->intensity = 62.0f;
+    point1->lightColor = glm::vec3(1.0f, 1.0f, 0.8f);
+    point1->intensity = 92.0f;
     point1->position = glm::vec3(0.0f, 10.5f, 2.0f);
     point1->falloff.linear = 0.0f;
     point1->falloff.exponential = 0.5f;
-    point1->specular.intensity = 0.0f;
+    point1->specular.intensity = 100.3f;
     point1->specular.power = 32;
     allLightSources.pointLights.push_back(point1);
 
+    glGenTextures(1, &shadowTexture);
+    glBindTexture(GL_TEXTURE_2D, shadowTexture);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 1000, 1000, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, 0);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LESS);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    //
+
+    glGenFramebuffers(1, &frameBuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadowTexture, 0);
+
+    res = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+    if (res != GL_FRAMEBUFFER_COMPLETE) {
+        printf("Could not create Framebuffer error 0x%x\n", res);
+        exit(-1);
+    }
+
+    glClearDepth(1.0f);
+
+    glEnable(GL_DEPTH_TEST);
+
+    glEnable(GL_CULL_FACE);
+
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    
+
+
     printf("Entering Main Loop\n");
     FPS_init(2);
     long frameCount = 0;
@@ -232,20 +274,27 @@ void mainLoop(long frameCount) {
         lastUpdateTime = glfwGetTime();
     }
 
-    glClear(GL_DEPTH_BUFFER_BIT);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
     glViewport(0, 0, 1000, 1000);
-    for (unsigned int i = 0; i < allLightSources.spotLights.size(); i++) {
-        SpotLight* s = allLightSources.spotLights[i];
-        Camera lightCam(s->position, s->direction, glm::vec3(0.0f, 1.0f, 0.0f));
-        for (unsigned int i = 0; i < allRenderObjects.size(); i++) {
-            allRenderObjects[i]->renderShadow(shadowShaderID, Projection * lightCam.getView());
-        }
+
+    glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+
+    glClear(GL_DEPTH_BUFFER_BIT);
+
+    glm::vec3 lighPos = glm::vec3(0.0f, 10.5f, 2.0f);
+    Camera lightCam(lighPos, -lighPos, glm::vec3(0.0f, 1.0f, 0.0f));
+    for (unsigned int i = 0; i < allRenderObjects.size(); i++) {
+        allRenderObjects[i]->renderShadow(shadowShaderID, Projection * lightCam.getView());
     }
 
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glViewport(0, 0, WindowWidth, WindowHeight);
+
     for (unsigned int i = 0; i < allRenderObjects.size(); i++) {
-        allRenderObjects[i]->render(geometrieShaderID, Projection * cam.getView(), cam, allLightSources);
+        allRenderObjects[i]->render(geometrieShaderID, Projection * cam.getView(), cam, allLightSources, lightCam);
     }
 
     // Swap buffers
