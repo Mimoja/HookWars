@@ -104,7 +104,10 @@ bool loadModelFromFile(const char * path,
             aiVector3D UVW = mesh->mTextureCoords[0][i];
             uvs.push_back(glm::vec2(UVW.x, UVW.y));
         }
+    } else {
+        uvs = std::vector<glm::vec2>(vertices.size());
     }
+    
     if (mesh->HasFaces()) {
         printf("Reading %d Faces as Indices\n", mesh->mNumFaces);
         for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
@@ -153,7 +156,7 @@ bool loadModelFromFile(const char * path,
         tangents[i1] = tangent;
         tangents[i2] = tangent;
         tangents[i3] = tangent;
-        
+
         bitangents[i1] = bitangent;
         bitangents[i2] = bitangent;
         bitangents[i3] = bitangent;
@@ -226,45 +229,45 @@ bool isColliding(GameObject o1, GameObject o2) {
 }
 
 glm::vec3 moveTowards(glm::vec3 pos, glm::vec3 target, float minspeed) {
-	glm::vec3 dif = pos - target;
-	glm::vec3 moveTo = target + glm::normalize(dif) * CHAIN_DISTANCE;
+    glm::vec3 dif = pos - target;
+    glm::vec3 moveTo = target + glm::normalize(dif) * CHAIN_DISTANCE;
 
-	// if we can't move straight forwards, check for a better place
+    // if we can't move straight forwards, check for a better place
     glm::vec3 navEntry = getNavigationEntry(moveTo);
-	if (navEntry.r == -1.0f || navEntry.r == 1.0f) {
-		std::vector<glm::vec3> possiblePlaces;
-		for (float a = 0; a < 2 * glm::pi<float>(); a += glm::half_pi<float>() / 4.0f) {
-		    glm::vec3 offset = CHAIN_DISTANCE * glm::vec3(sin(a), 0, cos(a));
-		    glm::vec3 navEntry = getNavigationEntry(target + offset);
-		    if (!(navEntry.r == -1.0f || navEntry.r == 1.0f)) {
-		        possiblePlaces.push_back(target+offset);
-		    }
-		}
-		// we can't be anywhere? just move forwards!
-		if (possiblePlaces.size() == 0) {
-			possiblePlaces.push_back(target + glm::normalize(dif) * CHAIN_DISTANCE);
-		}
+    if (navEntry.r == -1.0f || navEntry.r == 1.0f) {
+        std::vector<glm::vec3> possiblePlaces;
+        for (float a = 0; a < 2 * glm::pi<float>(); a += glm::half_pi<float>() / 4.0f) {
+            glm::vec3 offset = CHAIN_DISTANCE * glm::vec3(sin(a), 0, cos(a));
+            glm::vec3 navEntry = getNavigationEntry(target + offset);
+            if (!(navEntry.r == -1.0f || navEntry.r == 1.0f)) {
+                possiblePlaces.push_back(target + offset);
+            }
+        }
+        // we can't be anywhere? just move forwards!
+        if (possiblePlaces.size() == 0) {
+            possiblePlaces.push_back(target + glm::normalize(dif) * CHAIN_DISTANCE);
+        }
 
-		glm::vec3 nearest = moveTo;
-		float bestDist = 1337.0f;
-		for (auto v : possiblePlaces) {
-			float newDist = glm::length(pos - v);
-			if (newDist < bestDist) {
-				nearest = v;
-				bestDist = newDist;
-			}
-		}
-		return nearest;
+        glm::vec3 nearest = moveTo;
+        float bestDist = 1337.0f;
+        for (auto v : possiblePlaces) {
+            float newDist = glm::length(pos - v);
+            if (newDist < bestDist) {
+                nearest = v;
+                bestDist = newDist;
+            }
+        }
+        return nearest;
     } else {
-		// just move straight forwards
-		float speed;
-		if(glm::length(dif) > CHAIN_DISTANCE) {
-			speed = glm::length(dif) - CHAIN_DISTANCE;
-		} else {
-			speed = minspeed;
-		}
-		return pos + speed * glm::normalize(-dif);
-		printf("%f\n", glm::length(pos-target) / CHAIN_DISTANCE);
-	}
+        // just move straight forwards
+        float speed;
+        if (glm::length(dif) > CHAIN_DISTANCE) {
+            speed = glm::length(dif) - CHAIN_DISTANCE;
+        } else {
+            speed = minspeed;
+        }
+        return pos + speed * glm::normalize(-dif);
+        printf("%f\n", glm::length(pos - target) / CHAIN_DISTANCE);
+    }
 
 }
