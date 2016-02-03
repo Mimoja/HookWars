@@ -35,7 +35,7 @@ void Hook::update(){
 		if(prev != NULL){
 			follow = prev->mModel.position;
 		} else {
-			follow = allPlayers[owner]->mModel.position;
+			follow = allPlayers[owner]->hookpoint;
 		}
 		dif = moveTowards(mModel.position, follow, CHAIN_BASE_PULL) - mModel.position;
 

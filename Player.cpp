@@ -15,6 +15,7 @@ Player::Player(const char* file) : GameObject(file) {
 	chain = NULL;
 	pulling = false;
 	health = 5.0f;
+	hookpoint = mModel.position;
 }
 
 void Player::update() {
@@ -37,7 +38,6 @@ void Player::update() {
     rotationVector.x = joystickAxis[TURN_LEFT_RIGHT] - joystickCalibration[1].x;
     rotationVector.y = joystickAxis[TURN_UP_DOWN] - joystickCalibration[1].y;
 
-
 	glm::vec3 normal = circleCollision(mModel.position, PLAYER_RADIUS, 8, true);
 
     if (glm::length(normal) == 0 || glm::dot(normal, movementVector) > 0.0f) {
@@ -45,6 +45,8 @@ void Player::update() {
     } else {
 		mModel.position += PLAYER_MAXSPEED * slideAlong(movementVector, glm::normalize(normal));
 	}
+
+	hookpoint = mModel.position + 1.3f * glm::vec3(rotationVector.x, 0.2f, rotationVector.y);
 
     glm::vec3 navEntry = getNavigationEntry(mModel.position + movementVector * PLAYER_MAXSPEED);
     if (navEntry.g == 1.0f) {
@@ -76,13 +78,13 @@ void Player::update() {
 	if (hook != NULL) {
 		if (pulling) {
 			if (chain != NULL) {
-				if (glm::length(mModel.position - chain->mModel.position) < 1.5f*CHAIN_DISTANCE){
+				if (glm::length(hookpoint - chain->mModel.position) < 1.5f*CHAIN_DISTANCE){
 					auto next = chain->next;
 					chain->kill();
 					chain = next;
 				}
 			} else {
-				if (glm::length(mModel.position -  hook->mModel.position) < 1.5f*CHAIN_DISTANCE){
+				if (glm::length(hookpoint -  hook->mModel.position) < 1.5f*CHAIN_DISTANCE){
 					hook->kill();
 					hook = NULL;
 					pulling = false;
@@ -90,12 +92,12 @@ void Player::update() {
 			}
 		} else {
 			if (chain != NULL) {
-				if (glm::length(mModel.position - chain->mModel.position) > CHAIN_DISTANCE){
-					chain = new Chain(playerNumber, mModel.position, hook->mModel.position - mModel.position, chain);
+				if (glm::length(hookpoint - chain->mModel.position) > CHAIN_DISTANCE){
+					chain = new Chain(playerNumber, hookpoint, hook->mModel.position - mModel.position, chain);
 				}
 			} else {
-				if (glm::length(mModel.position -  hook->mModel.position) > CHAIN_DISTANCE){
-					chain = new Chain(playerNumber, mModel.position, hook->mModel.position - mModel.position, hook);
+				if (glm::length(hookpoint -  hook->mModel.position) > CHAIN_DISTANCE){
+					chain = new Chain(playerNumber, hookpoint, hook->mModel.position - mModel.position, hook);
 				}
 			}
 		}

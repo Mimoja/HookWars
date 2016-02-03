@@ -26,6 +26,8 @@ class Player : public GameObject{
 		void pull();
 		bool pulling;
 		float health;
+
+		glm::vec3 hookpoint;
     private:
         double lastHookTime;
         glm::vec3 joystickCalibration[2];

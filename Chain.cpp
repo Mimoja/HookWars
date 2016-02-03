@@ -69,7 +69,7 @@ void Chain::update(){
 				follow = p->mModel.position;
 				p = p->prev;
 			} else {
-				follow = allPlayers[owner]->mModel.position;
+				follow = allPlayers[owner]->hookpoint;
 			}
 		} while(glm::length(follow - mModel.position) == 0);
 
@@ -95,7 +95,7 @@ void Chain::update(){
 		mModel.position = moveTowards(mModel.position, follow, CHAIN_BASE_PUSH);
 	}
 	glm::vec3 ne = (next != 0) ? next->mModel.position : hook->mModel.position;
-	glm::vec3 pr = (prev != 0) ? prev->mModel.position : allPlayers[owner]->mModel.position;
+	glm::vec3 pr = (prev != 0) ? prev->mModel.position : allPlayers[owner]->hookpoint;
 	glm::vec3 dif = ne-pr;
 	mModel.rotation.y = glm::atan(dif.x, dif.z) + CHAIN_BASE_ROTATION + glm::pi<float>();
 }

@@ -4,9 +4,10 @@
 // PROG_NAME comes from makefile
 #define GAME_NAME "Hook Wars"
 
-#define PLAYER_MODEL "assets/derp.obj"
+#define PLAYER_MODEL "assets/player.obj"
+#define ROTOR_MODEL "assets/rotor.obj"
 #define PLAYER_SCALING 1
-#define PLAYER_BASE_ROTATION (3*glm::half_pi<float>())
+#define PLAYER_BASE_ROTATION (glm::pi<float>())
 #define PLAYER_RADIUS 1.0f
 
 #define HOOK_MODEL "assets/hook.obj"
@@ -16,8 +17,8 @@
 #define HOOK_BASE_ROTATION glm::half_pi<float>()
 
 #define CHAIN_MODEL "assets/chain_simple.obj"
-#define CHAIN_SCALING 0.20f
-#define CHAIN_DISTANCE 0.9f
+#define CHAIN_SCALING 0.12f
+#define CHAIN_DISTANCE 0.55f
 #define CHAIN_BASE_ROTATION glm::pi<float>()
 #define CHAIN_BASE_PUSH 0.2f
 #define CHAIN_PULL 0.5f
