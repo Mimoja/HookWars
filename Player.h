@@ -32,3 +32,13 @@ class Player : public GameObject{
         double lastHookTime;
         glm::vec3 joystickCalibration[2];
 };
+
+class Rotor : public GameObject{
+	public:
+		Rotor(Player* owner, float rotation, float height);
+		virtual void update();
+
+	private:
+		Player* player;
+		float rot;
+};

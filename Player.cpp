@@ -3,6 +3,9 @@
 #include "stdio.h"
 #include "util.h"
 
+extern std::vector<GameObject*> allUpdateObjects;
+extern std::vector<GameObject*> allRenderObjects;
+
 void Player::calibrate() {
     joystickCalibration[0].x = joystickAxis[MOVE_LEFT_RIGHT];
     joystickCalibration[0].z = joystickAxis[MOVE_UP_DOWN];
@@ -16,6 +19,8 @@ Player::Player(const char* file) : GameObject(file) {
 	pulling = false;
 	health = 1.0f;
 	hookpoint = mModel.position;
+	new Rotor(this, -0.15f, 2.0f);
+    mModel.scaling = glm::vec3(PLAYER_SCALING, PLAYER_SCALING, PLAYER_SCALING);
 }
 
 void Player::update() {
@@ -124,4 +129,18 @@ void Player::pull(){
 	} else {
 		chain->pull();
 	}
+}
+
+Rotor::Rotor(Player* owner, float rotation, float height) : GameObject(ROTOR_MODEL) {
+	player = owner;
+	mModel.position.y = height;
+	rot = rotation;
+    allUpdateObjects.push_back(this);
+    allRenderObjects.push_back(this);
+}
+
+void Rotor::update() {
+	mModel.position.x = player->mModel.position.x;
+	mModel.position.z = player->mModel.position.z;
+	mModel.rotation.y += rot;
 }
