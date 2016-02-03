@@ -7,10 +7,10 @@ extern std::vector<GameObject*> allUpdateObjects;
 extern std::vector<GameObject*> allRenderObjects;
 
 void Player::calibrate() {
-    joystickCalibration[0].x = joystickAxis[MOVE_LEFT_RIGHT];
-    joystickCalibration[0].z = joystickAxis[MOVE_UP_DOWN];
-    joystickCalibration[1].x = joystickAxis[TURN_LEFT_RIGHT];
-    joystickCalibration[1].y = joystickAxis[TURN_UP_DOWN];
+    joystickCalibration[0].x = joystickAxis[XBOX_ONE_GAMEPAD::MOVE_LEFT_RIGHT];
+    joystickCalibration[0].z = joystickAxis[XBOX_ONE_GAMEPAD::MOVE_UP_DOWN];
+    joystickCalibration[1].x = joystickAxis[XBOX_ONE_GAMEPAD::TURN_LEFT_RIGHT];
+    joystickCalibration[1].y = joystickAxis[XBOX_ONE_GAMEPAD::TURN_UP_DOWN];
 }
 
 Player::Player(const char* file) : GameObject(file) {
@@ -33,15 +33,15 @@ void Player::update() {
 		}
 	}
 
-    if (fabs(joystickAxis[MOVE_LEFT_RIGHT]) > GAMEPAD_CUTOFF) {
-        movementVector.x = joystickAxis[MOVE_LEFT_RIGHT] - joystickCalibration[0].x;
+    if (fabs(joystickAxis[XBOX_ONE_GAMEPAD::MOVE_LEFT_RIGHT]) > GAMEPAD_CUTOFF) {
+        movementVector.x = joystickAxis[XBOX_ONE_GAMEPAD::MOVE_LEFT_RIGHT] - joystickCalibration[0].x;
     } else movementVector.x = 0.0f;
-    if (fabs(joystickAxis[MOVE_UP_DOWN]) > GAMEPAD_CUTOFF) {
-        movementVector.z = joystickAxis[MOVE_UP_DOWN] - joystickCalibration[0].z;
+    if (fabs(joystickAxis[XBOX_ONE_GAMEPAD::MOVE_UP_DOWN]) > GAMEPAD_CUTOFF) {
+        movementVector.z = joystickAxis[XBOX_ONE_GAMEPAD::MOVE_UP_DOWN] - joystickCalibration[0].z;
     } else movementVector.z = 0.0f;
 
-    rotationVector.x = joystickAxis[TURN_LEFT_RIGHT] - joystickCalibration[1].x;
-    rotationVector.y = joystickAxis[TURN_UP_DOWN] - joystickCalibration[1].y;
+    rotationVector.x = joystickAxis[XBOX_ONE_GAMEPAD::TURN_LEFT_RIGHT] - joystickCalibration[1].x;
+    rotationVector.y = joystickAxis[XBOX_ONE_GAMEPAD::TURN_UP_DOWN] - joystickCalibration[1].y;
 
 	glm::vec3 normal = circleCollision(mModel.position, PLAYER_RADIUS, 8, true);
 
@@ -64,7 +64,7 @@ void Player::update() {
 
     // Fire or Pull
     double now = glfwGetTime();
-    if (joystickAxis[FIRE] > 0){
+    if (joystickAxis[XBOX_ONE_GAMEPAD::FIRE] > 0){
 		if (hook == NULL && now - lastHookTime > HOOK_COOLDOWN) {
 			// Fire new hook
 		    lastHookTime = now;

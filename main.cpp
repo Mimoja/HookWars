@@ -131,7 +131,7 @@ int main(void) {
 
             PointLight* point1 = new PointLight();
             point1->lightColor = glm::vec3(0.7f, 0.7f, 1.0f);
-            point1->intensity = 12.0f;
+            point1->intensity = 22.0f;
             point1->position = glm::vec3(0.0f, 4.5f, 3.0f);
             point1->falloff.linear = 0.0f;
             point1->falloff.exponential = 1.0f;
@@ -179,15 +179,15 @@ int main(void) {
     map_ptr->mModel.normalTexture->loadPNG(MAP_NORMAL);
     allRenderObjects.push_back(map_ptr);
 
-    allLightSources.ambient.intensity = 0.2f;
+    allLightSources.ambient.intensity = 0.1f;
     allLightSources.ambient.lightColor = glm::vec3(1.0f);
 
     PointLight* point1 = new PointLight();
-    point1->lightColor = glm::vec3(0.99f, 0.1f, 0.0f);
-    point1->intensity = 22.0f;
-    point1->position = glm::vec3(0.0f, 4.5f, 3.0f);
+    point1->lightColor = glm::vec3(1.0f, 1.0f, 0.3f);
+    point1->intensity = 62.0f;
+    point1->position = glm::vec3(0.0f, 10.5f, 2.0f);
     point1->falloff.linear = 0.0f;
-    point1->falloff.exponential = 1.0f;
+    point1->falloff.exponential = 0.5f;
     point1->specular.intensity = 0.0f;
     point1->specular.power = 32;
     allLightSources.pointLights.push_back(point1);

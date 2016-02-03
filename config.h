@@ -11,9 +11,9 @@
 #define PLAYER_RADIUS 1.0f
 
 #define HEALTHBAR_MODEL "assets/health.obj"
-#define HEALTHBAR_SCALING 0.3f
-#define HEALTHBAR_LENGTH 4.0f
-#define HEALTHBAR_HEIGHT 2.0f
+#define HEALTHBAR_SCALING 0.1f
+#define HEALTHBAR_LENGTH 3.0f
+#define HEALTHBAR_HEIGHT 4.0f
 
 #define HOOK_MODEL "assets/hook.obj"
 #define HOOK_SCALING 0.4f
@@ -60,17 +60,20 @@
 #define SHADOW_VERTEX "shader/shadow.vs"
 #define SHADOW_FRAGMENT "shader/shadow.fs"
 
-enum XBOX_ONE_GAMEPAD{
-    TURN_LEFT_RIGHT = 3,
-    TURN_UP_DOWN = 4,
-    MOVE_LEFT_RIGHT = 0,
-    MOVE_UP_DOWN = 1,
-    FIRE = 5,
-};
+namespace XBOX_ONE_GAMEPAD {
+
+    enum {
+        TURN_LEFT_RIGHT = 3,
+        TURN_UP_DOWN = 4,
+        MOVE_LEFT_RIGHT = 0,
+        MOVE_UP_DOWN = 1,
+        FIRE = 5,
+    };
+}
 
 enum PlayerColor {
     blue = 1,
-    red  = 2,
+    red = 2,
 };
 
 #endif
