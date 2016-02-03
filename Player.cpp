@@ -14,7 +14,7 @@ Player::Player(const char* file) : GameObject(file) {
 	hook = NULL;
 	chain = NULL;
 	pulling = false;
-	health = 5.0f;
+	health = 1.0f;
 	hookpoint = mModel.position;
 }
 
