@@ -3,25 +3,30 @@
 
 #include "stdio.h"
 
-Model::Model(const char* path) {
-    printf("Loading Model 0  from %s\n", path);
+Model::Model(std::vector<unsigned short> indices,
+        std::vector<glm::vec3> vertices,
+        std::vector<glm::vec2> uvs,
+        std::vector<glm::vec3> normals,
+        std::vector<glm::vec3> tangents,
+        std::vector<glm::vec3> bitangents) {
+
+    if (uvs.size() == 0) uvs.reserve(vertices.size());
+    if (tangents.size() == 0) tangents.reserve(vertices.size());
+    if (bitangents.size() == 0) bitangents.reserve(vertices.size());
+
+    createFromBuffer(indices, vertices, uvs, normals, tangents, bitangents);
+
+}
+
+void Model::createFromBuffer(std::vector<unsigned short> indices,
+        std::vector<glm::vec3> vertices,
+        std::vector<glm::vec2> uvs,
+        std::vector<glm::vec3> normals,
+        std::vector<glm::vec3> tangents,
+        std::vector<glm::vec3> bitangents) {
+
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
-
-    // Read .obj file
-    std::vector<unsigned short> indices;
-    std::vector<glm::vec3> vertices;
-    std::vector<glm::vec2> uvs;
-    std::vector<glm::vec3> normals;
-    std::vector<glm::vec3> tangents;
-    std::vector<glm::vec3> bitangents;
-    bool res = loadModelFromFile(path, indices, vertices, uvs, normals, tangents, bitangents);
-
-    if (!res) {
-        printf("Could not load model %s\n", path);
-        exit(1);
-    }
-    printf("success in loadModelFromPath!\n");
 
     glGenBuffers(1, &vertexBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
@@ -64,7 +69,28 @@ Model::Model(const char* path) {
     scaling = glm::vec3(1.0f);
     position = glm::vec3(0.0f);
     rotation = glm::vec3(0.0f);
+}
 
+Model::Model(const char* path) {
+    printf("Loading Model 0  from %s\n", path);
+
+
+    // Read .obj file
+    std::vector<unsigned short> indices;
+    std::vector<glm::vec3> vertices;
+    std::vector<glm::vec2> uvs;
+    std::vector<glm::vec3> normals;
+    std::vector<glm::vec3> tangents;
+    std::vector<glm::vec3> bitangents;
+    bool res = loadModelFromFile(path, indices, vertices, uvs, normals, tangents, bitangents);
+
+    if (!res) {
+        printf("Could not load model %s\n", path);
+        exit(1);
+    }
+    printf("success in loadModelFromPath!\n");
+
+    createFromBuffer(indices, vertices, uvs, normals, tangents, bitangents);
 }
 
 glm::mat4 Model::getMatr() {

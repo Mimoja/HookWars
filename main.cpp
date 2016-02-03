@@ -14,6 +14,7 @@
 #include "BoundingBox.h"
 #include "Shader.h"
 #include "Player.h"
+#include "HealthBar.h"
 
 std::vector<GameObject*> allUpdateObjects;
 std::vector<GameObject*> allRenderObjects;
@@ -27,6 +28,7 @@ Camera cam;
 
 GLuint geometrieShaderID;
 GLuint shadowShaderID;
+GLuint healthBarShaderID;
 
 Lights allLightSources;
 
@@ -139,6 +141,9 @@ int main(void) {
             newPlayer->sight = point1;
             allLightSources.pointLights.push_back(point1);
 
+            HealthBar* h = new HealthBar(newPlayer);
+            allRenderObjects.push_back(h);
+            allUpdateObjects.push_back(h);
         }
     }
     printf("%d Player found\n", (int) allPlayers.size());
@@ -163,6 +168,7 @@ int main(void) {
 
     geometrieShaderID = buildShader(GEOMETRIE_VERTEX, GEOMETRIE_FRAGMENT);
     shadowShaderID = buildShader(SHADOW_VERTEX, SHADOW_FRAGMENT);
+    healthBarShaderID = buildShader(HEALTHBAR_VERTEX, HEALTHBAR_FRAGMENT);
 
     map_ptr = new GameObject(MAP_MODEL);
     map_ptr->mModel.scaling = glm::vec3(MAP_SCALING, MAP_SCALING, MAP_SCALING);
@@ -178,7 +184,7 @@ int main(void) {
     allLightSources.ambient.lightColor = glm::vec3(1.0f);
 
     PointLight* point1 = new PointLight();
-    point1->lightColor = glm::vec3(0.7f, 0.7f, 1.0f);
+    point1->lightColor = glm::vec3(0.99f, 0.1f, 0.0f);
     point1->intensity = 22.0f;
     point1->position = glm::vec3(0.0f, 4.5f, 3.0f);
     point1->falloff.linear = 0.0f;
@@ -189,6 +195,7 @@ int main(void) {
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+    printf("Entering Main Loop\n");
     FPS_init(2);
     long frameCount = 0;
     do {

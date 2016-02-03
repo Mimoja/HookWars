@@ -23,4 +23,8 @@ glm::vec3 circleCollision(glm::vec3 center, float radius, float samples, bool co
 glm::vec3 slideAlong(glm::vec3 a, glm::vec3 n);
 glm::vec3 moveTowards(glm::vec3 pos, glm::vec3 target, float minspeed);
 bool isColliding(GameObject o1, GameObject o2);
+void calculateNormals(std::vector<glm::vec3> & vertices,
+        std::vector<glm::vec3> & normals,
+        std::vector<unsigned short> & indices,
+        unsigned int faceCount);
 #endif

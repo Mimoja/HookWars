@@ -35,73 +35,73 @@ void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights li
     // Use our shader
     glUseProgram(shaderID);
 
-    GLuint WorldMatrixID = glGetUniformLocation(shaderID, "WORLD");
-    GLuint ModelMatrixID = glGetUniformLocation(shaderID, "MODEL");
-    GLuint CameraPositionID = glGetUniformLocation(shaderID, "CAMERA");
-    GLuint AmbientLightColorID = glGetUniformLocation(shaderID, "ambientLight.Color");
-    GLuint AmbientLightIntensityID = glGetUniformLocation(shaderID, "ambientLight.Intensity");
+    GLint WorldMatrixID = glGetUniformLocation(shaderID, "WORLD");
+    GLint ModelMatrixID = glGetUniformLocation(shaderID, "MODEL");
+    GLint CameraPositionID = glGetUniformLocation(shaderID, "CAMERA");
+    GLint AmbientLightColorID = glGetUniformLocation(shaderID, "ambientLight.Color");
+    GLint AmbientLightIntensityID = glGetUniformLocation(shaderID, "ambientLight.Intensity");
 
     // Transformations Matricies
     glm::mat4 modelMatrix = mModel.getMatr();
-    glUniformMatrix4fv(WorldMatrixID, 1, GL_FALSE, &MVP[0][0]);
-    glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &(modelMatrix[0][0]));
-    glUniform3f(CameraPositionID, camera.mPos.x, camera.mPos.y, camera.mPos.z);
+    if (WorldMatrixID != -1)glUniformMatrix4fv(WorldMatrixID, 1, GL_FALSE, &MVP[0][0]);
+    if (ModelMatrixID != -1)glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &(modelMatrix[0][0]));
+    if (CameraPositionID != -1)glUniform3f(CameraPositionID, camera.mPos.x, camera.mPos.y, camera.mPos.z);
 
     // Textures
     if (mModel.diffuseTexture != 0) {
         mModel.diffuseTexture->bindToUnit(GL_TEXTURE0);
-        GLuint diffuseID = glGetUniformLocation(shaderID, "DiffuseTextureSampler");
-        glUniform1i(diffuseID, 0);
+        GLint diffuseID = glGetUniformLocation(shaderID, "DiffuseTextureSampler");
+        if (diffuseID != -1)glUniform1i(diffuseID, 0);
     }
 
     if (mModel.normalTexture != 0) {
         mModel.normalTexture->bindToUnit(GL_TEXTURE1);
-        GLuint normalID = glGetUniformLocation(shaderID, "NormalTextureSampler");
-        glUniform1i(normalID, 1);
+        GLint normalID = glGetUniformLocation(shaderID, "NormalTextureSampler");
+        if (normalID != -1)glUniform1i(normalID, 1);
     }
 
     if (mModel.specularTexture != 0) {
         mModel.specularTexture->bindToUnit(GL_TEXTURE2);
-        GLuint specularID = glGetUniformLocation(shaderID, "SpecularTextureSampler");
-        glUniform1i(specularID, 2);
+        GLint specularID = glGetUniformLocation(shaderID, "SpecularTextureSampler");
+        if (specularID != -1)glUniform1i(specularID, 2);
     }
 
     // Lights
     // Ambient
-    glUniform3f(AmbientLightColorID,
+    if (AmbientLightColorID != -1)glUniform3f(AmbientLightColorID,
             lights.ambient.lightColor.r,
             lights.ambient.lightColor.g,
             lights.ambient.lightColor.b);
-    glUniform1f(AmbientLightIntensityID, lights.ambient.intensity);
+    if (AmbientLightIntensityID != -1)glUniform1f(AmbientLightIntensityID, lights.ambient.intensity);
 
 
     // Directional Lights
-    GLuint DirectionalLightCountID = glGetUniformLocation(shaderID, "directionalLightCount");
-    glUniform1i(DirectionalLightCountID, lights.directionalLights.size());
+    GLint DirectionalLightCountID = glGetUniformLocation(shaderID, "directionalLightCount");
+    if (DirectionalLightCountID != -1)glUniform1i(DirectionalLightCountID, lights.directionalLights.size());
 
     for (unsigned int i = 0; i < lights.directionalLights.size(); i++) {
 
         DirectionLight light = *lights.directionalLights[i];
         std::string lightName = "directionalLight[" + std::to_string(i) + "]";
 
-        GLuint colorID = glGetUniformLocation(shaderID, (lightName + ".Color").c_str());
-        glUniform3f(colorID, light.lightColor.r,
+        GLint colorID = glGetUniformLocation(shaderID, (lightName + ".Color").c_str());
+        if (colorID != -1)glUniform3f(colorID, light.lightColor.r,
                 light.lightColor.g,
                 light.lightColor.b);
 
-        GLuint directionID = glGetUniformLocation(shaderID, (lightName + ".Direction").c_str());
-        glUniform3f(directionID, light.direction.x,
+        GLint directionID = glGetUniformLocation(shaderID, (lightName + ".Direction").c_str());
+        if (directionID != -1)glUniform3f(directionID, light.direction.x,
                 light.direction.y,
                 light.direction.z);
 
-        GLuint intensityID = glGetUniformLocation(shaderID, (lightName + ".Intensity").c_str());
-        glUniform1f(intensityID, light.intensity);
+        GLint intensityID = glGetUniformLocation(shaderID, (lightName + ".Intensity").c_str());
+        if (intensityID != -1)glUniform1f(intensityID, light.intensity);
 
-        GLuint specIntensityID = glGetUniformLocation(shaderID, (lightName + ".SpecularIntensity").c_str());
-        glUniform1f(specIntensityID, light.specular.intensity);
+        GLint specIntensityID = glGetUniformLocation(shaderID, (lightName + ".SpecularIntensity").c_str());
+        if (specIntensityID != -1)glUniform1f(specIntensityID, light.specular.intensity);
 
-        GLuint specPowerID = glGetUniformLocation(shaderID, (lightName + ".SpecularPower").c_str());
-        glUniform1i(specPowerID, light.specular.power);
+        GLint specPowerID = glGetUniformLocation(shaderID, (lightName + ".SpecularPower").c_str());
+        if (specPowerID != -1)glUniform1i(specPowerID, light.specular.power);
     }
 
     // Point Lights
@@ -113,82 +113,82 @@ void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights li
         PointLight light = *(lights.pointLights[i]);
         std::string lightName = "pointLight[" + std::to_string(i) + "]";
 
-        GLuint colorID = glGetUniformLocation(shaderID, (lightName + ".Color").c_str());
-        glUniform3f(colorID, light.lightColor.r,
+        GLint colorID = glGetUniformLocation(shaderID, (lightName + ".Color").c_str());
+        if (colorID != -1)glUniform3f(colorID, light.lightColor.r,
                 light.lightColor.g,
                 light.lightColor.b);
 
-        GLuint positionID = glGetUniformLocation(shaderID, (lightName + ".Position").c_str());
-        glUniform3f(positionID, light.position.x,
+        GLint positionID = glGetUniformLocation(shaderID, (lightName + ".Position").c_str());
+        if (positionID != -1)glUniform3f(positionID, light.position.x,
                 light.position.y,
                 light.position.z);
 
-        GLuint intensityID = glGetUniformLocation(shaderID, (lightName + ".Intensity").c_str());
-        glUniform1f(intensityID, light.intensity);
+        GLint intensityID = glGetUniformLocation(shaderID, (lightName + ".Intensity").c_str());
+        if (intensityID != -1)glUniform1f(intensityID, light.intensity);
 
-        GLuint specIntensityID = glGetUniformLocation(shaderID, (lightName + ".SpecularIntensity").c_str());
-        glUniform1f(specIntensityID, light.specular.intensity);
+        GLint specIntensityID = glGetUniformLocation(shaderID, (lightName + ".SpecularIntensity").c_str());
+        if (specIntensityID != -1)glUniform1f(specIntensityID, light.specular.intensity);
 
-        GLuint specPowerID = glGetUniformLocation(shaderID, (lightName + ".SpecularPower").c_str());
-        glUniform1i(specPowerID, light.specular.power);
+        GLint specPowerID = glGetUniformLocation(shaderID, (lightName + ".SpecularPower").c_str());
+        if (specPowerID != -1)glUniform1i(specPowerID, light.specular.power);
 
-        GLuint falloffConstantID = glGetUniformLocation(shaderID, (lightName + ".Falloff.constant").c_str());
-        glUniform1f(falloffConstantID, light.falloff.constant);
+        GLint falloffConstantID = glGetUniformLocation(shaderID, (lightName + ".Falloff.constant").c_str());
+        if (falloffConstantID != -1)glUniform1f(falloffConstantID, light.falloff.constant);
 
-        GLuint falloffLinearID = glGetUniformLocation(shaderID, (lightName + ".Falloff.linear").c_str());
-        glUniform1f(falloffLinearID, light.falloff.linear);
+        GLint falloffLinearID = glGetUniformLocation(shaderID, (lightName + ".Falloff.linear").c_str());
+        if (falloffLinearID != -1)glUniform1f(falloffLinearID, light.falloff.linear);
 
-        GLuint falloffExponentialID = glGetUniformLocation(shaderID, (lightName + ".Falloff.exponential").c_str());
-        glUniform1f(falloffExponentialID, light.falloff.exponential);
+        GLint falloffExponentialID = glGetUniformLocation(shaderID, (lightName + ".Falloff.exponential").c_str());
+        if (falloffExponentialID != -1)glUniform1f(falloffExponentialID, light.falloff.exponential);
 
     }
 
     // Spot Lights
-    GLuint SpottLightCountID = glGetUniformLocation(shaderID, "spotLightCount");
-    glUniform1i(SpottLightCountID, lights.pointLights.size());
+    GLint SpottLightCountID = glGetUniformLocation(shaderID, "spotLightCount");
+    if (SpottLightCountID != -1)glUniform1i(SpottLightCountID, lights.pointLights.size());
 
     for (unsigned int i = 0; i < lights.spotLights.size(); i++) {
 
         SpotLight light = *(lights.spotLights[i]);
         std::string lightName = "spotLight[" + std::to_string(i) + "]";
 
-        GLuint colorID = glGetUniformLocation(shaderID, (lightName + ".Color").c_str());
-        glUniform3f(colorID, light.lightColor.r,
+        GLint colorID = glGetUniformLocation(shaderID, (lightName + ".Color").c_str());
+        if (colorID != -1)glUniform3f(colorID, light.lightColor.r,
                 light.lightColor.g,
                 light.lightColor.b);
 
-        GLuint positionID = glGetUniformLocation(shaderID, (lightName + ".Position").c_str());
-        glUniform3f(positionID, light.position.x,
+        GLint positionID = glGetUniformLocation(shaderID, (lightName + ".Position").c_str());
+        if (positionID != -1)glUniform3f(positionID, light.position.x,
                 light.position.y,
                 light.position.z);
 
-        GLuint intensityID = glGetUniformLocation(shaderID, (lightName + ".Intensity").c_str());
-        glUniform1f(intensityID, light.intensity);
+        GLint intensityID = glGetUniformLocation(shaderID, (lightName + ".Intensity").c_str());
+        if (intensityID != -1)glUniform1f(intensityID, light.intensity);
 
-        GLuint specIntensityID = glGetUniformLocation(shaderID, (lightName + ".SpecularIntensity").c_str());
-        glUniform1f(specIntensityID, light.specular.intensity);
+        GLint specIntensityID = glGetUniformLocation(shaderID, (lightName + ".SpecularIntensity").c_str());
+        if (specIntensityID != -1)glUniform1f(specIntensityID, light.specular.intensity);
 
-        GLuint specPowerID = glGetUniformLocation(shaderID, (lightName + ".SpecularPower").c_str());
-        glUniform1i(specPowerID, light.specular.power);
+        GLint specPowerID = glGetUniformLocation(shaderID, (lightName + ".SpecularPower").c_str());
+        if (specPowerID != -1)glUniform1i(specPowerID, light.specular.power);
 
-        GLuint falloffConstantID = glGetUniformLocation(shaderID, (lightName + ".Falloff.constant").c_str());
-        glUniform1f(falloffConstantID, light.falloff.constant);
+        GLint falloffConstantID = glGetUniformLocation(shaderID, (lightName + ".Falloff.constant").c_str());
+        if (falloffConstantID != -1)glUniform1f(falloffConstantID, light.falloff.constant);
 
-        GLuint falloffLinearID = glGetUniformLocation(shaderID, (lightName + ".Falloff.linear").c_str());
-        glUniform1f(falloffLinearID, light.falloff.linear);
+        GLint falloffLinearID = glGetUniformLocation(shaderID, (lightName + ".Falloff.linear").c_str());
+        if (falloffLinearID != -1)glUniform1f(falloffLinearID, light.falloff.linear);
 
-        GLuint falloffExponentialID = glGetUniformLocation(shaderID, (lightName + ".Falloff.exponential").c_str());
-        glUniform1f(falloffExponentialID, light.falloff.exponential);
+        GLint falloffExponentialID = glGetUniformLocation(shaderID, (lightName + ".Falloff.exponential").c_str());
+        if (falloffExponentialID != -1)glUniform1f(falloffExponentialID, light.falloff.exponential);
 
-        GLuint directionID = glGetUniformLocation(shaderID, (lightName + ".Direction").c_str());
-        glUniform3f(directionID, light.direction.x,
+        GLint directionID = glGetUniformLocation(shaderID, (lightName + ".Direction").c_str());
+        if (directionID != -1)glUniform3f(directionID, light.direction.x,
                 light.direction.y,
                 light.direction.z);
-        GLuint cutoffID = glGetUniformLocation(shaderID, (lightName + ".Cutoff").c_str());
-        glUniform1f(cutoffID, light.cutoff);
+        GLint cutoffID = glGetUniformLocation(shaderID, (lightName + ".Cutoff").c_str());
+        if (cutoffID != -1)glUniform1f(cutoffID, light.cutoff);
 
-        GLuint hardnessID = glGetUniformLocation(shaderID, (lightName + ".Hardness").c_str());
-        glUniform1f(hardnessID, light.hardness);
+        GLint hardnessID = glGetUniformLocation(shaderID, (lightName + ".Hardness").c_str());
+        if (hardnessID != -1)glUniform1f(hardnessID, light.hardness);
 
     }
 

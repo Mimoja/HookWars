@@ -10,6 +10,11 @@
 #define PLAYER_BASE_ROTATION (glm::pi<float>())
 #define PLAYER_RADIUS 1.0f
 
+#define HEALTHBAR_MODEL "assets/health.obj"
+#define HEALTHBAR_SCALING 0.8f
+#define HEALTHBAR_LENGTH 6.0f
+#define HEALTHBAR_HEIGHT 2.0f
+
 #define HOOK_MODEL "assets/hook.obj"
 #define HOOK_SCALING 0.4f
 #define HOOK_SPEED 0.5f
@@ -48,6 +53,9 @@
 // Shading
 #define GEOMETRIE_VERTEX "shader/geometrie.vs"
 #define GEOMETRIE_FRAGMENT "shader/geometrie.fs"
+
+#define HEALTHBAR_VERTEX "shader/health.vs"
+#define HEALTHBAR_FRAGMENT "shader/health.fs"
 
 #define SHADOW_VERTEX "shader/shadow.vs"
 #define SHADOW_FRAGMENT "shader/shadow.fs"
