@@ -5,11 +5,11 @@
       <in>Camera.cpp</in>
       <in>Chain.cpp</in>
       <in>GameObject.cpp</in>
+      <in>HealthBar.cpp</in>
       <in>Hook.cpp</in>
       <in>Model.cpp</in>
       <in>Player.cpp</in>
       <in>Shader.cpp</in>
-      <in>ShadowMap.cpp</in>
       <in>Texture.cpp</in>
       <in>lodepng.cpp</in>
       <in>main.cpp</in>
@@ -20,6 +20,7 @@
                    projectFiles="false"
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>Makefile</itemPath>
+      <itemPath>nbproject/private/launcher.properties</itemPath>
     </logicalFolder>
   </logicalFolder>
   <sourceFolderFilter>^(nbproject)$</sourceFolderFilter>
@@ -45,7 +46,7 @@
           <buildCommand>${MAKE} -f Makefile</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
           <executablePath>game</executablePath>
-          <ccTool>
+          <ccTool flags="0">
             <preprocessorList>
               <Elem>GLM_FORCE_RADIANS</Elem>
               <Elem>LINUX</Elem>
@@ -70,6 +71,10 @@
         <ccTool flags="0">
         </ccTool>
       </item>
+      <item path="HealthBar.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
       <item path="Hook.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
         </ccTool>
@@ -83,10 +88,6 @@
         </ccTool>
       </item>
       <item path="Shader.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-        </ccTool>
-      </item>
-      <item path="ShadowMap.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
         </ccTool>
       </item>

@@ -3,42 +3,65 @@
 #include "stdio.h"
 #include "util.h"
 
+extern std::vector<GameObject*> allUpdateObjects;
+extern std::vector<GameObject*> allRenderObjects;
+extern Lights allLightSources;
+
 void Player::calibrate() {
-    joystickCalibration[0].x = joystickAxis[MOVE_LEFT_RIGHT];
-    joystickCalibration[0].z = joystickAxis[MOVE_UP_DOWN];
-    joystickCalibration[1].x = joystickAxis[TURN_LEFT_RIGHT];
-    joystickCalibration[1].y = joystickAxis[TURN_UP_DOWN];
+    joystickCalibration[0].x = joystickAxis[XBOX_ONE_GAMEPAD::MOVE_LEFT_RIGHT];
+    joystickCalibration[0].z = joystickAxis[XBOX_ONE_GAMEPAD::MOVE_UP_DOWN];
+    joystickCalibration[1].x = joystickAxis[XBOX_ONE_GAMEPAD::TURN_LEFT_RIGHT];
+    joystickCalibration[1].y = joystickAxis[XBOX_ONE_GAMEPAD::TURN_UP_DOWN];
 }
 
 Player::Player(const char* file) : GameObject(file) {
-	hook = NULL;
-	chain = NULL;
-	pulling = false;
+    hook = NULL;
+    chain = NULL;
+    pulling = false;
+    health = 1.0f;
+    hookpoint = mModel.position;
+    new Rotor(this, -0.15f, 2.0f);
+    mModel.scaling = glm::vec3(PLAYER_SCALING, PLAYER_SCALING, PLAYER_SCALING);
+    hookSight = new PointLight();
+    hookSight->lightColor = glm::vec3(1.0f, 0.3f, 0.1f);
+    hookSight->intensity = 42.0f;
+    hookSight->position = glm::vec3(0.0f, -10.5f, 2.0f);
+    hookSight->falloff.linear = 0.0f;
+    hookSight->falloff.exponential = 0.5f;
+    hookSight->specular.intensity = 10.3f;
+    hookSight->specular.power = 32;
+    allLightSources.pointLights.push_back(hookSight);
 }
 
 void Player::update() {
+    // update chain first if we are pushing
+    if (hook != NULL && !pulling) {
+        if (chain != NULL) {
+            chain->update();
+        } else {
+            hook->update();
+        }
+    }
 
-    if (fabs(joystickAxis[MOVE_LEFT_RIGHT]) > GAMEPAD_CUTOFF) {
-        movementVector.x = joystickAxis[MOVE_LEFT_RIGHT] - joystickCalibration[0].x;
+    if (fabs(joystickAxis[XBOX_ONE_GAMEPAD::MOVE_LEFT_RIGHT]) > GAMEPAD_CUTOFF) {
+        movementVector.x = joystickAxis[XBOX_ONE_GAMEPAD::MOVE_LEFT_RIGHT] - joystickCalibration[0].x;
     } else movementVector.x = 0.0f;
-    if (fabs(joystickAxis[MOVE_UP_DOWN]) > GAMEPAD_CUTOFF) {
-        movementVector.z = joystickAxis[MOVE_UP_DOWN] - joystickCalibration[0].z;
+    if (fabs(joystickAxis[XBOX_ONE_GAMEPAD::MOVE_UP_DOWN]) > GAMEPAD_CUTOFF) {
+        movementVector.z = joystickAxis[XBOX_ONE_GAMEPAD::MOVE_UP_DOWN] - joystickCalibration[0].z;
     } else movementVector.z = 0.0f;
 
-    rotationVector.x = joystickAxis[TURN_LEFT_RIGHT] - joystickCalibration[1].x;
-    rotationVector.y = joystickAxis[TURN_UP_DOWN] - joystickCalibration[1].y;
+    rotationVector.x = joystickAxis[XBOX_ONE_GAMEPAD::TURN_LEFT_RIGHT] - joystickCalibration[1].x;
+    rotationVector.y = joystickAxis[XBOX_ONE_GAMEPAD::TURN_UP_DOWN] - joystickCalibration[1].y;
 
-
-
-    // TODO check collision
-
-	glm::vec3 normal = circleCollision(mModel.position, PLAYER_RADIUS, 8);
+    glm::vec3 normal = circleCollision(mModel.position, PLAYER_RADIUS, 8, true);
 
     if (glm::length(normal) == 0 || glm::dot(normal, movementVector) > 0.0f) {
         mModel.position += PLAYER_MAXSPEED * movementVector;
     } else {
-		mModel.position += PLAYER_MAXSPEED * slideAlong(movementVector, glm::normalize(normal));
-	}
+        mModel.position += PLAYER_MAXSPEED * slideAlong(movementVector, glm::normalize(normal));
+    }
+
+    hookpoint = mModel.position + 1.3f * glm::vec3(rotationVector.x, 0.2f, rotationVector.y);
 
     glm::vec3 navEntry = getNavigationEntry(mModel.position + movementVector * PLAYER_MAXSPEED);
     if (navEntry.g == 1.0f) {
@@ -51,55 +74,87 @@ void Player::update() {
 
     // Fire or Pull
     double now = glfwGetTime();
-    if (joystickAxis[FIRE] > 0 && now - lastHookTime > HOOK_COOLDOWN){
-        if (hook == NULL) {
-			// Fire new hook
-        	lastHookTime = now;
-        	printf("Hook fired\n");
-        	hook = new Hook(playerNumber, mModel.position, mModel.rotation.y - PLAYER_BASE_ROTATION);
-		} else {
-			// Pull hook
-			lastHookTime = now;
-			printf("Retracting Hook\n");
-			pulling = true;
-			if (chain == NULL) {
-				hook->pull();
-			} else {
-				chain->pull();
-			}
-		}
+    if (joystickAxis[XBOX_ONE_GAMEPAD::FIRE] > 0) {
+        if (hook == NULL && now - lastHookTime > HOOK_COOLDOWN) {
+            // Fire new hook
+            lastHookTime = now;
+            hook = new Hook(playerNumber, mModel.position, mModel.rotation.y - PLAYER_BASE_ROTATION, hookSight);
+        } else if (hook != NULL && now - lastHookTime > HOOK_RETRACT_TIME) {
+            pull();
+        }
     }
 
-	// Extend/Retract Hook if needed
-	if (hook != NULL) {
-		if (pulling) {
-			if (chain != NULL) {
-				if (glm::length(mModel.position - chain->mModel.position) < 2*CHAIN_DISTANCE){
-					auto next = chain->next;
-					chain->kill();
-					chain = next;
-				}
-			} else {
-				if (glm::length(mModel.position -  hook->mModel.position) > CHAIN_DISTANCE){
-					hook->kill();
-					hook = NULL;
-					pulling = false;
-				}
-			}
-		} else {
-			if (chain != NULL) {
-				if (glm::length(mModel.position - chain->mModel.position) > CHAIN_DISTANCE){
-					chain = new Chain(playerNumber, mModel.position, hook->mModel.position - mModel.position, chain);
-				}
-			} else {
-				if (glm::length(mModel.position -  hook->mModel.position) > CHAIN_DISTANCE){
-					chain = new Chain(playerNumber, mModel.position, hook->mModel.position - mModel.position, hook);
-				}
-			}
-		}
-	}
+    // Pull automatically if Hook too long
+    if (hook != NULL && now - lastHookTime > HOOK_LIFETIME) {
+        pull();
+    }
 
-	// Move Light Source
+    // Extend/Retract Hook if needed
+    if (hook != NULL) {
+        if (pulling) {
+            if (chain != NULL) {
+                if (glm::length(hookpoint - chain->mModel.position) < 1.5f * CHAIN_DISTANCE) {
+                    auto next = chain->next;
+                    chain->kill();
+                    chain = next;
+                }
+            } else {
+                if (glm::length(hookpoint - hook->mModel.position) < 1.5f * CHAIN_DISTANCE) {
+                    hook->kill();
+                    hook = NULL;
+                    pulling = false;
+                }
+            }
+        } else {
+            if (chain != NULL) {
+                if (glm::length(hookpoint - chain->mModel.position) > CHAIN_DISTANCE) {
+                    chain = new Chain(playerNumber, hookpoint, hook->mModel.position - mModel.position, chain);
+                }
+            } else {
+                if (glm::length(hookpoint - hook->mModel.position) > CHAIN_DISTANCE) {
+                    chain = new Chain(playerNumber, hookpoint, hook->mModel.position - mModel.position, hook);
+                }
+            }
+        }
+    }
+
+    // update chain last if we are pulling
+    if (hook != NULL && pulling) {
+        if (chain != NULL) {
+            chain->update();
+        } else {
+            hook->update();
+        }
+    }
+
+    if (hook == NULL) {
+        hookSight->position = glm::vec3(0.0f, -10.5f, 2.0f);
+    }
+
+    // Move Light Source
     sight->position.x = mModel.position.x;
     sight->position.z = mModel.position.z;
+}
+
+void Player::pull() {
+    pulling = true;
+    if (chain == NULL) {
+        hook->pull();
+    } else {
+        chain->pull();
+    }
+}
+
+Rotor::Rotor(Player* owner, float rotation, float height) : GameObject(ROTOR_MODEL) {
+    player = owner;
+    mModel.position.y = height;
+    rot = rotation;
+    allUpdateObjects.push_back(this);
+    allRenderObjects.push_back(this);
+}
+
+void Rotor::update() {
+    mModel.position.x = player->mModel.position.x;
+    mModel.position.z = player->mModel.position.z;
+    mModel.rotation.y += rot;
 }

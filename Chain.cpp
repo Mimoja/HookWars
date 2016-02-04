@@ -1,9 +1,11 @@
 #include "Chain.h"
 #include "config.h"
+#include "util.h"
 #include <algorithm>
+#include <vector>
 
-extern std::vector<GameObject*> allGameObjects;
 extern std::vector<Player*> allPlayers;
+extern std::vector<GameObject*> allRenderObjects;
 
 Chain::Chain(int player, glm::vec3 origin, glm::vec3 velocity)
 		: GameObject(CHAIN_MODEL){
@@ -16,7 +18,7 @@ Chain::Chain(int player, glm::vec3 origin, glm::vec3 velocity)
 	pulling = false;
 	mModel.rotation.y = glm::atan(vel.x, vel.z) + CHAIN_BASE_ROTATION;
 	mModel.scaling = glm::vec3(CHAIN_SCALING, CHAIN_SCALING, CHAIN_SCALING);
-	allGameObjects.push_back(this);
+	allRenderObjects.push_back(this);
 }
 
 Chain::Chain(int player, glm::vec3 origin, glm::vec3 velocity, Chain* next)
@@ -34,11 +36,15 @@ Chain::Chain(int player, glm::vec3 origin, glm::vec3 velocity, Hook*  hook)
 void Chain::kill(){
 	// invalidate pointers
 	if(next != NULL) {
-		next->prev = NULL;
+		next->prev = prev;
 	} else {
-		hook->prev = NULL;
+		hook->prev = prev;
 	}
-	allGameObjects.erase(std::remove(allGameObjects.begin(), allGameObjects.end(), this), allGameObjects.end());
+	if(prev != NULL) {
+		prev->next = next;
+	}
+
+	allRenderObjects.erase(std::remove(allRenderObjects.begin(), allRenderObjects.end(), this), allRenderObjects.end());
 	delete this;
 }
 
@@ -51,31 +57,53 @@ void Chain::pull(){
 	}
 }
 
+
 void Chain::update(){
 	glm::vec3 follow;
+
 	if(pulling) {
 		// pull
-		if(prev != NULL){
-			follow = prev->mModel.position;
+		Chain* p = prev;
+		do {
+			if (p != NULL) {
+				follow = p->mModel.position;
+				p = p->prev;
+			} else {
+				follow = allPlayers[owner]->hookpoint;
+			}
+		} while(glm::length(follow - mModel.position) == 0);
+
+		if (p == NULL) {
+			mModel.position += glm::normalize(follow - mModel.position) * CHAIN_PULL;
 		} else {
-			follow = allPlayers[owner]->mModel.position;
+			mModel.position = moveTowards(mModel.position, follow, CHAIN_BASE_PULL);
 		}
+
+		// update chain lasst because we are pulling
+		this->updateChainLinks();
 	} else {
+		// update chain first because we are pushing
+		this->updateChainLinks();
+
 		// push
 		if(next != NULL) {
 			follow = next->mModel.position;
 		} else {
 			follow = hook->mModel.position;
 		}
+
+		mModel.position = moveTowards(mModel.position, follow, CHAIN_BASE_PUSH);
 	}
+	glm::vec3 ne = (next != 0) ? next->mModel.position : hook->mModel.position;
+	glm::vec3 pr = (prev != 0) ? prev->mModel.position : allPlayers[owner]->hookpoint;
+	glm::vec3 dif = ne-pr;
+	mModel.rotation.y = glm::atan(dif.x, dif.z) + CHAIN_BASE_ROTATION + glm::pi<float>();
+}
 
-	glm::vec3 dif = follow - mModel.position;
-
-	if(glm::length(dif) > CHAIN_DISTANCE) {
-		mModel.position += std::min(CHAIN_DISTANCE*4, (glm::length(dif) - CHAIN_DISTANCE)) * normalize(dif);
+void Chain::updateChainLinks(){
+	if(next != NULL) {
+		next->update();
 	} else {
-		mModel.position += CHAIN_BASE_PULL * normalize(dif);
+		hook->update();
 	}
-	mModel.rotation.y = glm::atan(dif.x, dif.z) + CHAIN_BASE_ROTATION;
-	mModel.position = mModel.position;
 }

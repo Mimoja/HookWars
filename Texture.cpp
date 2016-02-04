@@ -13,7 +13,8 @@ void Texture::bindToUnit(GLenum textureUnir){
     glBindTexture(GL_TEXTURE_2D, ID);
 }
 
-bool Texture::loadPNG(char* path){
+bool Texture::loadPNG(const char* path){
+    printf("Loading Texture from %s\n",path);
     unsigned int res = lodepng::decode(image, width, height, path);
 
     if(res != 0)
@@ -24,7 +25,7 @@ bool Texture::loadPNG(char* path){
 
     glBindTexture(GL_TEXTURE_2D, ID);
 
-    glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, &image[0]);
+    glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, &image[0]);
 
     generateMipmap();
 
