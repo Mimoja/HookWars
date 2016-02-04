@@ -94,7 +94,9 @@ void JoystickPlayer::calibrate() {
     joystickCalibration[1].y = joystickAxis[XBOX_ONE_GAMEPAD::TURN_UP_DOWN];
 }
 
-Player::Player(const char* file, int number) : GameObject(file) {
+extern GameObject* referenceHook;
+
+Player::Player(int number) : GameObject(referenceHook) {
     hook = NULL;
     chain = NULL;
     pulling = false;

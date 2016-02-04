@@ -13,7 +13,7 @@ class HealthBar;
 class Player : public GameObject {
 public:
     Player();
-    Player(const char* file, int number);
+    Player(int number);
     virtual void update();
     int playerNumber;
     PointLight* sight;
@@ -35,7 +35,7 @@ private:
 class KeyboardPlayer : public Player {
 public:
 
-    KeyboardPlayer(const char* file, int number) : Player(file, number) {
+    KeyboardPlayer(int number) : Player(number) {
     }
     virtual void update();
 };
@@ -43,7 +43,7 @@ public:
 class JoystickPlayer : public Player {
 public:
 
-    JoystickPlayer(const char* file, int number) : Player(file, number) {
+    JoystickPlayer(int number) : Player(number) {
     }
     void calibrate();
     virtual void update();
