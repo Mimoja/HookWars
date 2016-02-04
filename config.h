@@ -71,9 +71,4 @@ namespace XBOX_ONE_GAMEPAD {
     };
 }
 
-enum PlayerColor {
-    blue = 1,
-    red = 2,
-};
-
 #endif

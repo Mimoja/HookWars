@@ -118,7 +118,7 @@ int main(void) {
         const char* joystickName = glfwGetJoystickName(GLFW_JOYSTICK_1 + x);
         if (joystickName != 0) {
             printf("Found Joystick %s\n", joystickName);
-            Player* newPlayer = new Player(PLAYER_MODEL);
+            JoystickPlayer* newPlayer = new JoystickPlayer(PLAYER_MODEL);
             newPlayer->CONTROLER_NAME = joystickName;
             newPlayer->playerNumber = x;
             newPlayer->mModel.position = glm::vec3(-5.0f, 2.0f, 0.0f);
@@ -147,7 +147,37 @@ int main(void) {
             allUpdateObjects.push_back(h);
         }
     }
-    printf("%d Player found\n", (int) allPlayers.size());
+    if( allPlayers.size() != 0 ){
+        printf("%d Player found\n", (int) allPlayers.size());
+    }else{
+        printf("Falling back to keyboard players\n");
+        for(int x = 0; x<2 ; x++){
+            KeyboardPlayer* newPlayer = new KeyboardPlayer(PLAYER_MODEL);
+            newPlayer->playerNumber = x;
+            newPlayer->mModel.position = glm::vec3(-5.0f, 2.0f, 0.0f);
+            newPlayer->color = glm::vec3(0.9f, 0.0f, 0.1f);
+            newPlayer->useColor = false;
+            allPlayers.push_back(newPlayer);
+            allUpdateObjects.push_back(newPlayer);
+            allRenderObjects.push_back(newPlayer);
+
+            PointLight* point1 = new PointLight();
+            point1->lightColor = glm::vec3(0.7f, 0.7f, 1.0f);
+            point1->intensity = 22.0f;
+            point1->position = glm::vec3(0.0f, 4.5f, 3.0f);
+            point1->falloff.linear = 0.0f;
+            point1->falloff.exponential = 1.0f;
+            point1->specular.intensity = 0.0f;
+            point1->specular.power = 32;
+            newPlayer->sight = point1;
+            allLightSources.pointLights.push_back(point1);
+
+            HealthBar* h = new HealthBar(newPlayer);
+            allRenderObjects.push_back(h);
+            allUpdateObjects.push_back(h);
+        }
+    }
+
 
     // Black background
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -259,12 +289,7 @@ double nowTime;
 void mainLoop(long frameCount) {
 
     nowTime = glfwGetTime();
-    for (unsigned int j = 0; j < allPlayers.size(); j++) {
-        allPlayers[j]->joystickAxis = glfwGetJoystickAxes(GLFW_JOYSTICK_1 + j,
-                &allPlayers[j]->joystickAxisCount);
-        allPlayers[j]->joystickButtons = glfwGetJoystickButtons(GLFW_JOYSTICK_1 + j,
-                &allPlayers[j]->joystickButtonsCount);
-    }
+
 
     if (nowTime - lastUpdateTime > (1 / 60)) {
         for (unsigned int i = 0; i < allUpdateObjects.size(); i++) {
