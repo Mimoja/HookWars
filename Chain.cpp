@@ -7,8 +7,10 @@
 extern std::vector<Player*> allPlayers;
 extern std::vector<GameObject*> allRenderObjects;
 
+extern GameObject* referenceChain;
+
 Chain::Chain(int player, glm::vec3 origin, glm::vec3 velocity)
-		: GameObject(CHAIN_MODEL){
+		: GameObject(referenceChain){
     owner = player;
     mModel.position = origin;
     vel = velocity;

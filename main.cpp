@@ -36,6 +36,8 @@ unsigned navigationMapHeight;
 unsigned navigationMapWidth;
 
 GameObject* map_ptr;
+GameObject* referenceChain;
+
 
 int WindowWidth = WINDOW_WIDTH;
 int WindowHeight = WINDOW_HEIGHT;
@@ -162,6 +164,8 @@ int main(void) {
     shadowShaderID = buildShader(SHADOW_VERTEX, SHADOW_FRAGMENT);
     healthBarShaderID = buildShader(HEALTHBAR_VERTEX, HEALTHBAR_FRAGMENT);
 
+    
+    referenceChain = new GameObject(CHAIN_MODEL);
     map_ptr = new GameObject(MAP_MODEL);
     map_ptr->mModel.scaling = glm::vec3(MAP_SCALING);
     map_ptr->mModel.position = glm::vec3(0.0f);

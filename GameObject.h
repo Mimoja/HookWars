@@ -16,7 +16,7 @@
 class GameObject {
 public:
     GameObject();
-    GameObject(const GameObject & go);
+    GameObject(const GameObject* go);
     GameObject(const char* file);
     Model mModel;
     virtual void update();
