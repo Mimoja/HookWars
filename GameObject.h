@@ -16,6 +16,7 @@
 class GameObject {
 public:
     GameObject();
+    GameObject(const GameObject & go);
     GameObject(const char* file);
     Model mModel;
     virtual void update();
@@ -24,8 +25,6 @@ public:
     void kill();
     glm::vec3 rotationVector;
     glm::vec3 movementVector;
-    glm::vec3 color;
-    bool useColor;
     float radius;
 };
 

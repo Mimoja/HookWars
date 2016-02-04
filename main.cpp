@@ -118,33 +118,14 @@ int main(void) {
         const char* joystickName = glfwGetJoystickName(GLFW_JOYSTICK_1 + x);
         if (joystickName != 0) {
             printf("Found Joystick %s\n", joystickName);
-            JoystickPlayer* newPlayer = new JoystickPlayer(PLAYER_MODEL);
+            JoystickPlayer* newPlayer = new JoystickPlayer(PLAYER_MODEL,x);
             newPlayer->CONTROLER_NAME = joystickName;
-            newPlayer->playerNumber = x;
-            newPlayer->mModel.position = glm::vec3(-5.0f, 2.0f, 0.0f);
             newPlayer->joystickAxis = glfwGetJoystickAxes(GLFW_JOYSTICK_1 + x,
                     &newPlayer->joystickAxisCount);
             newPlayer->calibrate();
-            newPlayer->color = glm::vec3(0.9f, 0.0f, 0.1f);
-            newPlayer->useColor = false;
             allPlayers.push_back(newPlayer);
             allUpdateObjects.push_back(newPlayer);
             allRenderObjects.push_back(newPlayer);
-
-            PointLight* point1 = new PointLight();
-            point1->lightColor = glm::vec3(0.7f, 0.7f, 1.0f);
-            point1->intensity = 22.0f;
-            point1->position = glm::vec3(0.0f, 4.5f, 3.0f);
-            point1->falloff.linear = 0.0f;
-            point1->falloff.exponential = 1.0f;
-            point1->specular.intensity = 0.0f;
-            point1->specular.power = 32;
-            newPlayer->sight = point1;
-            allLightSources.pointLights.push_back(point1);
-
-            HealthBar* h = new HealthBar(newPlayer);
-            allRenderObjects.push_back(h);
-            allUpdateObjects.push_back(h);
         }
     }
     if( allPlayers.size() != 0 ){
@@ -152,32 +133,12 @@ int main(void) {
     }else{
         printf("Falling back to keyboard players\n");
         for(int x = 0; x<2 ; x++){
-            KeyboardPlayer* newPlayer = new KeyboardPlayer(PLAYER_MODEL);
-            newPlayer->playerNumber = x;
-            newPlayer->mModel.position = glm::vec3(-5.0f, 2.0f, 0.0f);
-            newPlayer->color = glm::vec3(0.9f, 0.0f, 0.1f);
-            newPlayer->useColor = false;
+            KeyboardPlayer* newPlayer = new KeyboardPlayer(PLAYER_MODEL,x);
             allPlayers.push_back(newPlayer);
             allUpdateObjects.push_back(newPlayer);
             allRenderObjects.push_back(newPlayer);
-
-            PointLight* point1 = new PointLight();
-            point1->lightColor = glm::vec3(0.7f, 0.7f, 1.0f);
-            point1->intensity = 22.0f;
-            point1->position = glm::vec3(0.0f, 4.5f, 3.0f);
-            point1->falloff.linear = 0.0f;
-            point1->falloff.exponential = 1.0f;
-            point1->specular.intensity = 0.0f;
-            point1->specular.power = 32;
-            newPlayer->sight = point1;
-            allLightSources.pointLights.push_back(point1);
-
-            HealthBar* h = new HealthBar(newPlayer);
-            allRenderObjects.push_back(h);
-            allUpdateObjects.push_back(h);
         }
     }
-
 
     // Black background
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -202,15 +163,12 @@ int main(void) {
     healthBarShaderID = buildShader(HEALTHBAR_VERTEX, HEALTHBAR_FRAGMENT);
 
     map_ptr = new GameObject(MAP_MODEL);
-    map_ptr->mModel.scaling = glm::vec3(MAP_SCALING, MAP_SCALING, MAP_SCALING);
-    map_ptr->mModel.position = glm::vec3(0, 0, 0);
-    map_ptr->mModel.rotation = glm::vec3(0, 0, 0);
-    map_ptr->mModel.diffuseTexture = new Texture();
-    map_ptr->mModel.diffuseTexture->loadPNG(MAP_DIFFUSE);
-    map_ptr->mModel.normalTexture = new Texture();
-    map_ptr->mModel.normalTexture->loadPNG(MAP_NORMAL);
-    map_ptr->mModel.ssaoTexture = new Texture();
-    map_ptr->mModel.ssaoTexture->loadPNG(MAP_AO);
+    map_ptr->mModel.scaling = glm::vec3(MAP_SCALING);
+    map_ptr->mModel.position = glm::vec3(0.0f);
+    map_ptr->mModel.rotation = glm::vec3(0.0f);
+    map_ptr->mModel.diffuseTexture = new Texture(MAP_DIFFUSE);
+    map_ptr->mModel.normalTexture = new Texture(MAP_NORMAL);
+    map_ptr->mModel.ssaoTexture = new Texture(MAP_AO);
     allRenderObjects.push_back(map_ptr);
 
     allLightSources.ambient.intensity = 0.6f;
@@ -241,7 +199,6 @@ int main(void) {
 
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    //
 
     glGenFramebuffers(1, &frameBuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);

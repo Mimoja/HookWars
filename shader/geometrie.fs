@@ -71,10 +71,10 @@ uniform int directionalLightCount;
 uniform DirectionalLight directionalLight[10];
 
 uniform int pointLightCount;
-uniform SpotLight spotLight[10];
+uniform SpotLight spotLight[20];
 
 uniform int spotLightCount;
-uniform PointLight pointLight[10];
+uniform PointLight pointLight[20];
 
 
 void main(){
@@ -157,7 +157,7 @@ void main(){
             light.Position = (WORLD*vec4(light.Position,1.0f)).xyz;
 
             vec3 LightDirection = (worldPos - light.Position);
-            vec3 LightToPixel = normalize(LightDirection);                             
+            vec3 LightToPixel = normalize(-LightDirection);                             
             float SpotFactor = dot(LightToPixel, light.Direction);   
             if (SpotFactor  > light.Cutoff) { 
                 float Distance = length(LightDirection);

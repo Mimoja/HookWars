@@ -3,40 +3,48 @@
 #include "GameObject.h"
 #include "Hook.h"
 #include "Chain.h"
+#include "HealthBar.h"
 #include <string>
 
 class Hook;
 class Chain;
+class HealthBar;
 
 class Player : public GameObject {
 public:
     Player();
-    Player(const char* file);
+    Player(const char* file, int number);
     virtual void update();
     int playerNumber;
     PointLight* sight;
     PointLight* hookSight;
+    PointLight* canonSight;
     Hook* hook;
     Chain* chain;
     void pull();
     bool pulling;
     float health;
     glm::vec3 hookpoint;
-    bool fire=false;
+    bool fire = false;
+    HealthBar* healthBar;
 private:
     double lastHookTime;
 
 };
 
-class KeyboardPlayer : public Player{
+class KeyboardPlayer : public Player {
 public:
-    KeyboardPlayer(const char* file):Player(file){}
+
+    KeyboardPlayer(const char* file, int number) : Player(file, number) {
+    }
     virtual void update();
 };
 
-class JoystickPlayer : public Player{
+class JoystickPlayer : public Player {
 public:
-    JoystickPlayer(const char* file):Player(file){}
+
+    JoystickPlayer(const char* file, int number) : Player(file, number) {
+    }
     void calibrate();
     virtual void update();
     const float* joystickAxis;

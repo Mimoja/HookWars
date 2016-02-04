@@ -7,48 +7,70 @@ extern std::vector<GameObject*> allUpdateObjects;
 extern std::vector<GameObject*> allRenderObjects;
 extern Lights allLightSources;
 
-enum{
- UP=0,
- DOWN ,
- LEFT ,
- RIGHT,
- RTL,
- RTR,
- FIRE,
- };
-int keyboardControls[2][7]={{GLFW_KEY_UP,GLFW_KEY_DOWN,GLFW_KEY_LEFT,GLFW_KEY_RIGHT,GLFW_KEY_K,GLFW_KEY_L,GLFW_KEY_M},{GLFW_KEY_W,GLFW_KEY_S,GLFW_KEY_A,GLFW_KEY_D,GLFW_KEY_C,GLFW_KEY_V,GLFW_KEY_B}};
+enum {
+    UP = 0,
+    DOWN,
+    LEFT,
+    RIGHT,
+    RTL,
+    RTR,
+    FIRE,
+};
+int keyboardControls[2][7] = {
+    {GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT, GLFW_KEY_K, GLFW_KEY_L, GLFW_KEY_M},
+    {GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_C, GLFW_KEY_V, GLFW_KEY_B}
+};
+
+void KeyboardPlayer::update() {
+    // update chain first if we are pushing
+    if (hook != NULL && !pulling) {
+        if (chain != NULL) {
+            chain->update();
+        } else {
+            hook->update();
+        }
+    }
 
 
-void KeyboardPlayer::update(){
     extern GLFWwindow* window;
     movementVector = glm::vec3(0.0f);
-    if(glfwGetKey(window, keyboardControls[playerNumber][UP])==GLFW_PRESS)movementVector.z =-1.0f;
-    else if(glfwGetKey(window, keyboardControls[playerNumber][DOWN])==GLFW_PRESS)movementVector.z =1.0f;
-    if(glfwGetKey(window, keyboardControls[playerNumber][LEFT])==GLFW_PRESS)movementVector.x =-1.0f;
-    else if(glfwGetKey(window, keyboardControls[playerNumber][RIGHT])==GLFW_PRESS)movementVector.x =1.0f;
-    
-    fire = glfwGetKey(window, keyboardControls[playerNumber][FIRE])==GLFW_PRESS;
-    
+    if (glfwGetKey(window, keyboardControls[playerNumber][UP]) == GLFW_PRESS)movementVector.z = -1.0f;
+    else if (glfwGetKey(window, keyboardControls[playerNumber][DOWN]) == GLFW_PRESS)movementVector.z = 1.0f;
+    if (glfwGetKey(window, keyboardControls[playerNumber][LEFT]) == GLFW_PRESS)movementVector.x = -1.0f;
+    else if (glfwGetKey(window, keyboardControls[playerNumber][RIGHT]) == GLFW_PRESS)movementVector.x = 1.0f;
+
+    fire = glfwGetKey(window, keyboardControls[playerNumber][FIRE]) == GLFW_PRESS;
+
 
     rotationVector += 1.0f;
-    
-    if(glfwGetKey(window, keyboardControls[playerNumber][RTL])==GLFW_PRESS && rotationVector.x <= 2.0f)rotationVector.x+=0.1f;
-    else rotationVector.x *=0.9f;
-    if(glfwGetKey(window, keyboardControls[playerNumber][RTR])==GLFW_PRESS && rotationVector.y <= 2.0f)rotationVector.y+=0.1f;
-    else rotationVector.y *=0.9f;
-    
-    if(rotationVector.x>2.0f)rotationVector.x=2.0f;
-    if(rotationVector.y>2.0f)rotationVector.y=2.0f;
-    
+
+    if (glfwGetKey(window, keyboardControls[playerNumber][RTL]) == GLFW_PRESS && rotationVector.x <= 2.0f)rotationVector.x += 0.1f;
+    else rotationVector.x *= 0.9f;
+    if (glfwGetKey(window, keyboardControls[playerNumber][RTR]) == GLFW_PRESS && rotationVector.y <= 2.0f)rotationVector.y += 0.1f;
+    else rotationVector.y *= 0.9f;
+
+    if (rotationVector.x > 2.0f)rotationVector.x = 2.0f;
+    if (rotationVector.y > 2.0f)rotationVector.y = 2.0f;
+
     rotationVector -= 1.0f;
-    
-    
+
+
     Player::update();
 }
 
-void JoystickPlayer::update(){
-	joystickAxis = glfwGetJoystickAxes(GLFW_JOYSTICK_1 + playerNumber, &joystickAxisCount);
-        joystickButtons = glfwGetJoystickButtons(GLFW_JOYSTICK_1 + playerNumber, &joystickButtonsCount);
+void JoystickPlayer::update() {
+    // update chain first if we are pushing
+    if (hook != NULL && !pulling) {
+        if (chain != NULL) {
+            chain->update();
+        } else {
+            hook->update();
+        }
+    }
+
+
+    joystickAxis = glfwGetJoystickAxes(GLFW_JOYSTICK_1 + playerNumber, &joystickAxisCount);
+    joystickButtons = glfwGetJoystickButtons(GLFW_JOYSTICK_1 + playerNumber, &joystickButtonsCount);
 
     if (fabs(joystickAxis[XBOX_ONE_GAMEPAD::MOVE_LEFT_RIGHT]) > GAMEPAD_CUTOFF) {
         movementVector.x = joystickAxis[XBOX_ONE_GAMEPAD::MOVE_LEFT_RIGHT] - joystickCalibration[0].x;
@@ -72,35 +94,53 @@ void JoystickPlayer::calibrate() {
     joystickCalibration[1].y = joystickAxis[XBOX_ONE_GAMEPAD::TURN_UP_DOWN];
 }
 
-Player::Player(const char* file) : GameObject(file) {
+Player::Player(const char* file, int number) : GameObject(file) {
     hook = NULL;
     chain = NULL;
     pulling = false;
     health = 1.0f;
     hookpoint = mModel.position;
     new Rotor(this, -0.15f, 2.0f);
-    mModel.scaling = glm::vec3(PLAYER_SCALING, PLAYER_SCALING, PLAYER_SCALING);
+    mModel.scaling = glm::vec3(PLAYER_SCALING);
+    mModel.position = glm::vec3(-5.0f, 2.0f, 0.0f);
+
+    playerNumber = number;
+
     hookSight = new PointLight();
     hookSight->lightColor = glm::vec3(1.0f, 0.3f, 0.1f);
-    hookSight->intensity = 42.0f;
+    hookSight->intensity = 22.0f;
     hookSight->position = glm::vec3(0.0f, -10.5f, 2.0f);
-    hookSight->falloff.linear = 0.0f;
-    hookSight->falloff.exponential = 0.5f;
-    hookSight->specular.intensity = 10.3f;
+    hookSight->falloff.linear = 0.2f;
+    hookSight->falloff.exponential = 0.2f;
+    hookSight->specular.intensity = 8.3f;
     hookSight->specular.power = 32;
+
+    sight = new PointLight();
+    sight->lightColor = glm::vec3(0.6f, 0.6f, 1.0f);
+    sight->intensity = 10.0f;
+    sight->position = glm::vec3(0.0f, 4.0f, 3.0f);
+    sight->falloff.linear = 0.2f;
+    sight->falloff.exponential = 0.4f;
+    sight->specular.intensity = 0.0f;
+
+    canonSight = new PointLight();
+    canonSight->lightColor = glm::vec3(1.0f, 0.4f, 0.7f);
+    canonSight->intensity = 15.0f;
+    canonSight->position = glm::vec3(0.0f, 1.5f, 3.0f);
+    canonSight->falloff.linear = 0.5f;
+    canonSight->falloff.exponential = 0.5f;
+    canonSight->specular.intensity = 0.0f;
+
+    allLightSources.pointLights.push_back(canonSight);
+    allLightSources.pointLights.push_back(sight);
     allLightSources.pointLights.push_back(hookSight);
+
+    healthBar = new HealthBar(this);
+    allRenderObjects.push_back(healthBar);
+    allUpdateObjects.push_back(healthBar);
 }
 
 void Player::update() {
-    // update chain first if we are pushing
-    if (hook != NULL && !pulling) {
-        if (chain != NULL) {
-            chain->update();
-        } else {
-            hook->update();
-        }
-    }
-
 
     glm::vec3 normal = circleCollision(mModel.position, PLAYER_RADIUS, 8, true);
 
@@ -177,12 +217,18 @@ void Player::update() {
     }
 
     if (hook == NULL) {
-        hookSight->position = glm::vec3(0.0f, -10.5f, 2.0f);
+        hookSight->lightColor = glm::vec3(0.0f);
+    } else {
+        hookSight->lightColor = glm::vec3(1.0f, 0.3f, 0.1f);
     }
 
     // Move Light Source
     sight->position.x = mModel.position.x;
     sight->position.z = mModel.position.z;
+
+    canonSight->position = mModel.position + glm::normalize(glm::vec3(rotationVector.x, 0.0f, rotationVector.y))*2.0f;
+    canonSight->position.y += 0.5f;
+
 }
 
 void Player::pull() {

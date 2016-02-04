@@ -65,6 +65,7 @@ void Hook::update() {
 
     }
     sight->position = mModel.position;
+    sight->position.y += 0.1f;
 }
 
 void Hook::kill() {
