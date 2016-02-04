@@ -121,7 +121,7 @@ int main(void) {
         const char* joystickName = glfwGetJoystickName(GLFW_JOYSTICK_1 + x);
         if (joystickName != 0) {
             printf("Found Joystick %s\n", joystickName);
-            JoystickPlayer* newPlayer = new JoystickPlayer(PLAYER_MODEL,x);
+            JoystickPlayer* newPlayer = new JoystickPlayer(x);
             newPlayer->CONTROLER_NAME = joystickName;
             newPlayer->joystickAxis = glfwGetJoystickAxes(GLFW_JOYSTICK_1 + x,
                     &newPlayer->joystickAxisCount);
@@ -136,7 +136,7 @@ int main(void) {
     }else{
         printf("Falling back to keyboard players\n");
         for(int x = 0; x<2 ; x++){
-            KeyboardPlayer* newPlayer = new KeyboardPlayer(PLAYER_MODEL,x);
+            KeyboardPlayer* newPlayer = new KeyboardPlayer(x);
             allPlayers.push_back(newPlayer);
             allUpdateObjects.push_back(newPlayer);
             allRenderObjects.push_back(newPlayer);
