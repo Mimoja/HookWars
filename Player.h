@@ -14,12 +14,6 @@ public:
     Player(const char* file);
     virtual void update();
     int playerNumber;
-    std::string CONTROLER_NAME;
-    void calibrate();
-    const float* joystickAxis;
-    int joystickAxisCount;
-    const unsigned char* joystickButtons;
-    int joystickButtonsCount;
     PointLight* sight;
     PointLight* hookSight;
     Hook* hook;
@@ -27,10 +21,32 @@ public:
     void pull();
     bool pulling;
     float health;
-
     glm::vec3 hookpoint;
+    bool fire=false;
 private:
     double lastHookTime;
+
+};
+
+class KeyboardPlayer : public Player{
+public:
+    KeyboardPlayer(const char* file):Player(file){}
+    virtual void update();
+private:
+    float rotation;
+};
+
+class JoystickPlayer : public Player{
+public:
+    JoystickPlayer(const char* file):Player(file){}
+    void calibrate();
+    virtual void update();
+    const float* joystickAxis;
+    int joystickAxisCount;
+    const unsigned char* joystickButtons;
+    int joystickButtonsCount;
+    std::string CONTROLER_NAME;
+private:
     glm::vec3 joystickCalibration[2];
 };
 

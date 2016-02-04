@@ -7,7 +7,77 @@ extern std::vector<GameObject*> allUpdateObjects;
 extern std::vector<GameObject*> allRenderObjects;
 extern Lights allLightSources;
 
-void Player::calibrate() {
+enum {
+    UP = 0,
+    DOWN,
+    LEFT,
+    RIGHT,
+    RTL,
+    RTR,
+    FIRE,
+};
+int keyboardControls[2][7] = {
+    {GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT, GLFW_KEY_K, GLFW_KEY_L, GLFW_KEY_M},
+    {GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_C, GLFW_KEY_V, GLFW_KEY_B}};
+
+void KeyboardPlayer::update() {
+    // update chain first if we are pushing
+    if (hook != NULL && !pulling) {
+        if (chain != NULL) {
+            chain->update();
+        } else {
+            hook->update();
+        }
+    }
+
+    extern GLFWwindow* window;
+    movementVector = glm::vec3(0.0f);
+    if (glfwGetKey(window, keyboardControls[playerNumber][UP]) == GLFW_PRESS)movementVector.z = -1.0f;
+    else if (glfwGetKey(window, keyboardControls[playerNumber][DOWN]) == GLFW_PRESS)movementVector.z = 1.0f;
+    if (glfwGetKey(window, keyboardControls[playerNumber][LEFT]) == GLFW_PRESS)movementVector.x = -1.0f;
+    else if (glfwGetKey(window, keyboardControls[playerNumber][RIGHT]) == GLFW_PRESS)movementVector.x = 1.0f;
+
+    fire = glfwGetKey(window, keyboardControls[playerNumber][FIRE]) == GLFW_PRESS;
+
+    if (glfwGetKey(window, keyboardControls[playerNumber][RTL]) == GLFW_PRESS && rotationVector.x <= 2.0f)rotation += 0.1f;
+    if (glfwGetKey(window, keyboardControls[playerNumber][RTR]) == GLFW_PRESS && rotationVector.y <= 2.0f)rotation -= 0.1f;
+
+    rotationVector.x = sin(rotation);
+    rotationVector.y = cos(rotation);
+
+    Player::update();
+}
+
+void JoystickPlayer::update() {
+
+    // update chain first if we are pushing
+    if (hook != NULL && !pulling) {
+        if (chain != NULL) {
+            chain->update();
+        } else {
+            hook->update();
+        }
+    }
+
+    joystickAxis = glfwGetJoystickAxes(GLFW_JOYSTICK_1 + playerNumber, &joystickAxisCount);
+    joystickButtons = glfwGetJoystickButtons(GLFW_JOYSTICK_1 + playerNumber, &joystickButtonsCount);
+
+    if (fabs(joystickAxis[XBOX_ONE_GAMEPAD::MOVE_LEFT_RIGHT]) > GAMEPAD_CUTOFF) {
+        movementVector.x = joystickAxis[XBOX_ONE_GAMEPAD::MOVE_LEFT_RIGHT] - joystickCalibration[0].x;
+    } else movementVector.x = 0.0f;
+    if (fabs(joystickAxis[XBOX_ONE_GAMEPAD::MOVE_UP_DOWN]) > GAMEPAD_CUTOFF) {
+        movementVector.z = joystickAxis[XBOX_ONE_GAMEPAD::MOVE_UP_DOWN] - joystickCalibration[0].z;
+    } else movementVector.z = 0.0f;
+
+    rotationVector.x = joystickAxis[XBOX_ONE_GAMEPAD::TURN_LEFT_RIGHT] - joystickCalibration[1].x;
+    rotationVector.y = joystickAxis[XBOX_ONE_GAMEPAD::TURN_UP_DOWN] - joystickCalibration[1].y;
+
+    fire = (joystickAxis[XBOX_ONE_GAMEPAD::FIRE] > 0);
+
+    Player::update();
+}
+
+void JoystickPlayer::calibrate() {
     joystickCalibration[0].x = joystickAxis[XBOX_ONE_GAMEPAD::MOVE_LEFT_RIGHT];
     joystickCalibration[0].z = joystickAxis[XBOX_ONE_GAMEPAD::MOVE_UP_DOWN];
     joystickCalibration[1].x = joystickAxis[XBOX_ONE_GAMEPAD::TURN_LEFT_RIGHT];
@@ -34,24 +104,6 @@ Player::Player(const char* file) : GameObject(file) {
 }
 
 void Player::update() {
-    // update chain first if we are pushing
-    if (hook != NULL && !pulling) {
-        if (chain != NULL) {
-            chain->update();
-        } else {
-            hook->update();
-        }
-    }
-
-    if (fabs(joystickAxis[XBOX_ONE_GAMEPAD::MOVE_LEFT_RIGHT]) > GAMEPAD_CUTOFF) {
-        movementVector.x = joystickAxis[XBOX_ONE_GAMEPAD::MOVE_LEFT_RIGHT] - joystickCalibration[0].x;
-    } else movementVector.x = 0.0f;
-    if (fabs(joystickAxis[XBOX_ONE_GAMEPAD::MOVE_UP_DOWN]) > GAMEPAD_CUTOFF) {
-        movementVector.z = joystickAxis[XBOX_ONE_GAMEPAD::MOVE_UP_DOWN] - joystickCalibration[0].z;
-    } else movementVector.z = 0.0f;
-
-    rotationVector.x = joystickAxis[XBOX_ONE_GAMEPAD::TURN_LEFT_RIGHT] - joystickCalibration[1].x;
-    rotationVector.y = joystickAxis[XBOX_ONE_GAMEPAD::TURN_UP_DOWN] - joystickCalibration[1].y;
 
     glm::vec3 normal = circleCollision(mModel.position, PLAYER_RADIUS, 8, true);
 
@@ -74,7 +126,7 @@ void Player::update() {
 
     // Fire or Pull
     double now = glfwGetTime();
-    if (joystickAxis[XBOX_ONE_GAMEPAD::FIRE] > 0) {
+    if (fire) {
         if (hook == NULL && now - lastHookTime > HOOK_COOLDOWN) {
             // Fire new hook
             lastHookTime = now;

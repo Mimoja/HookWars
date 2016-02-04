@@ -24,25 +24,25 @@ void Camera::setDomain(glm::vec3 p1, glm::vec3 p2){
 
 void Camera::handleKeyboard(GLFWwindow* window){
 
-    if(glfwGetKey(window, GLFW_KEY_UP)==GLFW_PRESS||glfwGetKey(window, GLFW_KEY_W)==GLFW_PRESS)
+    if(glfwGetKey(window, GLFW_KEY_KP_8)==GLFW_PRESS)
         mPos[2]-=cameraSpeed;
 
-    if(glfwGetKey(window, GLFW_KEY_DOWN)==GLFW_PRESS||glfwGetKey(window, GLFW_KEY_S)==GLFW_PRESS)
+    if(glfwGetKey(window, GLFW_KEY_KP_2)==GLFW_PRESS)
         mPos[2]+=cameraSpeed;
 
 
-    if(glfwGetKey(window, GLFW_KEY_LEFT)==GLFW_PRESS||glfwGetKey(window, GLFW_KEY_A)==GLFW_PRESS)
+    if(glfwGetKey(window, GLFW_KEY_KP_4)==GLFW_PRESS)
         mPos[0]-=cameraSpeed;
 
 
-    if(glfwGetKey(window, GLFW_KEY_RIGHT)==GLFW_PRESS||glfwGetKey(window, GLFW_KEY_D)==GLFW_PRESS)
+    if(glfwGetKey(window, GLFW_KEY_KP_6)==GLFW_PRESS)
         mPos[0]+=cameraSpeed;
 
-    if(glfwGetKey(window, GLFW_KEY_C)==GLFW_PRESS)
+    if(glfwGetKey(window, GLFW_KEY_KP_0)==GLFW_PRESS)
         mPos = mBasePos;
-    if(glfwGetKey(window, GLFW_KEY_Q)==GLFW_PRESS)
+    if(glfwGetKey(window, GLFW_KEY_KP_7)==GLFW_PRESS)
         mPos[1]+=cameraSpeed;
-    if(glfwGetKey(window, GLFW_KEY_E)==GLFW_PRESS)
+    if(glfwGetKey(window, GLFW_KEY_KP_9)==GLFW_PRESS)
     mPos[1]-=cameraSpeed;
     if(mD1[2]>mD2[2]){
         if(mPos[2]>mD1[2])mPos[2]=mD1[2];
