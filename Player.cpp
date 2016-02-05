@@ -42,8 +42,8 @@ void KeyboardPlayer::update() {
 
     fire = glfwGetKey(window, keyboardControls[playerNumber][FIRE]) == GLFW_PRESS;
 
-    if (glfwGetKey(window, keyboardControls[playerNumber][RTL]) == GLFW_PRESS && rotationVector.x <= 2.0f)rotation += 0.1f;
-    if (glfwGetKey(window, keyboardControls[playerNumber][RTR]) == GLFW_PRESS && rotationVector.y <= 2.0f)rotation -= 0.1f;
+    if (glfwGetKey(window, keyboardControls[playerNumber][RTL]) == GLFW_PRESS)rotation += 0.1f;
+    if (glfwGetKey(window, keyboardControls[playerNumber][RTR]) == GLFW_PRESS)rotation -= 0.1f;
 
     rotationVector.x = sin(rotation);
     rotationVector.y = cos(rotation);
