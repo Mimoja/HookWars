@@ -92,6 +92,7 @@ Player::Player(int number) : GameObject(PLAYER_MODEL) {
     pulling = false;
     health = 1.0f;
     hookpoint = mModel.position;
+    lastHookTime = glfwGetTime();
     new Rotor(this, -0.15f, 2.0f);
     mModel.scaling = glm::vec3(PLAYER_SCALING);
     mModel.position = glm::vec3(-5.0f, 2.0f, 0.0f);
