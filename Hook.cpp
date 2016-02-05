@@ -26,6 +26,8 @@ Hook::Hook(int playerNumber, glm::vec3 origin, float dir, PointLight* p) : GameO
     radius = HOOK_RADIUS;
     allRenderObjects.push_back(this);
     sight = p;
+    sight->position = mModel.position;
+    sight->position.y += 0.1f;
 }
 
 void Hook::update() {

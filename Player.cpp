@@ -7,6 +7,8 @@ extern std::vector<GameObject*> allUpdateObjects;
 extern std::vector<GameObject*> allRenderObjects;
 extern Lights allLightSources;
 
+extern GameObject* referenceHook;
+
 enum {
     UP = 0,
     DOWN,
@@ -94,9 +96,8 @@ void JoystickPlayer::calibrate() {
     joystickCalibration[1].y = joystickAxis[XBOX_ONE_GAMEPAD::TURN_UP_DOWN];
 }
 
-extern GameObject* referenceHook;
 
-Player::Player(int number) : GameObject(referenceHook) {
+Player::Player(int number) : GameObject(PLAYER_MODEL) {
     hook = NULL;
     chain = NULL;
     pulling = false;

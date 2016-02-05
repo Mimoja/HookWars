@@ -38,7 +38,6 @@ unsigned navigationMapWidth;
 GameObject* map_ptr;
 GameObject* referenceChain;
 GameObject* referenceHook;
-GameObject* referencePlayer;
 
 int WindowWidth = WINDOW_WIDTH;
 int WindowHeight = WINDOW_HEIGHT;
@@ -165,7 +164,6 @@ int main(void) {
     shadowShaderID = buildShader(SHADOW_VERTEX, SHADOW_FRAGMENT);
     healthBarShaderID = buildShader(HEALTHBAR_VERTEX, HEALTHBAR_FRAGMENT);
 
-    referencePlayer = new GameObject(PLAYER_MODEL);
     referenceHook = new GameObject(HOOK_MODEL);
     referenceChain = new GameObject(CHAIN_MODEL);
     map_ptr = new GameObject(MAP_MODEL);
