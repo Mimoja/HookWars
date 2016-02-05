@@ -6,62 +6,62 @@
 
 #include <vector>
 
-typedef struct _BaseLight {
+struct BaseLight {
     glm::vec3 lightColor;
     float intensity;
 
-    _BaseLight() {
+    BaseLight() {
         lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
     }
-} BaseLight;
+};
 
-typedef struct _SpecularLight {
+struct SpecularLight {
     int intensity;
     int power;
-} SpecularLight;
+};
 
-typedef struct _Attenuation {
+struct Attenuation {
     float constant;
     float linear;
     float exponential;
 
-    _Attenuation() {
+    Attenuation() {
         constant = 0.0f;
         linear = 0.0f;
         exponential = 1.0f;
     }
 
-} Attenuation;
+};
 
-typedef struct _DirectionLight : public BaseLight {
+struct DirectionLight : public BaseLight {
     glm::vec3 direction;
     SpecularLight specular;
-} DirectionLight;
+};
 
-typedef struct _PointLight : public BaseLight {
+struct PointLight : public BaseLight {
     glm::vec3 position;
     Attenuation falloff;
     SpecularLight specular;
-} PointLight;
+};
 
-typedef struct _SpotLight : public PointLight {
+struct SpotLight : public PointLight {
     glm::vec3 direction;
     float cutoff;
     float hardness;
 
-    _SpotLight() {
+    SpotLight() {
         direction = glm::vec3(0.0f, 0.0f, 0.0f);
         cutoff = 0.0f;
         hardness = 0.0f;
     }
-} SpotLight;
+};
 
-typedef struct _Lights {
+struct Lights {
     BaseLight ambient;
     std::vector<DirectionLight*> directionalLights;
     std::vector<PointLight*> pointLights;
     std::vector<SpotLight*> spotLights;
-} Lights;
+};
 
 
 
