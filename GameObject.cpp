@@ -10,7 +10,7 @@ GameObject::GameObject(const char* path) : mModel(path) {
 GameObject::GameObject() {
 }
 
-GameObject::GameObject(const GameObject* go){
+GameObject::GameObject(const GameObject* go) {
     rotationVector = go->rotationVector;
     movementVector = go->movementVector;
     radius = go->radius;
@@ -26,25 +26,27 @@ void GameObject::renderShadow(GLuint shaderID, glm::mat4 MVP) {
     // Use our shader
     glUseProgram(shaderID);
 
-    GLuint LightMatrixID = glGetUniformLocation(shaderID, "LIGHT");
-    GLuint ModelMatrixID = glGetUniformLocation(shaderID, "MODEL");
+    GLuint depthMatrixID = glGetUniformLocation(shaderID, "depthMVP");
 
-    // Transformations Matricies
+    GLint ModelMatrixID = glGetUniformLocation(shaderID, "MODEL");
     glm::mat4 modelMatrix = mModel.getMatr();
-    glUniformMatrix4fv(LightMatrixID, 1, GL_FALSE, &MVP[0][0]);
-    glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &(modelMatrix[0][0]));
+    if (ModelMatrixID != -1)glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &(modelMatrix[0][0]));
+    // Send our transformation to the currently bound shader, 
+    // in the "MVP" uniform
+    glUniformMatrix4fv(depthMatrixID, 1, GL_FALSE, &MVP[0][0]);
+
 
     mModel.render();
 }
 
-void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights lights, Camera shadowCamera) {
+void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights lights, glm::mat4 shadowMVP) {
 
     // Use our shader
     glUseProgram(shaderID);
 
     GLint WorldMatrixID = glGetUniformLocation(shaderID, "WORLD");
     GLint ModelMatrixID = glGetUniformLocation(shaderID, "MODEL");
-    GLint ShadowMatrixID = glGetUniformLocation(shaderID, "SHADOW");
+    GLint DepthBiasID = glGetUniformLocation(shaderID, "DepthBiasMVP");
     GLint CameraPositionID = glGetUniformLocation(shaderID, "CAMERA");
     GLint AmbientLightColorID = glGetUniformLocation(shaderID, "ambientLight.Color");
     GLint AmbientLightIntensityID = glGetUniformLocation(shaderID, "ambientLight.Intensity");
@@ -53,7 +55,7 @@ void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights li
     glm::mat4 modelMatrix = mModel.getMatr();
     if (WorldMatrixID != -1)glUniformMatrix4fv(WorldMatrixID, 1, GL_FALSE, &MVP[0][0]);
     if (ModelMatrixID != -1)glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &(modelMatrix[0][0]));
-    if (ShadowMatrixID != -1)glUniformMatrix4fv(ShadowMatrixID, 1, GL_FALSE, &(shadowCamera.getView()[0][0]));
+    if (DepthBiasID != -1)glUniformMatrix4fv(DepthBiasID, 1, GL_FALSE, &shadowMVP[0][0]);
     if (CameraPositionID != -1)glUniform3f(CameraPositionID, camera.mPos.x, camera.mPos.y, camera.mPos.z);
 
     // Textures
@@ -81,13 +83,11 @@ void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights li
         if (ssaoID != -1)glUniform1i(ssaoID, 3);
     }
 
-
     extern GLuint shadowTexture;
     glActiveTexture(GL_TEXTURE4);
     glBindTexture(GL_TEXTURE_2D, shadowTexture);
     GLint shadowID = glGetUniformLocation(shaderID, "ShadowTextureSampler");
     if (shadowID != -1)glUniform1i(shadowID, 4);
-
 
     // Lights
     // Ambient
@@ -214,6 +214,5 @@ void GameObject::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights li
         if (hardnessID != -1)glUniform1f(hardnessID, light.hardness);
 
     }
-
     mModel.render();
 }

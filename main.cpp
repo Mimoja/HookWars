@@ -43,7 +43,7 @@ int WindowWidth = WINDOW_WIDTH;
 int WindowHeight = WINDOW_HEIGHT;
 
 GLuint shadowTexture;
-GLuint frameBuffer;
+GLuint frameBuffer = 0;
 
 void window_size_callback(GLFWwindow* window, int width, int height) {
     glfwMakeContextCurrent(window);
@@ -130,11 +130,11 @@ int main(void) {
             allRenderObjects.push_back(newPlayer);
         }
     }
-    if( allPlayers.size() != 0 ){
+    if (allPlayers.size() != 0) {
         printf("%d Player found\n", (int) allPlayers.size());
-    }else{
+    } else {
         printf("Falling back to keyboard players\n");
-        for(int x = 0; x<2 ; x++){
+        for (int x = 0; x < 2; x++) {
             KeyboardPlayer* newPlayer = new KeyboardPlayer(x);
             allPlayers.push_back(newPlayer);
             allUpdateObjects.push_back(newPlayer);
@@ -188,42 +188,30 @@ int main(void) {
     point1->specular.power = 32;
     allLightSources.pointLights.push_back(point1);
 
-    glGenTextures(1, &shadowTexture);
-    glBindTexture(GL_TEXTURE_2D, shadowTexture);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 1000, 1000, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, 0);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LESS);
-
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-
+    // The framebuffer, which regroups 0, 1, or more textures, and 0 or 1 depth buffer.
     glGenFramebuffers(1, &frameBuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
 
+    // Depth texture. Slower than a depth buffer, but you can sample it later in your shader
+    glGenTextures(1, &shadowTexture);
+    glBindTexture(GL_TEXTURE_2D, shadowTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
+
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, shadowTexture, 0);
+
+    // No color output in the bound framebuffer, only depth.
     glDrawBuffer(GL_NONE);
-    glReadBuffer(GL_NONE);
 
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadowTexture, 0);
-
-    res = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-    if (res != GL_FRAMEBUFFER_COMPLETE) {
-        printf("Could not create Framebuffer error 0x%x\n", res);
+    // Always check that our framebuffer is ok
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         exit(-1);
     }
-
-    glClearDepth(1.0f);
-
-    glEnable(GL_DEPTH_TEST);
-
-    glEnable(GL_CULL_FACE);
-
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 
@@ -261,26 +249,50 @@ void mainLoop(long frameCount) {
     }
 
 
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    glViewport(0, 0, 1000, 1000);
-
+    // Render to our framebuffer
     glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+    glViewport(0, 0, 1024, 1024); // Render on the whole framebuffer, complete from the lower left corner to the upper right
 
-    glClear(GL_DEPTH_BUFFER_BIT);
+    // We don't use bias in the shader, but instead we draw back faces, 
+    // which are already separated from the front faces by a small distance 
+    // (if your geometry is made this way)
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK); // Cull back-facing triangles -> draw only front-facing triangles
 
-    glm::vec3 lighPos = glm::vec3(0.0f, 10.5f, 2.0f);
-    Camera lightCam(lighPos, -lighPos, glm::vec3(0.0f, 1.0f, 0.0f));
+    // Clear the screen
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    glm::vec3 lightInvDir = glm::vec3(0.0f, 10.0f, 0.05f);
+
+    // Compute the MVP matrix from the light's point of view
+    glm::mat4 depthProjectionMatrix = glm::ortho<float>(-20, 20, -20, 20, -20, 100);
+
+    glm::mat4 depthViewMatrix = glm::lookAt(lightInvDir, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+
+    glm::mat4 depthVP = depthProjectionMatrix * depthViewMatrix;
+
+
     for (unsigned int i = 0; i < allRenderObjects.size(); i++) {
-        allRenderObjects[i]->renderShadow(shadowShaderID, Projection * lightCam.getView());
+        allRenderObjects[i]->renderShadow(shadowShaderID,depthVP);
     }
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glViewport(0, 0, WindowWidth, WindowHeight);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK); // Cull back-facing triangles -> draw only front-facing triangles
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    glm::mat4 biasMatrix(
+            0.5, 0.0, 0.0, 0.0,
+            0.0, 0.5, 0.0, 0.0,
+            0.0, 0.0, 0.5, 0.0,
+            0.5, 0.5, 0.5, 1.0
+            );
+
+    glm::mat4 depthBiasMVP = biasMatrix*depthVP;
+    
     for (unsigned int i = 0; i < allRenderObjects.size(); i++) {
-        allRenderObjects[i]->render(geometrieShaderID, Projection * cam.getView(), cam, allLightSources, lightCam);
+        allRenderObjects[i]->render(geometrieShaderID, Projection * cam.getView(), cam, allLightSources, depthBiasMVP);
     }
 
     // Swap buffers

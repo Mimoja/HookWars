@@ -6,7 +6,7 @@ in vec3 Tangent;
 in vec3 Bitangent;
 
 in vec3 worldPos;
-in vec4 lightPos;
+in vec4 ShadowCoord;
 
 out vec4 FragColor;
 
@@ -80,6 +80,12 @@ uniform PointLight pointLight[20];
 void main(){
         vec4 color = vec4(texture(DiffuseTextureSampler, UV).rgb, 1.0f);
         vec4 ssao =  vec4(texture(SSAOTextureSampler, UV).rgb, 1.0f);
+
+        float visibility = texture( ShadowTextureSampler, vec3(ShadowCoord.xy, (ShadowCoord.z)/ShadowCoord.w) );
+        vec4 shadow = vec4(1.0f);
+        if(visibility<0.09f){
+            shadow = vec4(0.3f, 0.3f, 0.3f, 1.0f);
+        }
 
         vec3 normal = normalize(Normal);
         vec3 tangent = normalize(Tangent);
@@ -190,5 +196,5 @@ void main(){
             }
         }
 
-        FragColor = color * ssao * (AmbientColor + DiffuseColor + SpecularColor);
+        FragColor = color * shadow * ssao * (AmbientColor + DiffuseColor + SpecularColor);
 }

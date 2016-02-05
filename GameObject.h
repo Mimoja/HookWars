@@ -21,7 +21,7 @@ public:
     Model mModel;
     virtual void update();
     void renderShadow(GLuint shaderID, glm::mat4 MVP);
-    virtual void render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights lights, Camera ShadowCamera);
+    virtual void render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights lights, glm::mat4 shadowMVP);
     void kill();
     glm::vec3 rotationVector;
     glm::vec3 movementVector;
