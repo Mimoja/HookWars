@@ -6,7 +6,7 @@ in vec3 Tangent;
 in vec3 Bitangent;
 
 in vec3 worldPos;
-in vec4 ShadowCoord;
+in vec4 shadowPos;
 
 out vec4 FragColor;
 
@@ -16,8 +16,6 @@ uniform sampler2D SpecularTextureSampler;
 uniform sampler2D ShadowMapSampler;
 uniform sampler2D SSAOTextureSampler;
 uniform sampler2DShadow ShadowTextureSampler;
-
-
 
 uniform vec3 CAMERA;
 uniform mat4 WORLD;
@@ -81,7 +79,7 @@ void main(){
         vec4 color = vec4(texture(DiffuseTextureSampler, UV).rgb, 1.0f);
         vec4 ssao =  vec4(texture(SSAOTextureSampler, UV).rgb, 1.0f);
 
-        float visibility = texture( ShadowTextureSampler, vec3(ShadowCoord.xy, (ShadowCoord.z)/ShadowCoord.w) );
+        float visibility = texture(ShadowTextureSampler, vec3(shadowPos.xy, (shadowPos.z)/shadowPos.w) );
         vec4 shadow = vec4(1.0f);
         if(visibility<0.09f){
             shadow = vec4(0.3f, 0.3f, 0.3f, 1.0f);

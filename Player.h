@@ -38,6 +38,8 @@ public:
     KeyboardPlayer(int number) : Player(number) {
     }
     virtual void update();
+private:
+    float rotation;
 };
 
 class JoystickPlayer : public Player {

@@ -15,7 +15,7 @@ out vec3 Normal;
 out vec3 Tangent;
 out vec3 Bitangent;
 out vec3 worldPos;
-out vec4 ShadowCoord;
+out vec4 shadowPos;
 
 void main()
 {
@@ -24,7 +24,7 @@ void main()
     Tangent = ((WORLD*MODEL)* vec4(Tangents, 0.0f)).xyz;
     Bitangent = ((WORLD*MODEL)* vec4(Bitangents, 0.0f)).xyz;
     worldPos   = ((WORLD*MODEL)*vec4(Position, 1.0f)).xyz;  
-    ShadowCoord = (DepthBiasMVP*MODEL) * vec4(Position, 1.0f);
+    shadowPos = (DepthBiasMVP*MODEL) * vec4(Position, 1.0f);
     UV = UVs;
     UV.y = 1-UVs.y;
 }

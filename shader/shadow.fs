@@ -1,9 +1,7 @@
 #version 330 core
 
-// Ouput data
-layout(location = 0) out float fragmentdepth;
-
+layout(location = 0) out float FragDepth;
 
 void main(){
-	fragmentdepth = gl_FragCoord.z;
+	FragDepth = gl_FragCoord.z;
 }

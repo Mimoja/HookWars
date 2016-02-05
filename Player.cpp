@@ -44,18 +44,11 @@ void KeyboardPlayer::update() {
     fire = glfwGetKey(window, keyboardControls[playerNumber][FIRE]) == GLFW_PRESS;
 
 
-    rotationVector += 1.0f;
+    if (glfwGetKey(window, keyboardControls[playerNumber][RTL]) == GLFW_PRESS && rotationVector.x <= 2.0f)rotation += 0.1f;
+    if (glfwGetKey(window, keyboardControls[playerNumber][RTR]) == GLFW_PRESS && rotationVector.y <= 2.0f)rotation -= 0.1f;
 
-    if (glfwGetKey(window, keyboardControls[playerNumber][RTL]) == GLFW_PRESS && rotationVector.x <= 2.0f)rotationVector.x += 0.1f;
-    else rotationVector.x *= 0.9f;
-    if (glfwGetKey(window, keyboardControls[playerNumber][RTR]) == GLFW_PRESS && rotationVector.y <= 2.0f)rotationVector.y += 0.1f;
-    else rotationVector.y *= 0.9f;
-
-    if (rotationVector.x > 2.0f)rotationVector.x = 2.0f;
-    if (rotationVector.y > 2.0f)rotationVector.y = 2.0f;
-
-    rotationVector -= 1.0f;
-
+    rotationVector.x = sin(rotation);
+    rotationVector.y = cos(rotation);
 
     Player::update();
 }

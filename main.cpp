@@ -238,8 +238,7 @@ double nowTime;
 void mainLoop(long frameCount) {
 
     nowTime = glfwGetTime();
-
-
+    //Update
     if (nowTime - lastUpdateTime > (1 / 60)) {
         for (unsigned int i = 0; i < allUpdateObjects.size(); i++) {
             allUpdateObjects[i]->update();
@@ -248,34 +247,25 @@ void mainLoop(long frameCount) {
         lastUpdateTime = glfwGetTime();
     }
 
-
-    // Render to our framebuffer
+    //Render
     glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-    glViewport(0, 0, 1024, 1024); // Render on the whole framebuffer, complete from the lower left corner to the upper right
-
-    // We don't use bias in the shader, but instead we draw back faces, 
-    // which are already separated from the front faces by a small distance 
-    // (if your geometry is made this way)
+    glViewport(0, 0, 1024, 1024); 
     glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK); // Cull back-facing triangles -> draw only front-facing triangles
+    glCullFace(GL_BACK);
 
-    // Clear the screen
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
+   
     glm::vec3 lightInvDir = glm::vec3(0.0f, 10.0f, 0.05f);
-
-    // Compute the MVP matrix from the light's point of view
     glm::mat4 depthProjectionMatrix = glm::ortho<float>(-20, 20, -20, 20, -20, 100);
-
     glm::mat4 depthViewMatrix = glm::lookAt(lightInvDir, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-
     glm::mat4 depthVP = depthProjectionMatrix * depthViewMatrix;
-
 
     for (unsigned int i = 0; i < allRenderObjects.size(); i++) {
         allRenderObjects[i]->renderShadow(shadowShaderID,depthVP);
     }
 
+    //
+    
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0, 0, WindowWidth, WindowHeight);
     glEnable(GL_CULL_FACE);
