@@ -10,12 +10,6 @@ GameObject::GameObject(const char* path) : mModel(path) {
 GameObject::GameObject() {
 }
 
-GameObject::GameObject(const GameObject* go) {
-    rotationVector = go->rotationVector;
-    movementVector = go->movementVector;
-    radius = go->radius;
-    mModel = go->mModel;
-}
 
 void GameObject::update() {
 

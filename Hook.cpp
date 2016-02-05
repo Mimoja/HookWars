@@ -14,7 +14,7 @@ extern std::vector<Player*> allPlayers;
 
 extern GameObject* referenceHook;
 
-Hook::Hook(int playerNumber, glm::vec3 origin, float dir, PointLight* p) : GameObject(referenceHook) {
+Hook::Hook(int playerNumber, glm::vec3 origin, float dir, PointLight* p) : GameObject(*referenceHook) {
     owner = playerNumber;
     mModel.position = origin;
     vel = HOOK_SPEED * glm::normalize(glm::vec3(sin(dir), 0, cos(dir)));

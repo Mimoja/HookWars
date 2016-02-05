@@ -23,7 +23,9 @@ GLFWwindow* window;
 void mainLoop(long frameCount);
 
 glm::mat4 Projection;
-glm::mat4 depthVP ;
+glm::mat4 depthVP;
+glm::mat4 depthBiasVP;
+
 Camera cam;
 
 GLuint geometrieShaderID;
@@ -96,18 +98,6 @@ int main(void) {
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
 
-    // Initialize GLEW
-    glewExperimental = true; // Needed for core profile
-    if (glewInit() != GLEW_OK) {
-        fprintf(stderr, "Failed to initialize GLEW\n");
-        glfwTerminate();
-        return -1;
-    }
-
-    // Ensure we can capture the escape key being pressed below
-    glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
-
-
     // Read Navigation Map
     unsigned int res = lodepng::decode(navigationMap, navigationMapWidth, navigationMapHeight, NAVIGATION_MAP);
 
@@ -169,7 +159,7 @@ int main(void) {
     referenceChain = new GameObject(CHAIN_MODEL);
     map_ptr = new GameObject(MAP_MODEL);
     map_ptr->mModel.scaling = glm::vec3(MAP_SCALING);
-    map_ptr->mModel.position = glm::vec3(0.0f,-1.0f,0.0f);
+    map_ptr->mModel.position = glm::vec3(0.0f, -1.0f, 0.0f);
     map_ptr->mModel.rotation = glm::vec3(0.0f);
     map_ptr->mModel.diffuseTexture = new Texture(MAP_DIFFUSE);
     map_ptr->mModel.normalTexture = new Texture(MAP_NORMAL);
@@ -192,11 +182,20 @@ int main(void) {
     glm::mat4 depthViewMatrix = glm::lookAt(mainLight->position, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
     depthVP = glm::ortho<float>(-20, 20, -20, 20, -20, 100) * depthViewMatrix;
 
-    // The framebuffer, which regroups 0, 1, or more textures, and 0 or 1 depth buffer.
+    glm::mat4 biasMatrix(
+            0.5, 0.0, 0.0, 0.0,
+            0.0, 0.5, 0.0, 0.0,
+            0.0, 0.0, 0.5, 0.0,
+            0.5, 0.5, 0.5, 1.0
+            );
+
+    depthBiasVP = biasMatrix*depthVP;
+
+    // Create framebuffer
     glGenFramebuffers(1, &frameBuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
 
-    // Depth texture. Slower than a depth buffer, but you can sample it later in your shader
+    // Depth texture
     glGenTextures(1, &shadowTexture);
     glBindTexture(GL_TEXTURE_2D, shadowTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
@@ -209,10 +208,10 @@ int main(void) {
 
     glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, shadowTexture, 0);
 
-    // No color output in the bound framebuffer, only depth.
+    // No color output
     glDrawBuffer(GL_NONE);
 
-    // Always check that our framebuffer is ok
+    // Check framebuffer
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         exit(-1);
     }
@@ -253,36 +252,27 @@ void mainLoop(long frameCount) {
 
     //Render
     glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-    glViewport(0, 0, 1024, 1024); 
+    glViewport(0, 0, 1024, 1024);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-   
-    
+
+
     for (unsigned int i = 0; i < allRenderObjects.size(); i++) {
-        allRenderObjects[i]->renderShadow(shadowShaderID,depthVP);
+        allRenderObjects[i]->renderShadow(shadowShaderID, depthVP);
     }
 
     //
-    
+
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0, 0, WindowWidth, WindowHeight);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK); // Cull back-facing triangles -> draw only front-facing triangles
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glm::mat4 biasMatrix(
-            0.5, 0.0, 0.0, 0.0,
-            0.0, 0.5, 0.0, 0.0,
-            0.0, 0.0, 0.5, 0.0,
-            0.5, 0.5, 0.5, 1.0
-            );
-
-    glm::mat4 depthBiasMVP = biasMatrix*depthVP;
-    
     for (unsigned int i = 0; i < allRenderObjects.size(); i++) {
-        allRenderObjects[i]->render(geometrieShaderID, Projection * cam.getView(), cam, allLightSources, depthBiasMVP);
+        allRenderObjects[i]->render(geometrieShaderID, Projection * cam.getView(), cam, allLightSources, depthBiasVP);
     }
 
     // Swap buffers
