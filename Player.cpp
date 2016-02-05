@@ -33,7 +33,6 @@ void KeyboardPlayer::update() {
         }
     }
 
-
     extern GLFWwindow* window;
     movementVector = glm::vec3(0.0f);
     if (glfwGetKey(window, keyboardControls[playerNumber][UP]) == GLFW_PRESS)movementVector.z = -1.0f;
@@ -42,7 +41,6 @@ void KeyboardPlayer::update() {
     else if (glfwGetKey(window, keyboardControls[playerNumber][RIGHT]) == GLFW_PRESS)movementVector.x = 1.0f;
 
     fire = glfwGetKey(window, keyboardControls[playerNumber][FIRE]) == GLFW_PRESS;
-
 
     if (glfwGetKey(window, keyboardControls[playerNumber][RTL]) == GLFW_PRESS && rotationVector.x <= 2.0f)rotation += 0.1f;
     if (glfwGetKey(window, keyboardControls[playerNumber][RTR]) == GLFW_PRESS && rotationVector.y <= 2.0f)rotation -= 0.1f;
@@ -62,7 +60,6 @@ void JoystickPlayer::update() {
             hook->update();
         }
     }
-
 
     joystickAxis = glfwGetJoystickAxes(GLFW_JOYSTICK_1 + playerNumber, &joystickAxisCount);
     joystickButtons = glfwGetJoystickButtons(GLFW_JOYSTICK_1 + playerNumber, &joystickButtonsCount);
@@ -89,7 +86,6 @@ void JoystickPlayer::calibrate() {
     joystickCalibration[1].y = joystickAxis[XBOX_ONE_GAMEPAD::TURN_UP_DOWN];
 }
 
-
 Player::Player(int number) : GameObject(PLAYER_MODEL) {
     hook = NULL;
     chain = NULL;
@@ -99,7 +95,7 @@ Player::Player(int number) : GameObject(PLAYER_MODEL) {
     new Rotor(this, -0.15f, 2.0f);
     mModel.scaling = glm::vec3(PLAYER_SCALING);
     mModel.position = glm::vec3(-5.0f, 2.0f, 0.0f);
-
+    mModel.rotation = glm::vec3(0.1f);
     playerNumber = number;
 
     hookSight = new PointLight();

@@ -123,12 +123,15 @@
         </ccTool>
       </item>
       <item path="Player.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-          <preprocessorList>
-            <Elem>GLM_FORCE_RADIANS</Elem>
-            <Elem>LINUX</Elem>
-            <Elem>PROG_NAME="game"</Elem>
-          </preprocessorList>
+        <ccTool flags="1">
+          <incDir>
+            <pElem>/usr/include/glm/detail</pElem>
+            <pElem>/usr/include/GL</pElem>
+            <pElem>/usr/include/glm</pElem>
+            <pElem>/usr/include/glm/gtc</pElem>
+            <pElem>/usr/include/GLFW</pElem>
+            <pElem>.</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="Shader.cpp" ex="false" tool="1" flavor2="8">

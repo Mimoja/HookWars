@@ -81,8 +81,8 @@ void main(){
 
         float visibility = texture(ShadowTextureSampler, vec3(shadowPos.xy, (shadowPos.z)/shadowPos.w) );
         vec4 shadow = vec4(1.0f);
-        if(visibility<0.09f){
-            shadow = vec4(0.3f, 0.3f, 0.3f, 1.0f);
+        if(visibility<0.005f){
+            shadow = ssao * vec4(0.3f, 0.3f, 0.3f, 1.0f);
         }
 
         vec3 normal = normalize(Normal);

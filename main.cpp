@@ -23,6 +23,7 @@ GLFWwindow* window;
 void mainLoop(long frameCount);
 
 glm::mat4 Projection;
+glm::mat4 depthVP ;
 Camera cam;
 
 GLuint geometrieShaderID;
@@ -168,7 +169,7 @@ int main(void) {
     referenceChain = new GameObject(CHAIN_MODEL);
     map_ptr = new GameObject(MAP_MODEL);
     map_ptr->mModel.scaling = glm::vec3(MAP_SCALING);
-    map_ptr->mModel.position = glm::vec3(0.0f);
+    map_ptr->mModel.position = glm::vec3(0.0f,-1.0f,0.0f);
     map_ptr->mModel.rotation = glm::vec3(0.0f);
     map_ptr->mModel.diffuseTexture = new Texture(MAP_DIFFUSE);
     map_ptr->mModel.normalTexture = new Texture(MAP_NORMAL);
@@ -178,15 +179,18 @@ int main(void) {
     allLightSources.ambient.intensity = 0.6f;
     allLightSources.ambient.lightColor = glm::vec3(1.0f);
 
-    PointLight* point1 = new PointLight();
-    point1->lightColor = glm::vec3(1.0f, 1.0f, 0.8f);
-    point1->intensity = 92.0f;
-    point1->position = glm::vec3(0.0f, 10.5f, 2.0f);
-    point1->falloff.linear = 0.0f;
-    point1->falloff.exponential = 0.5f;
-    point1->specular.intensity = 100.3f;
-    point1->specular.power = 32;
-    allLightSources.pointLights.push_back(point1);
+    PointLight* mainLight = new PointLight();
+    mainLight->lightColor = glm::vec3(1.0f, 1.0f, 0.8f);
+    mainLight->intensity = 92.0f;
+    mainLight->position = glm::vec3(0.0f, 10.5f, 2.0f);
+    mainLight->falloff.linear = 0.0f;
+    mainLight->falloff.exponential = 0.5f;
+    mainLight->specular.intensity = 100.3f;
+    mainLight->specular.power = 32;
+    allLightSources.pointLights.push_back(mainLight);
+
+    glm::mat4 depthViewMatrix = glm::lookAt(mainLight->position, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+    depthVP = glm::ortho<float>(-20, 20, -20, 20, -20, 100) * depthViewMatrix;
 
     // The framebuffer, which regroups 0, 1, or more textures, and 0 or 1 depth buffer.
     glGenFramebuffers(1, &frameBuffer);
@@ -255,11 +259,7 @@ void mainLoop(long frameCount) {
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    
-    glm::vec3 lightInvDir = glm::vec3(0.0f, 10.0f, 0.05f);
-    glm::mat4 depthProjectionMatrix = glm::ortho<float>(-20, 20, -20, 20, -20, 100);
-    glm::mat4 depthViewMatrix = glm::lookAt(lightInvDir, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-    glm::mat4 depthVP = depthProjectionMatrix * depthViewMatrix;
-
+    
     for (unsigned int i = 0; i < allRenderObjects.size(); i++) {
         allRenderObjects[i]->renderShadow(shadowShaderID,depthVP);
     }
