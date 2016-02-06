@@ -10,12 +10,14 @@
 #include "util.h"
 #include "GameObject.h"
 #include "config.h"
+#include "Player.h"
 
 // Include AssImp
 #include <assimp/Importer.hpp>      // C++ importer interface
 #include <assimp/scene.h>           // Output data structure
 #include <assimp/postprocess.h>     // Post processing flags
 
+extern std::vector<Player*> allPlayers;
 
 float del = 2;
 double lastTime = 0.0f;
@@ -195,6 +197,11 @@ glm::vec3 circleCollision(glm::vec3 center, float radius, float samples, bool co
     for (float a = 0; a < 2 * glm::pi<float>(); a += glm::half_pi<float>() / samples) {
         glm::vec3 offset = radius * glm::vec3(sin(a), 0, cos(a));
         glm::vec3 navEntry = getNavigationEntry(center + offset);
+		for (auto p : allPlayers) {
+			if(glm::length(center - p->mModel.position) < PLAYER_RADIUS + radius) {
+				normal += center - p->mModel.position;
+			}
+		}
         if (navEntry.r == -1.0f || navEntry.r == 1.0f || (collideWithGreen && navEntry.g == 1.0f)) {
             normal -= offset;
         }
