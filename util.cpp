@@ -216,23 +216,7 @@ glm::vec3 slideAlong(glm::vec3 a, glm::vec3 n) {
 }
 
 bool isColliding(GameObject o1, GameObject o2) {
-    glm::vec3 pos1 = o1.mModel.position;
-    glm::vec3 pos2 = o2.mModel.position;
-
-    // Check if near each other (check in a square)
-    if (pos1.x + o1.radius + o2.radius > pos2.x
-            && pos1.x < pos2.x + o1.radius + o2.radius
-            && pos1.y + o1.radius + o2.radius > pos2.y
-            && pos1.y < pos2.y + o1.radius + o2.radius) {
-
-        // check for collision
-        float distance = glm::sqrt(((pos1.x - pos2.x) * (pos1.x - pos2.x))
-                + ((pos1.y - pos2.y) * (pos1.y - pos2.y)));
-        if (distance < o1.radius + o2.radius) {
-            return true;
-        }
-    }
-    return false;
+	return (glm::length(o1.mModel.position - o2.mModel.position) < o1.radius + o2.radius);
 }
 
 glm::vec3 moveTowards(glm::vec3 pos, glm::vec3 target, float minspeed) {
