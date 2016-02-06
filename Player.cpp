@@ -97,6 +97,7 @@ Player::Player(int number) : GameObject(PLAYER_MODEL) {
     radius = PLAYER_RADIUS;
     hookpoint = mModel.position;
     lastHookTime = glfwGetTime();
+    lastGrappleTime = glfwGetTime();
     new Rotor(this, -0.15f, 2.0f);
     mModel.scaling = glm::vec3(PLAYER_SCALING);
     mModel.position = glm::vec3(-5.0f, 2.0f, 0.0f);
@@ -158,7 +159,7 @@ void Player::update() {
     }
     mModel.rotation.y = glm::atan(rotationVector.x, rotationVector.y) + PLAYER_BASE_ROTATION;
 
-    // Fire or Pull or Grapple
+    // Fire or Pull
     double now = glfwGetTime();
     if (fire) {
         if (hook == NULL && now - lastHookTime > HOOK_COOLDOWN) {
@@ -166,19 +167,19 @@ void Player::update() {
             lastHookTime = now;
             hookSight->lightColor = glm::vec3(1.0f, 0.3f, 0.1f);
             hook = new Hook(playerNumber, mModel.position, mModel.rotation.y - PLAYER_BASE_ROTATION, hookSight);
-        } else if (hook != NULL && now - lastHookTime > HOOK_RETRACT_TIME) {
+        } else if (hook != NULL && !(hook->grappling) && now - lastHookTime > HOOK_RETRACT_TIME) {
             pull();
         }
     }
 
+    // Grapple
     if (grapple) {
-        if (hook == NULL && now - lastHookTime > HOOK_COOLDOWN) {
+        if (hook == NULL && now - lastGrappleTime > GRAPPLE_COOLDOWN) {
             // Fire new grapple
+            lastGrappleTime = now;
             lastHookTime = now;
             hookSight->lightColor = glm::vec3(0.3f, 1.0f, 0.1f);
             hook = new Hook(playerNumber, mModel.position, mModel.rotation.y - PLAYER_BASE_ROTATION, hookSight, true);
-        } else if (hook != NULL && now - lastHookTime > HOOK_RETRACT_TIME) {
-            pull();
         }
     }
 

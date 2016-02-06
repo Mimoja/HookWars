@@ -31,6 +31,7 @@ public:
     HealthBar* healthBar;
 private:
     double lastHookTime;
+    double lastGrappleTime;
 };
 
 class KeyboardPlayer : public Player {
