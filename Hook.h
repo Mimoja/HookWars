@@ -2,9 +2,11 @@
 
 #include "GameObject.h"
 #include "Chain.h"
+#include "Player.h"
 #include <vector>
 
 class Chain;
+class Player;
 
 class Hook : public GameObject {
 private:

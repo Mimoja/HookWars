@@ -73,14 +73,18 @@ void Hook::update() {
         }
 
     }
-    // did we hit something?
-    for (Player* p : allPlayers) {
-        if (p->playerNumber != owner && isColliding(*this, *p)) {
-            printf("Hit Player %d", p->playerNumber);
-            pulled = p;
-            allPlayers[owner]->pull();
-        }
-    }
+	// check for hits
+	if (pulled == NULL){
+		// did we hit a player?
+		for (Player* p : allPlayers) {
+		    if (p->playerNumber != owner && isColliding(*this, *p)) {
+		        printf("Hit Player %d", p->playerNumber);
+		        pulled = p;
+				p->hit();
+		        allPlayers[owner]->pull();
+		    }
+		}
+	}
     sight->position = mModel.position;
     sight->position.y += 0.1f;
 }

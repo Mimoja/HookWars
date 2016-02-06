@@ -22,6 +22,7 @@ public:
     Hook* hook;
     Chain* chain;
     void pull();
+	void hit();
     bool pulling;
     float health;
     glm::vec3 hookpoint;

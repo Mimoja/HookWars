@@ -247,6 +247,10 @@ void Player::pull() {
     }
 }
 
+void Player::hit() {
+	health -= 0.2f;
+}
+
 Rotor::Rotor(Player* owner, float rotation, float height) : GameObject(ROTOR_MODEL) {
     player = owner;
     mModel.position.y = height;
