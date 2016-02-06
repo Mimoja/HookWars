@@ -94,6 +94,7 @@ Player::Player(int number) : GameObject(PLAYER_MODEL) {
     chain = NULL;
     pulling = false;
     health = 1.0f;
+	radius = PLAYER_RADIUS;
     hookpoint = mModel.position;
     lastHookTime = glfwGetTime();
     new Rotor(this, -0.15f, 2.0f);
@@ -138,7 +139,7 @@ Player::Player(int number) : GameObject(PLAYER_MODEL) {
 
 void Player::update() {
 
-    glm::vec3 normal = circleCollision(mModel.position, PLAYER_RADIUS, 8, true);
+    glm::vec3 normal = circleCollision(mModel.position, PLAYER_RADIUS, 8, true, true, this);
 
     if (glm::length(normal) == 0 || glm::dot(normal, movementVector) > 0.0f) {
         mModel.position += PLAYER_MAXSPEED * movementVector;
