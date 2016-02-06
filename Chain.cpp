@@ -23,14 +23,16 @@ Chain::Chain(int player, glm::vec3 origin, glm::vec3 velocity)
     allRenderObjects.push_back(this);
 }
 
-Chain::Chain(int player, glm::vec3 origin, glm::vec3 velocity, Chain* next)
+Chain::Chain(int player, glm::vec3 origin, glm::vec3 velocity, Chain* next, bool grapple)
         : Chain(player, origin, velocity){
+    grappling = grapple;
     this->next = next;
     next->prev = this;
 }
 
-Chain::Chain(int player, glm::vec3 origin, glm::vec3 velocity, Hook*  hook)
+Chain::Chain(int player, glm::vec3 origin, glm::vec3 velocity, Hook*  hook, bool grapple)
         : Chain(player, origin, velocity){
+    grappling = grapple;
     this->hook = hook;
     hook->prev = this;
 }
@@ -64,23 +66,26 @@ void Chain::update(){
     glm::vec3 follow;
 
     if(pulling) {
-        // pull
-        Chain* p = prev;
-        do {
-            if (p != NULL) {
-                follow = p->mModel.position;
-                p = p->prev;
-            } else {
-                follow = allPlayers[owner]->hookpoint;
-            }
-        } while(glm::length(follow - mModel.position) == 0);
-
-        if (p == NULL) {
-            mModel.position += glm::normalize(follow - mModel.position) * CHAIN_PULL;
+        if(grappling) {
+            // TODO : what happens here
         } else {
-            mModel.position = moveTowards(mModel.position, follow, CHAIN_BASE_PULL);
-        }
+            // pull
+            Chain* p = prev;
+            do {
+                if (p != NULL) {
+                    follow = p->mModel.position;
+                    p = p->prev;
+                } else {
+                    follow = allPlayers[owner]->hookpoint;
+                }
+            } while(glm::length(follow - mModel.position) == 0);
 
+            if (p == NULL) {
+                mModel.position += glm::normalize(follow - mModel.position) * CHAIN_PULL;
+            } else {
+                mModel.position = moveTowards(mModel.position, follow, CHAIN_BASE_PULL);
+            }
+        }
         // update chain lasst because we are pulling
         this->updateChainLinks();
     } else {

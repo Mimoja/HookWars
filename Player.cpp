@@ -164,6 +164,7 @@ void Player::update() {
         if (hook == NULL && now - lastHookTime > HOOK_COOLDOWN) {
             // Fire new hook
             lastHookTime = now;
+            hookSight->lightColor = glm::vec3(1.0f, 0.3f, 0.1f);
             hook = new Hook(playerNumber, mModel.position, mModel.rotation.y - PLAYER_BASE_ROTATION, hookSight);
         } else if (hook != NULL && now - lastHookTime > HOOK_RETRACT_TIME) {
             pull();
@@ -174,6 +175,7 @@ void Player::update() {
         if (hook == NULL && now - lastHookTime > HOOK_COOLDOWN) {
             // Fire new grapple
             lastHookTime = now;
+            hookSight->lightColor = glm::vec3(0.3f, 1.0f, 0.1f);
             hook = new Hook(playerNumber, mModel.position, mModel.rotation.y - PLAYER_BASE_ROTATION, hookSight, true);
         } else if (hook != NULL && now - lastHookTime > HOOK_RETRACT_TIME) {
             pull();
@@ -189,26 +191,43 @@ void Player::update() {
     if (hook != NULL) {
         if (pulling) {
             if (chain != NULL) {
-                if (glm::length(hookpoint - chain->mModel.position) < 1.5f * CHAIN_DISTANCE) {
+                if (hook->grappling) {
+                    mModel.position.x = chain->mModel.position.x;
+                    mModel.position.z = chain->mModel.position.z;
                     auto next = chain->next;
                     chain->kill();
                     chain = next;
+                } else {
+                    if (glm::length(hookpoint - chain->mModel.position) < 1.5f * CHAIN_DISTANCE) {
+                        auto next = chain->next;
+                        chain->kill();
+                        chain = next;
+                    }
                 }
             } else {
-                if (glm::length(hookpoint - hook->mModel.position) < 1.5f * CHAIN_DISTANCE) {
+                if (hook->grappling) {
+                    mModel.position.x = hook->mModel.position.x;
+                    mModel.position.z = hook->mModel.position.z;                        
                     hook->kill();
                     hook = NULL;
                     pulling = false;
+                } else {
+                    if (glm::length(hookpoint - hook->mModel.position) < 1.5f * CHAIN_DISTANCE) {
+                        if(hook->grappling) { mModel.position = hook->mModel.position; };
+                        hook->kill();
+                        hook = NULL;
+                        pulling = false;
+                    }
                 }
             }
         } else {
             if (chain != NULL) {
                 if (glm::length(hookpoint - chain->mModel.position) > CHAIN_DISTANCE) {
-                    chain = new Chain(playerNumber, hookpoint, hook->mModel.position - mModel.position, chain);
+                    chain = new Chain(playerNumber, hookpoint, hook->mModel.position - mModel.position, chain, hook->grappling);
                 }
             } else {
                 if (glm::length(hookpoint - hook->mModel.position) > CHAIN_DISTANCE) {
-                    chain = new Chain(playerNumber, hookpoint, hook->mModel.position - mModel.position, hook);
+                    chain = new Chain(playerNumber, hookpoint, hook->mModel.position - mModel.position, hook, hook->grappling);
                 }
             }
         }
@@ -225,8 +244,6 @@ void Player::update() {
 
     if (hook == NULL) {
         hookSight->lightColor = glm::vec3(0.0f);
-    } else {
-        hookSight->lightColor = glm::vec3(1.0f, 0.3f, 0.1f);
     }
 
     // Move Light Source
@@ -248,7 +265,7 @@ void Player::pull() {
 }
 
 void Player::hit() {
-	health -= 0.2f;
+    health -= 0.2f;
 }
 
 Rotor::Rotor(Player* owner, float rotation, float height) : GameObject(ROTOR_MODEL) {
