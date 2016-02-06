@@ -13,8 +13,14 @@ void Hook::pull() {
 extern std::vector<Player*> allPlayers;
 
 extern GameObject* referenceHook;
+extern GameObject* referenceGrapple;
 
-Hook::Hook(int playerNumber, glm::vec3 origin, float dir, PointLight* p) : GameObject(*referenceHook) {
+Hook::Hook(int playerNumber, glm::vec3 origin, float dir, PointLight* p, bool grapple)
+		: GameObject(*referenceHook) {
+	if(grapple) {
+		mModel = referenceGrapple->mModel;
+	}
+	grappling = grapple;
     owner = playerNumber;
     mModel.position = origin;
     vel = HOOK_SPEED * glm::normalize(glm::vec3(sin(dir), 0, cos(dir)));

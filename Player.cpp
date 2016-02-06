@@ -17,6 +17,7 @@ enum {
     RTL,
     RTR,
     FIRE,
+	GRAPPLE,
 };
 int keyboardControls[2][7] = {
     {GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT, GLFW_KEY_K, GLFW_KEY_L, GLFW_KEY_M},
@@ -41,6 +42,7 @@ void KeyboardPlayer::update() {
     else if (glfwGetKey(window, keyboardControls[playerNumber][RIGHT]) == GLFW_PRESS)movementVector.x = 1.0f;
 
     fire = glfwGetKey(window, keyboardControls[playerNumber][FIRE]) == GLFW_PRESS;
+    grapple = glfwGetKey(window, keyboardControls[playerNumber][GRAPPLE]) == GLFW_PRESS;
 
     if (glfwGetKey(window, keyboardControls[playerNumber][RTL]) == GLFW_PRESS)rotation += 0.1f;
     if (glfwGetKey(window, keyboardControls[playerNumber][RTR]) == GLFW_PRESS)rotation -= 0.1f;
@@ -75,6 +77,7 @@ void JoystickPlayer::update() {
     rotationVector.y = joystickAxis[XBOX_ONE_GAMEPAD::TURN_UP_DOWN] - joystickCalibration[1].y;
 
     fire = (joystickAxis[XBOX_ONE_GAMEPAD::FIRE] > 0);
+    grapple = (joystickAxis[XBOX_ONE_GAMEPAD::GRAPPLE] > 0);
 
     Player::update();
 }
@@ -154,13 +157,23 @@ void Player::update() {
     }
     mModel.rotation.y = glm::atan(rotationVector.x, rotationVector.y) + PLAYER_BASE_ROTATION;
 
-    // Fire or Pull
+    // Fire or Pull or Grapple
     double now = glfwGetTime();
     if (fire) {
         if (hook == NULL && now - lastHookTime > HOOK_COOLDOWN) {
             // Fire new hook
             lastHookTime = now;
             hook = new Hook(playerNumber, mModel.position, mModel.rotation.y - PLAYER_BASE_ROTATION, hookSight);
+        } else if (hook != NULL && now - lastHookTime > HOOK_RETRACT_TIME) {
+            pull();
+        }
+    }
+
+    if (grapple) {
+        if (hook == NULL && now - lastHookTime > HOOK_COOLDOWN) {
+            // Fire new grapple
+            lastHookTime = now;
+            hook = new Hook(playerNumber, mModel.position, mModel.rotation.y - PLAYER_BASE_ROTATION, hookSight, true);
         } else if (hook != NULL && now - lastHookTime > HOOK_RETRACT_TIME) {
             pull();
         }

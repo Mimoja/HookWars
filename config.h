@@ -16,6 +16,7 @@
 #define HEALTHBAR_HEIGHT 4.0f
 
 #define HOOK_MODEL "assets/hook.obj"
+#define HOOK_GRAPPLE_MODEL "assets/grapple.obj"
 #define HOOK_SCALING 0.4f
 #define HOOK_SPEED 0.5f
 #define HOOK_RADIUS 0.4f
@@ -68,6 +69,7 @@ namespace XBOX_ONE_GAMEPAD {
         MOVE_LEFT_RIGHT = 0,
         MOVE_UP_DOWN = 1,
         FIRE = 5,
+		GRAPPLE = 2,
     };
 }
 

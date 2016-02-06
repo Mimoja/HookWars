@@ -41,6 +41,7 @@ unsigned navigationMapWidth;
 GameObject* map_ptr;
 GameObject* referenceChain;
 GameObject* referenceHook;
+GameObject* referenceGrapple;
 
 int WindowWidth = WINDOW_WIDTH;
 int WindowHeight = WINDOW_HEIGHT;
@@ -157,6 +158,7 @@ int main(void) {
 
     referenceHook = new GameObject(HOOK_MODEL);
     referenceChain = new GameObject(CHAIN_MODEL);
+    referenceGrapple = new GameObject(HOOK_GRAPPLE_MODEL);
     map_ptr = new GameObject(MAP_MODEL);
     map_ptr->mModel.scaling = glm::vec3(MAP_SCALING);
     map_ptr->mModel.position = glm::vec3(0.0f, -1.0f, 0.0f);

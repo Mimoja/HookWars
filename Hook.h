@@ -13,8 +13,9 @@ private:
     PointLight* sight;
 public:
     bool pulling;
+	bool grappling;
     glm::vec3 vel;
-    Hook(int player, glm::vec3 origin, float dir, PointLight* p);
+    Hook(int player, glm::vec3 origin, float dir, PointLight* p, bool grapple = false);
     virtual void update();
     void pull();
     void kill();

@@ -26,6 +26,7 @@ public:
     float health;
     glm::vec3 hookpoint;
     bool fire = false;
+    bool grapple = false;
     HealthBar* healthBar;
 private:
     double lastHookTime;
