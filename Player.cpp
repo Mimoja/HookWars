@@ -75,6 +75,8 @@ void JoystickPlayer::update() {
 
     rotationVector.x = joystickAxis[XBOX_ONE_GAMEPAD::TURN_LEFT_RIGHT] - joystickCalibration[1].x;
     rotationVector.y = joystickAxis[XBOX_ONE_GAMEPAD::TURN_UP_DOWN] - joystickCalibration[1].y;
+    // workaround so abs(rotationVector) is never 0
+    if (rotationVector.x == 0) rotationVector.x = 0.00001f;
 
     fire = (joystickAxis[XBOX_ONE_GAMEPAD::FIRE] > 0);
     grapple = (joystickAxis[XBOX_ONE_GAMEPAD::GRAPPLE] > 0);
