@@ -199,7 +199,7 @@ glm::vec3 circleCollision(glm::vec3 center, float radius, float samples, bool co
         glm::vec3 navEntry = getNavigationEntry(center + offset);
 		for (auto p : allPlayers) {
 			if(glm::length(center - p->mModel.position) < PLAYER_RADIUS + radius) {
-				normal += center - p->mModel.position;
+				normal += 0.1f*(center - p->mModel.position);
 			}
 		}
         if (navEntry.r == -1.0f || navEntry.r == 1.0f || (collideWithGreen && navEntry.g == 1.0f)) {
