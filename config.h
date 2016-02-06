@@ -23,8 +23,8 @@
 #define HOOK_BASE_ROTATION glm::half_pi<float>()
 
 #define CHAIN_MODEL "assets/chain_simple.obj"
-#define CHAIN_SCALING 0.12f
-#define CHAIN_DISTANCE 0.55f
+#define CHAIN_SCALING 0.15f
+#define CHAIN_DISTANCE 0.65f
 #define CHAIN_BASE_ROTATION glm::pi<float>()
 #define CHAIN_BASE_PUSH 0.2f
 #define CHAIN_PULL 0.5f
