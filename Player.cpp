@@ -17,7 +17,7 @@ enum {
     RTL,
     RTR,
     FIRE,
-	GRAPPLE,
+    GRAPPLE,
 };
 int keyboardControls[2][7] = {
     {GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT, GLFW_KEY_K, GLFW_KEY_L, GLFW_KEY_M},
@@ -94,7 +94,7 @@ Player::Player(int number) : GameObject(PLAYER_MODEL) {
     chain = NULL;
     pulling = false;
     health = 1.0f;
-	radius = PLAYER_RADIUS;
+    radius = PLAYER_RADIUS;
     hookpoint = mModel.position;
     lastHookTime = glfwGetTime();
     new Rotor(this, -0.15f, 2.0f);

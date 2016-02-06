@@ -16,18 +16,18 @@ extern GameObject* referenceHook;
 extern GameObject* referenceGrapple;
 
 Hook::Hook(int playerNumber, glm::vec3 origin, float dir, PointLight* p, bool grapple)
-		: GameObject(*referenceHook) {
-	if(grapple) {
-		mModel = referenceGrapple->mModel;
-	}
-	grappling = grapple;
+        : GameObject(*referenceHook) {
+    if(grapple) {
+        mModel = referenceGrapple->mModel;
+    }
+    grappling = grapple;
     owner = playerNumber;
     mModel.position = origin;
     vel = HOOK_SPEED * glm::normalize(glm::vec3(sin(dir), 0, cos(dir)));
     collided = 0;
     prev = NULL;
     pulling = false;
-	pulled = NULL;
+    pulled = NULL;
     mModel.rotation.y = dir + HOOK_BASE_ROTATION;
     mModel.scaling = glm::vec3(HOOK_SCALING, HOOK_SCALING, HOOK_SCALING);
     radius = HOOK_RADIUS;
@@ -54,9 +54,9 @@ void Hook::update() {
         mModel.position += dif;
 
         mModel.rotation.y = glm::atan(dif.x, dif.z) + HOOK_BASE_ROTATION + glm::pi<float>();
-		if(pulled != NULL){
-			pulled->mModel.position = mModel.position;
-		}
+        if(pulled != NULL){
+            pulled->mModel.position = mModel.position;
+        }
     } else {
         // push
         glm::vec3 normal = circleCollision(mModel.position, radius, 8.0f, false, false, allPlayers[owner]);
@@ -73,12 +73,12 @@ void Hook::update() {
         }
 
     }
-	// did we hit something?
+    // did we hit something?
     for (Player* p : allPlayers) {
         if (p->playerNumber != owner && isColliding(*this, *p)) {
             printf("Hit Player %d", p->playerNumber);
-			pulled = p;
-			allPlayers[owner]->pull();
+            pulled = p;
+            allPlayers[owner]->pull();
         }
     }
     sight->position = mModel.position;

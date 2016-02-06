@@ -193,19 +193,19 @@ glm::vec3 getNavigationEntry(glm::vec3 position) {
 }
 
 glm::vec3 circleCollision(glm::vec3 center, float radius, float samples, bool collideWithGreen,
-		bool collideWithPlayers, Player* self) {
+        bool collideWithPlayers, Player* self) {
     glm::vec3 normal = glm::vec3(0);
     for (float a = 0; a < 2 * glm::pi<float>(); a += glm::half_pi<float>() / samples) {
         glm::vec3 offset = radius * glm::vec3(sin(a), 0, cos(a));
         glm::vec3 navEntry = getNavigationEntry(center + offset);
 
-		if(collideWithPlayers){
-			for (auto p : allPlayers) {
-				if(p != self && glm::length(center - p->mModel.position) < PLAYER_RADIUS + radius) {
-					normal += 0.1f*(center - p->mModel.position);
-				}
-			}
-		}
+        if(collideWithPlayers){
+            for (auto p : allPlayers) {
+                if(p != self && glm::length(center - p->mModel.position) < PLAYER_RADIUS + radius) {
+                    normal += 0.1f*(center - p->mModel.position);
+                }
+            }
+        }
 
         if (navEntry.r == -1.0f || navEntry.r == 1.0f || (collideWithGreen && navEntry.g == 1.0f)) {
             normal -= offset;
@@ -221,7 +221,7 @@ glm::vec3 slideAlong(glm::vec3 a, glm::vec3 n) {
 }
 
 bool isColliding(GameObject o1, GameObject o2) {
-	return (glm::length(o1.mModel.position - o2.mModel.position) < o1.radius + o2.radius);
+    return (glm::length(o1.mModel.position - o2.mModel.position) < o1.radius + o2.radius);
 }
 
 glm::vec3 moveTowards(glm::vec3 pos, glm::vec3 target, float minspeed) {
