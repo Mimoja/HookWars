@@ -159,6 +159,9 @@ void Player::update() {
     }
     if (navEntry.b > 0.9f) {
         printf("In Trap\n");
+        if(!isHit()) {
+            hit();
+        }
     }
 
     mModel.rotation.y = glm::atan(rotationVector.x, rotationVector.y) + PLAYER_BASE_ROTATION;
