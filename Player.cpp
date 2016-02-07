@@ -103,7 +103,6 @@ Player::Player(int number) : GameObject(PLAYER_MODEL) {
     lastHitTime = glfwGetTime() - BLINK_TIME;
     new Rotor(this, -0.15f, 1.5f);
     mModel.scaling = glm::vec3(PLAYER_SCALING);
-    mModel.position = glm::vec3(-5.0f, 2.0f, 0.0f);
     mModel.rotation = glm::vec3(0.1f);
     playerNumber = number;
 

@@ -108,7 +108,7 @@ int main(void) {
     }
 
     // Joystick handle
-    for (int x = 0; x < 16; x++) {
+    for (int x = 0; x < 4; x++) {
         const char* joystickName = glfwGetJoystickName(GLFW_JOYSTICK_1 + x);
         if (joystickName != 0) {
             printf("Found Joystick %s\n", joystickName);
@@ -117,6 +117,7 @@ int main(void) {
             newPlayer->joystickAxis = glfwGetJoystickAxes(GLFW_JOYSTICK_1 + x,
                     &newPlayer->joystickAxisCount);
             newPlayer->calibrate();
+            newPlayer->mModel.position = spawnPoints[x];
             allPlayers.push_back(newPlayer);
             allUpdateObjects.push_back(newPlayer);
             allRenderObjects.push_back(newPlayer);
@@ -128,6 +129,7 @@ int main(void) {
         printf("Falling back to keyboard players\n");
         for (int x = 0; x < 2; x++) {
             KeyboardPlayer* newPlayer = new KeyboardPlayer(x);
+            newPlayer->mModel.position = spawnPoints[x];
             allPlayers.push_back(newPlayer);
             allUpdateObjects.push_back(newPlayer);
             allRenderObjects.push_back(newPlayer);
