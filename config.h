@@ -52,8 +52,8 @@
 #define GAMEPAD_CUTOFF (0.15f)
 #define PLAYER_MAXSPEED (0.20f)
 
-#define BLINK_TIME 3.0f
-#define BLINK_INTERVAL 0.5f
+#define BLINK_TIME 1.5f
+#define BLINK_INTERVAL 0.3f
 
 // Shading
 #define GEOMETRIE_VERTEX "shader/geometrie.vs"
