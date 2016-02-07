@@ -6,6 +6,7 @@
 extern std::vector<GameObject*> allUpdateObjects;
 extern std::vector<GameObject*> allRenderObjects;
 extern Lights allLightSources;
+extern std::vector<glm::vec3> spawnPoints;
 
 extern GameObject* referenceHook;
 
@@ -103,7 +104,6 @@ Player::Player(int number) : GameObject(PLAYER_MODEL) {
     lastHitTime = glfwGetTime() - BLINK_TIME;
     new Rotor(this, -0.15f, 1.5f);
     mModel.scaling = glm::vec3(PLAYER_SCALING);
-    mModel.position = glm::vec3(-5.0f, 2.0f, 0.0f);
     mModel.rotation = glm::vec3(0.1f);
     playerNumber = number;
 
@@ -288,6 +288,14 @@ bool Player::isHit() {
 void Player::hit() {
     health -= 0.2f;
     lastHitTime = glfwGetTime();
+    if (health <= 0.01f) {
+        die();
+    }
+}
+
+void Player::die() {
+    health = 1.0f;
+    mModel.position = spawnPoints[playerNumber];
 }
 
 Rotor::Rotor(Player* owner, float rotation, float height) : GameObject(ROTOR_MODEL) {

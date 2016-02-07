@@ -46,6 +46,13 @@ GameObject* referenceGrapple;
 int WindowWidth = WINDOW_WIDTH;
 int WindowHeight = WINDOW_HEIGHT;
 
+std::vector<glm::vec3> spawnPoints = {
+    glm::vec3(- 9.0f,  2.0f,  4.0f),
+    glm::vec3(  4.0f,  2.0f,- 9.0f),
+    glm::vec3(  8.0f,  2.0f, 11.5f),
+    glm::vec3(-13.0f,  2.0f,-15.5f),
+};
+
 GLuint shadowTexture;
 GLuint frameBuffer = 0;
 
@@ -108,7 +115,7 @@ int main(void) {
     }
 
     // Joystick handle
-    for (int x = 0; x < 16; x++) {
+    for (int x = 0; x < 4; x++) {
         const char* joystickName = glfwGetJoystickName(GLFW_JOYSTICK_1 + x);
         if (joystickName != 0) {
             printf("Found Joystick %s\n", joystickName);
@@ -117,6 +124,7 @@ int main(void) {
             newPlayer->joystickAxis = glfwGetJoystickAxes(GLFW_JOYSTICK_1 + x,
                     &newPlayer->joystickAxisCount);
             newPlayer->calibrate();
+            newPlayer->mModel.position = spawnPoints[x];
             allPlayers.push_back(newPlayer);
             allUpdateObjects.push_back(newPlayer);
             allRenderObjects.push_back(newPlayer);
@@ -128,6 +136,7 @@ int main(void) {
         printf("Falling back to keyboard players\n");
         for (int x = 0; x < 2; x++) {
             KeyboardPlayer* newPlayer = new KeyboardPlayer(x);
+            newPlayer->mModel.position = spawnPoints[x];
             allPlayers.push_back(newPlayer);
             allUpdateObjects.push_back(newPlayer);
             allRenderObjects.push_back(newPlayer);
