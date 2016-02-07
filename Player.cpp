@@ -267,8 +267,8 @@ void Player::update() {
     sight->position.x = mModel.position.x;
     sight->position.z = mModel.position.z;
 
-    canonSight->position = mModel.position + glm::normalize(glm::vec3(rotationVector.x, 0.0f, rotationVector.y))*2.0f;
-    canonSight->position.y += 0.5f;
+    canonSight->position.x = mModel.position.x + glm::normalize(glm::vec3(rotationVector.x, 0.0f, rotationVector.y)).x * 2.0f;
+    canonSight->position.z = mModel.position.z + glm::normalize(glm::vec3(rotationVector.x, 0.0f, rotationVector.y)).z * 2.0f;
 
 }
 
