@@ -6,9 +6,9 @@
 
 #define PLAYER_MODEL "assets/player.obj"
 #define ROTOR_MODEL "assets/rotor.obj"
-#define PLAYER_SCALING 1
+#define PLAYER_SCALING 0.7f
 #define PLAYER_BASE_ROTATION (glm::pi<float>())
-#define PLAYER_RADIUS 1.0f
+#define PLAYER_RADIUS 0.7f
 
 #define HEALTHBAR_MODEL "assets/health.obj"
 #define HEALTHBAR_SCALING 0.1f

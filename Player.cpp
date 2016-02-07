@@ -100,7 +100,7 @@ Player::Player(int number) : GameObject(PLAYER_MODEL) {
     hookpoint = mModel.position;
     lastHookTime = glfwGetTime();
     lastGrappleTime = glfwGetTime();
-    new Rotor(this, -0.15f, 2.0f);
+    new Rotor(this, -0.15f, 1.5f);
     mModel.scaling = glm::vec3(PLAYER_SCALING);
     mModel.position = glm::vec3(-5.0f, 2.0f, 0.0f);
     mModel.rotation = glm::vec3(0.1f);
@@ -150,7 +150,7 @@ void Player::update() {
         mModel.position += PLAYER_MAXSPEED * slideAlong(movementVector, glm::normalize(normal));
     }
 
-    hookpoint = mModel.position + 1.3f * glm::vec3(rotationVector.x, 0.2f, rotationVector.y);
+    hookpoint = mModel.position + PLAYER_SCALING * glm::vec3(rotationVector.x, 0.2f, rotationVector.y);
 
     glm::vec3 navEntry = getNavigationEntry(mModel.position + movementVector * PLAYER_MAXSPEED);
     if (navEntry.g == 1.0f) {
@@ -159,6 +159,7 @@ void Player::update() {
     if (navEntry.b > 0.9f) {
         printf("In Trap\n");
     }
+
     mModel.rotation.y = glm::atan(rotationVector.x, rotationVector.y) + PLAYER_BASE_ROTATION;
 
     // Fire or Pull
@@ -274,6 +275,7 @@ void Player::hit() {
 Rotor::Rotor(Player* owner, float rotation, float height) : GameObject(ROTOR_MODEL) {
     player = owner;
     mModel.position.y = height;
+    mModel.scaling = owner->mModel.scaling;
     rot = rotation;
     allUpdateObjects.push_back(this);
     allRenderObjects.push_back(this);
