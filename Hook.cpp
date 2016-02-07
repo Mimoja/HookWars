@@ -83,7 +83,7 @@ void Hook::update() {
     if (!grappling && pulled == NULL){
         // did we hit a player?
         for (Player* p : allPlayers) {
-            if (p->playerNumber != owner && isColliding(*this, *p)) {
+            if (p->playerNumber != owner && isColliding(*this, *p) && !p->isHit()) {
                 printf("Hit Player %d", p->playerNumber);
                 pulled = p;
                 p->hit();

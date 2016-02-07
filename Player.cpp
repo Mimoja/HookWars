@@ -100,6 +100,7 @@ Player::Player(int number) : GameObject(PLAYER_MODEL) {
     hookpoint = mModel.position;
     lastHookTime = glfwGetTime();
     lastGrappleTime = glfwGetTime();
+    lastHitTime = glfwGetTime() - BLINK_TIME;
     new Rotor(this, -0.15f, 1.5f);
     mModel.scaling = glm::vec3(PLAYER_SCALING);
     mModel.position = glm::vec3(-5.0f, 2.0f, 0.0f);
@@ -162,12 +163,21 @@ void Player::update() {
 
     mModel.rotation.y = glm::atan(rotationVector.x, rotationVector.y) + PLAYER_BASE_ROTATION;
 
-    // Fire or Pull
     double now = glfwGetTime();
+
+    // blink?
+    if(now - lastHitTime < BLINK_TIME && fmod(now, BLINK_INTERVAL) < BLINK_INTERVAL/3.0f) {
+        mModel.position.y = -200.0f;
+    } else {
+        mModel.position.y = 2.0f;
+    }
+
+    // Fire or Pull
     if (fire) {
         if (hook == NULL && now - lastHookTime > HOOK_COOLDOWN) {
             // Fire new hook
             lastHookTime = now;
+            printf("%f\n", now);
             hookSight->lightColor = glm::vec3(1.0f, 0.3f, 0.1f);
             hook = new Hook(playerNumber, mModel.position, mModel.rotation.y - PLAYER_BASE_ROTATION, hookSight);
         } else if (hook != NULL && !(hook->grappling) && now - lastHookTime > HOOK_RETRACT_TIME) {
@@ -268,8 +278,13 @@ void Player::pull() {
     }
 }
 
+bool Player::isHit() {
+    return glfwGetTime() - lastHitTime < BLINK_TIME;
+}
+
 void Player::hit() {
     health -= 0.2f;
+    lastHitTime = glfwGetTime();
 }
 
 Rotor::Rotor(Player* owner, float rotation, float height) : GameObject(ROTOR_MODEL) {
