@@ -17,6 +17,7 @@
 
 std::vector<GameObject*> allUpdateObjects;
 std::vector<GameObject*> allRenderObjects;
+std::vector<HealthBar*> allHealthbars;
 std::vector<Player*> allPlayers;
 
 GLFWwindow* window;
@@ -47,10 +48,10 @@ int WindowWidth = WINDOW_WIDTH;
 int WindowHeight = WINDOW_HEIGHT;
 
 std::vector<glm::vec3> spawnPoints = {
-    glm::vec3(- 9.0f,  2.0f,  4.0f),
-    glm::vec3(  4.0f,  2.0f,- 9.0f),
-    glm::vec3(  8.0f,  2.0f, 11.5f),
-    glm::vec3(-13.0f,  2.0f,-15.5f),
+    glm::vec3(-9.0f, 2.0f, 4.0f),
+    glm::vec3(4.0f, 2.0f, -9.0f),
+    glm::vec3(8.0f, 2.0f, 11.5f),
+    glm::vec3(-13.0f, 2.0f, -15.5f),
 };
 
 GLuint shadowTexture;
@@ -284,6 +285,9 @@ void mainLoop(long frameCount) {
 
     for (unsigned int i = 0; i < allRenderObjects.size(); i++) {
         allRenderObjects[i]->render(geometrieShaderID, Projection * cam.getView(), cam, allLightSources, depthBiasVP);
+    }
+    for (unsigned int i = 0; i < allRenderObjects.size(); i++) {
+        allHealthbars[i]->render(geometrieShaderID, Projection * cam.getView(), cam, allLightSources, depthBiasVP);
     }
 
     // Swap buffers

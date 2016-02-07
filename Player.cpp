@@ -5,6 +5,7 @@
 
 extern std::vector<GameObject*> allUpdateObjects;
 extern std::vector<GameObject*> allRenderObjects;
+extern std::vector<HealthBar*> allHealthbars;
 extern Lights allLightSources;
 extern std::vector<glm::vec3> spawnPoints;
 
@@ -137,7 +138,7 @@ Player::Player(int number) : GameObject(PLAYER_MODEL) {
     allLightSources.pointLights.push_back(hookSight);
 
     healthBar = new HealthBar(this);
-    allRenderObjects.push_back(healthBar);
+    allHealthbars.push_back(healthBar);
     allUpdateObjects.push_back(healthBar);
 }
 
