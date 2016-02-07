@@ -77,11 +77,4 @@ namespace XBOX_ONE_GAMEPAD {
     };
 }
 
-std::vector<glm::vec3> spawnPoints = {
-    glm::vec3(- 9.0f,  2.0f,  4.0f),
-    glm::vec3(  4.0f,  2.0f,- 9.0f),
-    glm::vec3(  8.0f,  2.0f, 11.5f),
-    glm::vec3(-13.0f,  2.0f,-15.5f),
-};
-
 #endif

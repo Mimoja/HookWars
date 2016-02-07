@@ -31,6 +31,7 @@ public:
     bool grapple = false;
     HealthBar* healthBar;
 private:
+    void die();
     double lastHookTime;
     double lastHitTime;
     double lastGrappleTime;
