@@ -9,6 +9,7 @@
 extern std::vector<GameObject*> allUpdateObjects;
 extern std::vector<GameObject*> allRenderObjects;
 extern std::vector<Player*> allPlayers;
+extern Lights allLightSources;
 
 float randf(float min, float max) {
     return (float)((double)(rand()) / (double)(RAND_MAX) * ((double)max - (double)min) + (double)min);
@@ -32,6 +33,16 @@ Mine::Mine() : GameObject(MINE_MODEL) {
     radius = MINE_RADIUS;
     allUpdateObjects.push_back(this);
     allRenderObjects.push_back(this);
+
+    sight = new PointLight();
+    sight->lightColor = glm::vec3(1.0f, 0.0f, 0.0f);
+    sight->intensity = 30.0f;
+    sight->position = this->mModel.position;
+    sight->position.y += 1.5f;
+    sight->falloff.linear = 0.2f;
+    sight->falloff.exponential = 0.5f;
+    sight->specular.intensity = 0.0f;
+    allLightSources.pointLights.push_back(sight);
 }
 
 void Mine::update() {
@@ -44,6 +55,8 @@ void Mine::update() {
                 }
             }
         }
+    sight->position = this->mModel.position;
+    sight->position.y += 1.5f;
     } else {
         if (glfwGetTime() > respawntime) {
             mModel.position = spawn();
