@@ -5,6 +5,9 @@
 #define GAME_NAME "Hook Wars"
 
 #define PLAYER_MODEL "assets/player.obj"
+#define PLAYER_TEXTURE "assets/playertexture_diffuse.png"
+#define PLAYER_TEXTURE_NORMAL "assets/playertexture_normal.png"
+#define PLAYER_TEXTURE_SSAO "assets/playertexture_ao.png"
 #define ROTOR_MODEL "assets/rotor.obj"
 #define PLAYER_SCALING 0.7f
 #define PLAYER_BASE_ROTATION (glm::pi<float>())
