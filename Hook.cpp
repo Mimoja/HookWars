@@ -16,6 +16,7 @@ extern std::vector<Mine*> allMines;
 
 extern GameObject* referenceHook;
 extern GameObject* referenceGrapple;
+extern GameObject* map_ptr;
 
 Hook::Hook(int playerNumber, glm::vec3 origin, float dir, PointLight* p, bool grapple)
         : GameObject(*referenceHook) {
@@ -40,7 +41,6 @@ Hook::Hook(int playerNumber, glm::vec3 origin, float dir, PointLight* p, bool gr
 }
 
 void Hook::update() {
-
     if (pulling) {
         if (!grappling) {
             // pull
@@ -91,6 +91,7 @@ void Hook::update() {
                 printf("Hit Player %d", p->playerNumber);
                 pulled = p;
                 p->hit();
+                p->health -= 0.2f;
                 allPlayers[owner]->pull();
             }
         }
@@ -102,6 +103,15 @@ void Hook::update() {
             }
         }
     }
+
+    // sanity checks
+    mModel.position.y = 2.0f;
+    if(mModel.position.x < MAP_SCALING * map_ptr->mModel.min.x) mModel.position.x = MAP_SCALING * map_ptr->mModel.min.x;
+    if(mModel.position.x > MAP_SCALING * map_ptr->mModel.max.x) mModel.position.x = MAP_SCALING * map_ptr->mModel.max.x;
+    if(mModel.position.z < MAP_SCALING * map_ptr->mModel.min.z) mModel.position.z = MAP_SCALING * map_ptr->mModel.min.z;
+    if(mModel.position.z > MAP_SCALING * map_ptr->mModel.max.z) mModel.position.z = MAP_SCALING * map_ptr->mModel.max.z;
+
+    // move light
     sight->position = mModel.position;
     sight->position.y += 0.1f;
 }

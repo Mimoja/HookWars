@@ -154,16 +154,15 @@ void Player::update() {
         mModel.position += PLAYER_MAXSPEED * slideAlong(movementVector, glm::normalize(normal));
     }
 
-    hookpoint = mModel.position + PLAYER_SCALING * glm::vec3(rotationVector.x, 0.2f, rotationVector.y);
+    hookpoint = mModel.position + 0.4f * glm::vec3(rotationVector.x, 0.2f, rotationVector.y);
 
     glm::vec3 navEntry = getNavigationEntry(mModel.position + movementVector * PLAYER_MAXSPEED);
     if (navEntry.g == 1.0f) {
-        printf("In River!\n");
     }
     if (navEntry.b > 0.9f) {
-        printf("In Trap\n");
         if(!isHit()) {
             hit();
+            health -= 0.2f;
         }
     }
 
@@ -289,7 +288,6 @@ bool Player::isHit() {
 }
 
 void Player::hit() {
-    health -= 0.2f;
     lastHitTime = glfwGetTime();
     if (health <= 0.01f) {
         die();

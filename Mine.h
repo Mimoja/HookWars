@@ -5,13 +5,16 @@
 
 class Mine : public GameObject {
     public:
-        Mine();
+        Mine(bool repair = false);
         virtual void update();
         bool exists;
 
     private:
         void explode();
+        float respawndelay;
+        float damage;
         float respawntime;
+        bool isRepair;
 	PointLight* sight;
 };
 

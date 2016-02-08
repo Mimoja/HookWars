@@ -24,18 +24,31 @@ glm::vec3 spawn() {
     return cand;
 }
 
-Mine::Mine() : GameObject(MINE_MODEL) {
-    mModel.position = spawn();
-    mModel.rotation.y = MINE_BASE_ROTATION;
-    mModel.scaling = glm::vec3(MINE_SCALING, MINE_SCALING, MINE_SCALING);
-    mModel.diffuseTexture = new Texture(MINE_TEXTURE);
-    mModel.normalTexture = new Texture(MINE_TEXTURE_NORMAL);
+Mine::Mine(bool repair) : GameObject(MINE_MODEL) {
     radius = MINE_RADIUS;
+    isRepair = repair;
+
     allUpdateObjects.push_back(this);
     allRenderObjects.push_back(this);
 
     sight = new PointLight();
-    sight->lightColor = glm::vec3(1.0f, 0.0f, 0.0f);
+    if(repair) {
+        sight->lightColor = glm::vec3(0.3f, 1.0f, 0.3f);
+        damage = -REPAIR_AMOUNT;
+        mModel = Model(REPAIR_MODEL);
+        mModel.scaling = glm::vec3(REPAIR_SCALING);
+        mModel.diffuseTexture = new Texture(REPAIR_TEXTURE);
+        mModel.normalTexture = new Texture(REPAIR_TEXTURE_NORMAL);
+        mModel.rotation.y = REPAIR_BASE_ROTATION;
+    } else {
+        sight->lightColor = glm::vec3(1.0f, 0.0f, 0.0f);
+        damage = MINE_DAMAGE;
+        mModel.rotation.y = MINE_BASE_ROTATION;
+        mModel.scaling = glm::vec3(MINE_SCALING);
+        mModel.diffuseTexture = new Texture(MINE_TEXTURE);
+        mModel.normalTexture = new Texture(MINE_TEXTURE_NORMAL);
+    }
+    mModel.position = spawn();
     sight->intensity = 30.0f;
     sight->position = this->mModel.position;
     sight->position.y += 1.5f;
@@ -47,22 +60,26 @@ Mine::Mine() : GameObject(MINE_MODEL) {
 
 void Mine::update() {
     if (exists) {
-        for (auto o : allUpdateObjects) {
-            if (o != (GameObject*)this && isColliding(*(GameObject*)this, *o)) {
+        for (auto p : allPlayers) {
+            if (isColliding(*(GameObject*)this, *p)) {
                 explode();
-                if( std::find(allPlayers.begin(), allPlayers.end(), (Player*)o) != allPlayers.end() ) {
-                    ((Player*) o)->hit();
+                if(!isRepair) {
+                    p->hit();
                 }
+                p->health -= damage;
             }
         }
-    sight->position = this->mModel.position;
-    sight->position.y += 1.5f;
+        sight->position = this->mModel.position;
+        sight->position.y += 1.5f;
     } else {
         if (glfwGetTime() > respawntime) {
             mModel.position = spawn();
             exists = true;
         }
     }
+
+    // rotate slowly
+    mModel.rotation.y += 0.05;
 }
 
 void Mine::explode() {

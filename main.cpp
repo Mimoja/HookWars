@@ -230,9 +230,12 @@ int main(void) {
     }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    // spawn mines
+    // spawn mines and repairs
     for(int i = 0; i < MINE_COUNT; i++) {
-        allMines.push_back(new Mine());
+        allMines.push_back(new Mine(false));
+    }
+    for(int i = 0; i < REPAIR_COUNT; i++) {
+        allMines.push_back(new Mine(true));
     }
 
     printf("Entering Main Loop\n");
