@@ -154,11 +154,9 @@ void Player::update() {
     hookpoint = mModel.position + PLAYER_SCALING * glm::vec3(rotationVector.x, 0.2f, rotationVector.y);
 
     glm::vec3 navEntry = getNavigationEntry(mModel.position + movementVector * PLAYER_MAXSPEED);
-    if (navEntry.g == 1.0f) {
-        printf("In River!\n");
-    }
+
+    // in Trap?
     if (navEntry.b > 0.9f) {
-        printf("In Trap\n");
         if(!isHit()) {
             hit();
         }
@@ -180,7 +178,6 @@ void Player::update() {
         if (hook == NULL && now - lastHookTime > HOOK_COOLDOWN) {
             // Fire new hook
             lastHookTime = now;
-            printf("%f\n", now);
             hookSight->lightColor = glm::vec3(1.0f, 0.3f, 0.1f);
             hook = new Hook(playerNumber, mModel.position, mModel.rotation.y - PLAYER_BASE_ROTATION, hookSight);
         } else if (hook != NULL && !(hook->grappling) && now - lastHookTime > HOOK_RETRACT_TIME) {

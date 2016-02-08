@@ -86,7 +86,6 @@ void Hook::update() {
         // did we hit a player?
         for (Player* p : allPlayers) {
             if (p->playerNumber != owner && isColliding(*this, *p) && !p->isHit()) {
-                printf("Hit Player %d", p->playerNumber);
                 pulled = p;
                 p->hit();
                 allPlayers[owner]->pull();
