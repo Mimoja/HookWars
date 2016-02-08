@@ -4,7 +4,7 @@
 
 class Mine : public GameObject {
     public:
-        Mine(glm::vec3 pos);
+        Mine();
         virtual void update();
 
     private:

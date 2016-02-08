@@ -23,8 +23,8 @@ glm::vec3 spawn() {
     return cand;
 }
 
-Mine::Mine(glm::vec3 pos) : GameObject(MINE_MODEL) {
-    mModel.position = pos;
+Mine::Mine() : GameObject(MINE_MODEL) {
+    mModel.position = spawn();
     mModel.rotation.y = MINE_BASE_ROTATION;
     mModel.scaling = glm::vec3(MINE_SCALING, MINE_SCALING, MINE_SCALING);
     mModel.diffuseTexture = new Texture(MINE_TEXTURE);

@@ -1,6 +1,7 @@
 #include "Hook.h"
 #include "config.h"
 #include "util.h"
+#include "Mine.h"
 #include <string>
 #include <algorithm>
 
@@ -11,10 +12,10 @@ void Hook::pull() {
 }
 
 extern std::vector<Player*> allPlayers;
+extern std::vector<Mine*> allMines;
 
 extern GameObject* referenceHook;
 extern GameObject* referenceGrapple;
-extern GameObject* mine;
 
 Hook::Hook(int playerNumber, glm::vec3 origin, float dir, PointLight* p, bool grapple)
         : GameObject(*referenceHook) {
@@ -91,10 +92,12 @@ void Hook::update() {
                 allPlayers[owner]->pull();
             }
         }
-        // did we hit the mine?
-        if(isColliding(*this, *mine)) {
-            pulled = mine;
-            allPlayers[owner]->pull();
+        // did we hit a mine?
+        for (Mine* m : allMines) {
+            if (isColliding(*this, *m)) {
+                pulled = m;
+                allPlayers[owner]->pull();
+            }
         }
     }
     sight->position = mModel.position;

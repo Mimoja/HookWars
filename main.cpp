@@ -19,6 +19,7 @@
 std::vector<GameObject*> allUpdateObjects;
 std::vector<GameObject*> allRenderObjects;
 std::vector<Player*> allPlayers;
+std::vector<Mine*> allMines;
 
 GLFWwindow* window;
 void mainLoop(long frameCount);
@@ -43,7 +44,6 @@ GameObject* map_ptr;
 GameObject* referenceChain;
 GameObject* referenceHook;
 GameObject* referenceGrapple;
-GameObject* mine;
 
 int WindowWidth = WINDOW_WIDTH;
 int WindowHeight = WINDOW_HEIGHT;
@@ -230,7 +230,10 @@ int main(void) {
     }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    mine = new Mine(glm::vec3(8.0f, 2.0f, 6.0f));
+    // spawn mines
+    for(int i = 0; i < MINE_COUNT; i++) {
+        allMines.push_back(new Mine());
+    }
 
     printf("Entering Main Loop\n");
     FPS_init(2);

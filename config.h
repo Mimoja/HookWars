@@ -38,6 +38,7 @@
 #define MINE_RADIUS 0.7f
 #define MINE_RANGE 1.5f
 #define MINE_RESPAWN_TIME 2.0f
+#define MINE_COUNT 2
 
 //#define loadCube
 #define MAP_MODEL "assets/map1.obj"
