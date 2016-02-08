@@ -7,3 +7,9 @@
 [submodule "deps/glew"]
 	path = deps/glew
 	url = https://github.com/nigels-com/glew
+[submodule "deps/freetype-glpp"]
+	path = deps/freetype-glpp
+	url = https://github.com/henriquegemignani/freetype-glpp
+[submodule "deps/freetype-gl"]
+	path = deps/freetype-gl
+	url = https://github.com/rougier/freetype-gl
