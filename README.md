@@ -1,6 +1,6 @@
 # HookWars
 A minigame based on the popular Warcraft 3 mod "pugdewars"
-
+![Hook Wars](screenshots/game.png).
 
 ## Building
   0. Checkout the dependencie branch on github or the master branch on gitlab
