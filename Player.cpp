@@ -104,7 +104,10 @@ Player::Player(int number) : GameObject(PLAYER_MODEL) {
     lastHitTime = glfwGetTime() - BLINK_TIME;
     new Rotor(this, -0.15f, 1.5f);
     mModel.scaling = glm::vec3(PLAYER_SCALING);
-    mModel.rotation = glm::vec3(0.1f);
+    mModel.rotation = glm::vec3(0.0f);
+    mModel.diffuseTexture = new Texture(PLAYER_TEXTURE);
+    mModel.normalTexture = new Texture(PLAYER_TEXTURE_NORMAL);
+    mModel.ssaoTexture = new Texture(PLAYER_TEXTURE_SSAO);
     playerNumber = number;
 
     hookSight = new PointLight();
