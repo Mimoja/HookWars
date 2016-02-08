@@ -30,8 +30,8 @@
 #define CHAIN_PULL 0.5f
 #define CHAIN_BASE_PULL 0.2f
 
-#define MINE_MODEL "assets/derp.obj"
-#define MINE_SCALING 1.0f
+#define MINE_MODEL "assets/mine.obj"
+#define MINE_SCALING 0.5f
 #define MINE_BASE_ROTATION glm::half_pi<float>()
 #define MINE_RADIUS 0.5f
 #define MINE_RANGE 1.5f
