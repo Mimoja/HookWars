@@ -13,6 +13,7 @@
 #include "Camera.h"
 #include "Shader.h"
 #include "Player.h"
+#include "Mine.h"
 #include "HealthBar.h"
 
 std::vector<GameObject*> allUpdateObjects;
@@ -228,6 +229,7 @@ int main(void) {
     }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+    auto m = new Mine(glm::vec3(8.0f, 2.0f, 6.0f));
 
     printf("Entering Main Loop\n");
     FPS_init(2);

@@ -14,7 +14,6 @@ class Player : public GameObject {
     public:
         int playerNumber;
         PointLight* sight;
-        PointLight* sight;
         PointLight* hookSight;
         PointLight* canonSight;
         Hook* hook;
