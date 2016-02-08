@@ -58,7 +58,9 @@ void Hook::update() {
 
             mModel.rotation.y = glm::atan(dif.x, dif.z) + HOOK_BASE_ROTATION + glm::pi<float>();
             if(pulled != NULL){
-                pulled->mModel.position = mModel.position;
+                if( std::find(allMines.begin(), allMines.end(), pulled) == allMines.end() || ((Mine*)pulled)->exists) {
+                    pulled->mModel.position = mModel.position;
+                }
             }
         }
     } else {
