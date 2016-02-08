@@ -71,15 +71,15 @@ void JoystickPlayer::update() {
         movementVector.x = joystickAxis[XBOX_ONE_GAMEPAD::MOVE_LEFT_RIGHT] - joystickCalibration[0].x;
     } else movementVector.x = 0.0f;
     if (fabs(joystickAxis[XBOX_ONE_GAMEPAD::MOVE_UP_DOWN]) > GAMEPAD_CUTOFF) {
-        movementVector.z = joystickAxis[XBOX_ONE_GAMEPAD::MOVE_UP_DOWN] - joystickCalibration[0].z;
+        movementVector.z = -(joystickAxis[XBOX_ONE_GAMEPAD::MOVE_UP_DOWN] - joystickCalibration[0].z);
     } else movementVector.z = 0.0f;
 
-    rotationVector.x = joystickAxis[XBOX_ONE_GAMEPAD::TURN_LEFT_RIGHT] - joystickCalibration[1].x;
+    rotationVector.x = -(joystickAxis[XBOX_ONE_GAMEPAD::TURN_LEFT_RIGHT] - joystickCalibration[1].x);
     rotationVector.y = joystickAxis[XBOX_ONE_GAMEPAD::TURN_UP_DOWN] - joystickCalibration[1].y;
     // workaround so abs(rotationVector) is never 0
     if (rotationVector.x == 0) rotationVector.x = 0.00001f;
 
-    fire = (joystickAxis[XBOX_ONE_GAMEPAD::FIRE] > 0);
+    fire = (joystickAxis[XBOX_ONE_GAMEPAD::FIRE] < 0);
     grapple = (joystickAxis[XBOX_ONE_GAMEPAD::GRAPPLE] > 0);
 
     Player::update();
