@@ -7,11 +7,11 @@ class Mine : public GameObject {
     public:
         Mine();
         virtual void update();
+        bool exists;
 
     private:
         void explode();
         float respawntime;
-        bool exists;
 	PointLight* sight;
 };
 
