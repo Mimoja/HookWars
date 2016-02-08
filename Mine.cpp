@@ -39,6 +39,7 @@ Mine::Mine(bool repair) : GameObject(MINE_MODEL) {
         mModel.scaling = glm::vec3(REPAIR_SCALING);
         mModel.diffuseTexture = new Texture(REPAIR_TEXTURE);
         mModel.normalTexture = new Texture(REPAIR_TEXTURE_NORMAL);
+        mModel.ssaoTexture = new Texture(REPAIR_TEXTURE);
         mModel.rotation.y = REPAIR_BASE_ROTATION;
     } else {
         sight->lightColor = glm::vec3(1.0f, 0.0f, 0.0f);
@@ -47,11 +48,12 @@ Mine::Mine(bool repair) : GameObject(MINE_MODEL) {
         mModel.scaling = glm::vec3(MINE_SCALING);
         mModel.diffuseTexture = new Texture(MINE_TEXTURE);
         mModel.normalTexture = new Texture(MINE_TEXTURE_NORMAL);
+        mModel.ssaoTexture = new Texture(MINE_TEXTURE);
     }
     mModel.position = spawn();
     sight->intensity = 30.0f;
     sight->position = this->mModel.position;
-    sight->position.y += 1.5f;
+    sight->position.y += 3.5f;
     sight->falloff.linear = 0.2f;
     sight->falloff.exponential = 0.5f;
     sight->specular.intensity = 0.0f;
@@ -61,16 +63,13 @@ Mine::Mine(bool repair) : GameObject(MINE_MODEL) {
 void Mine::update() {
     if (exists) {
         for (auto p : allPlayers) {
-            if (isColliding(*(GameObject*)this, *p)) {
+            if (isColliding(*(GameObject*)this, *p) && !p->isHit()) {
                 explode();
-                if(!isRepair) {
-                    p->hit();
-                }
-                p->health -= damage;
+                p->hit(damage);
             }
         }
         sight->position = this->mModel.position;
-        sight->position.y += 1.5f;
+        sight->position.y += 3.5f;
     } else {
         if (glfwGetTime() > respawntime) {
             mModel.position = spawn();

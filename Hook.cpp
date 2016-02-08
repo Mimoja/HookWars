@@ -90,8 +90,7 @@ void Hook::update() {
             if (p->playerNumber != owner && isColliding(*this, *p) && !p->isHit()) {
                 printf("Hit Player %d", p->playerNumber);
                 pulled = p;
-                p->hit();
-                p->health -= 0.2f;
+                p->hit(0.2f);
                 allPlayers[owner]->pull();
             }
         }

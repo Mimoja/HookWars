@@ -161,8 +161,7 @@ void Player::update() {
     }
     if (navEntry.b > 0.9f) {
         if(!isHit()) {
-            hit();
-            health -= 0.2f;
+            hit(0.2f);
         }
     }
 
@@ -287,10 +286,13 @@ bool Player::isHit() {
     return glfwGetTime() - lastHitTime < BLINK_TIME;
 }
 
-void Player::hit() {
-    lastHitTime = glfwGetTime();
-    if (health <= 0.01f) {
-        die();
+void Player::hit(float damage) {    
+    health -= damage;
+    if (damage > 0.0f) {    
+        lastHitTime = glfwGetTime();
+        if (health <= 0.01f) {
+            die();
+        }
     }
 }
 

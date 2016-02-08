@@ -28,7 +28,7 @@ class Player : public GameObject {
         Player();
         Player(int number);
         void pull();
-	    void hit();
+	    void hit(float damage);
         bool isHit();
         virtual void update();
 
