@@ -17,7 +17,7 @@ The executable is `./game`
 
 The goal of the game is to kill the enemies. (WOW!)
 
-This can be accomplished by hooking them into traps, mines or just by hitting them. There are also heal-"stations"
+This can be accomplished by hooking them into traps, mines or just by hitting them. There are also repairkits.
 
 Now you can use the analog sticks on your gamepad to move and rotate and the the should trigger (the analog ones) for shooting normal and grapple hooks.
 
