@@ -21,7 +21,7 @@ deps/glfw/src/libglfw3.a:
 	( cd deps/glfw && cmake . && make -j8)
 
 deps/assimp/lib/libassimp.so:
-	( cd deps/assimp && cmake CMakeLists.txt && make -j8)
+	( cd deps/assimp && cmake CMakeLists.txt -DASSIMP_BUILD_TESTS=NO && make -j8)
 
 deps/glew/lib/libGLEW.a:
 	( cd deps/glew && make extensions && make -j8)
