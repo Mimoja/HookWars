@@ -1,6 +1,7 @@
 #include "Hook.h"
 #include "config.h"
 #include "util.h"
+#include "Mine.h"
 #include <string>
 #include <algorithm>
 
@@ -11,6 +12,7 @@ void Hook::pull() {
 }
 
 extern std::vector<Player*> allPlayers;
+extern std::vector<Mine*> allMines;
 
 extern GameObject* referenceHook;
 extern GameObject* referenceGrapple;
@@ -87,6 +89,13 @@ void Hook::update() {
                 printf("Hit Player %d", p->playerNumber);
                 pulled = p;
                 p->hit();
+                allPlayers[owner]->pull();
+            }
+        }
+        // did we hit a mine?
+        for (Mine* m : allMines) {
+            if (isColliding(*this, *m)) {
+                pulled = m;
                 allPlayers[owner]->pull();
             }
         }
