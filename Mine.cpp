@@ -39,6 +39,9 @@ void Mine::update() {
         for (auto o : allUpdateObjects) {
             if (o != (GameObject*)this && isColliding(*(GameObject*)this, *o)) {
                 explode();
+                if( std::find(allPlayers.begin(), allPlayers.end(), (Player*)o) != allPlayers.end() ) {
+                    ((Player*) o)->hit();
+                }
             }
         }
     } else {
@@ -50,13 +53,6 @@ void Mine::update() {
 }
 
 void Mine::explode() {
-    radius = MINE_RANGE;
-    for (auto o : allUpdateObjects) {
-        if (std::find(allPlayers.begin(), allPlayers.end(), (Player*)o) != allPlayers.end()
-                && isColliding(*this, *o)) {
-            ((Player*)o)->hit();
-        }
-    }
     mModel.position.y = -1000.0f;
     exists = false;
     respawntime = glfwGetTime() + MINE_RESPAWN_TIME;

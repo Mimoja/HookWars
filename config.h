@@ -35,7 +35,7 @@
 #define MINE_TEXTURE_NORMAL "assets/mtl_o_n.png"
 #define MINE_SCALING 0.5f
 #define MINE_BASE_ROTATION glm::half_pi<float>()
-#define MINE_RADIUS 0.5f
+#define MINE_RADIUS 0.7f
 #define MINE_RANGE 1.5f
 #define MINE_RESPAWN_TIME 2.0f
 
@@ -61,8 +61,8 @@
 #define GAMEPAD_CUTOFF (0.15f)
 #define PLAYER_MAXSPEED (0.20f)
 
-#define BLINK_TIME 1.5f
-#define BLINK_INTERVAL 0.3f
+#define BLINK_TIME 1.0f
+#define BLINK_INTERVAL 0.2f
 
 // Shading
 #define GEOMETRIE_VERTEX "shader/geometrie.vs"

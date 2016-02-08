@@ -43,6 +43,7 @@ GameObject* map_ptr;
 GameObject* referenceChain;
 GameObject* referenceHook;
 GameObject* referenceGrapple;
+GameObject* mine;
 
 int WindowWidth = WINDOW_WIDTH;
 int WindowHeight = WINDOW_HEIGHT;
@@ -229,7 +230,7 @@ int main(void) {
     }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    auto m = new Mine(glm::vec3(8.0f, 2.0f, 6.0f));
+    mine = new Mine(glm::vec3(8.0f, 2.0f, 6.0f));
 
     printf("Entering Main Loop\n");
     FPS_init(2);

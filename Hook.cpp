@@ -14,6 +14,7 @@ extern std::vector<Player*> allPlayers;
 
 extern GameObject* referenceHook;
 extern GameObject* referenceGrapple;
+extern GameObject* mine;
 
 Hook::Hook(int playerNumber, glm::vec3 origin, float dir, PointLight* p, bool grapple)
         : GameObject(*referenceHook) {
@@ -89,6 +90,11 @@ void Hook::update() {
                 p->hit();
                 allPlayers[owner]->pull();
             }
+        }
+        // did we hit the mine?
+        if(isColliding(*this, *mine)) {
+            pulled = mine;
+            allPlayers[owner]->pull();
         }
     }
     sight->position = mModel.position;
