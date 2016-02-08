@@ -117,7 +117,7 @@ Player::Player(int number) : GameObject(PLAYER_MODEL) {
     hookSight->specular.power = 32;
 
     sight = new PointLight();
-    sight->lightColor = glm::vec3(0.6f, 0.6f, 1.0f);
+    sight->lightColor = glm::normalize(glm::vec3(fmod(number+2*0.1f,1.0f), fmod(0.6f*number,1.0f), fmod(1.0f-number/2,1.0f)));
     sight->intensity = 10.0f;
     sight->position = glm::vec3(0.0f, 4.0f, 3.0f);
     sight->falloff.linear = 0.2f;
