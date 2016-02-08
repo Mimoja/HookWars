@@ -32,6 +32,7 @@
 
 #define MINE_MODEL "assets/mine.obj"
 #define MINE_TEXTURE "assets/mtl_o_s.png"
+#define MINE_TEXTURE_NORMAL "assets/mtl_o_n.png"
 #define MINE_SCALING 0.5f
 #define MINE_BASE_ROTATION glm::half_pi<float>()
 #define MINE_RADIUS 0.5f

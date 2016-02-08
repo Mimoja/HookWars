@@ -28,6 +28,7 @@ Mine::Mine(glm::vec3 pos) : GameObject(MINE_MODEL) {
     mModel.rotation.y = MINE_BASE_ROTATION;
     mModel.scaling = glm::vec3(MINE_SCALING, MINE_SCALING, MINE_SCALING);
     mModel.diffuseTexture = new Texture(MINE_TEXTURE);
+    mModel.normalTexture = new Texture(MINE_TEXTURE_NORMAL);
     radius = MINE_RADIUS;
     allUpdateObjects.push_back(this);
     allRenderObjects.push_back(this);
