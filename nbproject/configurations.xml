@@ -43,7 +43,7 @@
       <makefileType>
         <makeTool>
           <buildCommandWorkingDir>.</buildCommandWorkingDir>
-          <buildCommand>${MAKE} -f Makefile</buildCommand>
+          <buildCommand>${MAKE} -f Makefile -j11</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
           <executablePath>game</executablePath>
           <ccTool flags="0">

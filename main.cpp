@@ -13,6 +13,7 @@
 #include "Camera.h"
 #include "Shader.h"
 #include "Player.h"
+#include "Mine.h"
 #include "HealthBar.h"
 
 std::vector<GameObject*> allUpdateObjects;
@@ -23,6 +24,9 @@ GLFWwindow* window;
 void mainLoop(long frameCount);
 
 glm::mat4 Projection;
+glm::mat4 depthVP;
+glm::mat4 depthBiasVP;
+
 Camera cam;
 
 GLuint geometrieShaderID;
@@ -36,12 +40,22 @@ unsigned navigationMapHeight;
 unsigned navigationMapWidth;
 
 GameObject* map_ptr;
+GameObject* referenceChain;
+GameObject* referenceHook;
+GameObject* referenceGrapple;
 
 int WindowWidth = WINDOW_WIDTH;
 int WindowHeight = WINDOW_HEIGHT;
 
+std::vector<glm::vec3> spawnPoints = {
+    glm::vec3(- 9.0f,  2.0f,  4.0f),
+    glm::vec3(  4.0f,  2.0f,- 9.0f),
+    glm::vec3(  8.0f,  2.0f, 11.5f),
+    glm::vec3(-13.0f,  2.0f,-15.5f),
+};
+
 GLuint shadowTexture;
-GLuint frameBuffer;
+GLuint frameBuffer = 0;
 
 void window_size_callback(GLFWwindow* window, int width, int height) {
     glfwMakeContextCurrent(window);
@@ -93,18 +107,6 @@ int main(void) {
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
 
-    // Initialize GLEW
-    glewExperimental = true; // Needed for core profile
-    if (glewInit() != GLEW_OK) {
-        fprintf(stderr, "Failed to initialize GLEW\n");
-        glfwTerminate();
-        return -1;
-    }
-
-    // Ensure we can capture the escape key being pressed below
-    glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
-
-
     // Read Navigation Map
     unsigned int res = lodepng::decode(navigationMap, navigationMapWidth, navigationMapHeight, NAVIGATION_MAP);
 
@@ -114,40 +116,33 @@ int main(void) {
     }
 
     // Joystick handle
-    for (int x = 0; x < 16; x++) {
+    for (int x = 0; x < 4; x++) {
         const char* joystickName = glfwGetJoystickName(GLFW_JOYSTICK_1 + x);
         if (joystickName != 0) {
             printf("Found Joystick %s\n", joystickName);
-            Player* newPlayer = new Player(PLAYER_MODEL);
+            JoystickPlayer* newPlayer = new JoystickPlayer(x);
             newPlayer->CONTROLER_NAME = joystickName;
-            newPlayer->playerNumber = x;
-            newPlayer->mModel.position = glm::vec3(-5.0f, 2.0f, 0.0f);
             newPlayer->joystickAxis = glfwGetJoystickAxes(GLFW_JOYSTICK_1 + x,
                     &newPlayer->joystickAxisCount);
             newPlayer->calibrate();
-            newPlayer->color = glm::vec3(0.9f, 0.0f, 0.1f);
-            newPlayer->useColor = false;
+            newPlayer->mModel.position = spawnPoints[x];
             allPlayers.push_back(newPlayer);
             allUpdateObjects.push_back(newPlayer);
             allRenderObjects.push_back(newPlayer);
-
-            PointLight* point1 = new PointLight();
-            point1->lightColor = glm::vec3(0.7f, 0.7f, 1.0f);
-            point1->intensity = 22.0f;
-            point1->position = glm::vec3(0.0f, 4.5f, 3.0f);
-            point1->falloff.linear = 0.0f;
-            point1->falloff.exponential = 1.0f;
-            point1->specular.intensity = 0.0f;
-            point1->specular.power = 32;
-            newPlayer->sight = point1;
-            allLightSources.pointLights.push_back(point1);
-
-            HealthBar* h = new HealthBar(newPlayer);
-            allRenderObjects.push_back(h);
-            allUpdateObjects.push_back(h);
         }
     }
-    printf("%d Player found\n", (int) allPlayers.size());
+    if (allPlayers.size() != 0) {
+        printf("%d Player found\n", (int) allPlayers.size());
+    } else {
+        printf("Falling back to keyboard players\n");
+        for (int x = 0; x < 2; x++) {
+            KeyboardPlayer* newPlayer = new KeyboardPlayer(x);
+            newPlayer->mModel.position = spawnPoints[x];
+            allPlayers.push_back(newPlayer);
+            allUpdateObjects.push_back(newPlayer);
+            allRenderObjects.push_back(newPlayer);
+        }
+    }
 
     // Black background
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -171,70 +166,70 @@ int main(void) {
     shadowShaderID = buildShader(SHADOW_VERTEX, SHADOW_FRAGMENT);
     healthBarShaderID = buildShader(HEALTHBAR_VERTEX, HEALTHBAR_FRAGMENT);
 
+    referenceHook = new GameObject(HOOK_MODEL);
+    referenceChain = new GameObject(CHAIN_MODEL);
+    referenceGrapple = new GameObject(HOOK_GRAPPLE_MODEL);
     map_ptr = new GameObject(MAP_MODEL);
-    map_ptr->mModel.scaling = glm::vec3(MAP_SCALING, MAP_SCALING, MAP_SCALING);
-    map_ptr->mModel.position = glm::vec3(0, 0, 0);
-    map_ptr->mModel.rotation = glm::vec3(0, 0, 0);
-    map_ptr->mModel.diffuseTexture = new Texture();
-    map_ptr->mModel.diffuseTexture->loadPNG(MAP_DIFFUSE);
-    map_ptr->mModel.normalTexture = new Texture();
-    map_ptr->mModel.normalTexture->loadPNG(MAP_NORMAL);
-    map_ptr->mModel.ssaoTexture = new Texture();
-    map_ptr->mModel.ssaoTexture->loadPNG(MAP_AO);
+    map_ptr->mModel.scaling = glm::vec3(MAP_SCALING);
+    map_ptr->mModel.position = glm::vec3(0.0f, -1.0f, 0.0f);
+    map_ptr->mModel.rotation = glm::vec3(0.0f);
+    map_ptr->mModel.diffuseTexture = new Texture(MAP_DIFFUSE);
+    map_ptr->mModel.normalTexture = new Texture(MAP_NORMAL);
+    map_ptr->mModel.ssaoTexture = new Texture(MAP_AO);
     allRenderObjects.push_back(map_ptr);
 
     allLightSources.ambient.intensity = 0.6f;
     allLightSources.ambient.lightColor = glm::vec3(1.0f);
 
-    PointLight* point1 = new PointLight();
-    point1->lightColor = glm::vec3(1.0f, 1.0f, 0.8f);
-    point1->intensity = 92.0f;
-    point1->position = glm::vec3(0.0f, 10.5f, 2.0f);
-    point1->falloff.linear = 0.0f;
-    point1->falloff.exponential = 0.5f;
-    point1->specular.intensity = 100.3f;
-    point1->specular.power = 32;
-    allLightSources.pointLights.push_back(point1);
+    PointLight* mainLight = new PointLight();
+    mainLight->lightColor = glm::vec3(1.0f, 1.0f, 0.8f);
+    mainLight->intensity = 92.0f;
+    mainLight->position = glm::vec3(0.0f, 10.5f, 2.0f);
+    mainLight->falloff.linear = 0.0f;
+    mainLight->falloff.exponential = 0.5f;
+    mainLight->specular.intensity = 100.3f;
+    mainLight->specular.power = 32;
+    allLightSources.pointLights.push_back(mainLight);
 
-    glGenTextures(1, &shadowTexture);
-    glBindTexture(GL_TEXTURE_2D, shadowTexture);
+    glm::mat4 depthViewMatrix = glm::lookAt(mainLight->position, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+    depthVP = glm::ortho<float>(-20, 20, -20, 20, -20, 100) * depthViewMatrix;
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 1000, 1000, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, 0);
+    glm::mat4 biasMatrix(
+            0.5, 0.0, 0.0, 0.0,
+            0.0, 0.5, 0.0, 0.0,
+            0.0, 0.0, 0.5, 0.0,
+            0.5, 0.5, 0.5, 1.0
+            );
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    depthBiasVP = biasMatrix*depthVP;
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LESS);
-
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    //
-
+    // Create framebuffer
     glGenFramebuffers(1, &frameBuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
 
+    // Depth texture
+    glGenTextures(1, &shadowTexture);
+    glBindTexture(GL_TEXTURE_2D, shadowTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
+
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, shadowTexture, 0);
+
+    // No color output
     glDrawBuffer(GL_NONE);
-    glReadBuffer(GL_NONE);
 
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadowTexture, 0);
-
-    res = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-    if (res != GL_FRAMEBUFFER_COMPLETE) {
-        printf("Could not create Framebuffer error 0x%x\n", res);
+    // Check framebuffer
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         exit(-1);
     }
-
-    glClearDepth(1.0f);
-
-    glEnable(GL_DEPTH_TEST);
-
-    glEnable(GL_CULL_FACE);
-
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+    auto m = new Mine(glm::vec3(8.0f, 2.0f, 6.0f));
 
     printf("Entering Main Loop\n");
     FPS_init(2);
@@ -259,13 +254,7 @@ double nowTime;
 void mainLoop(long frameCount) {
 
     nowTime = glfwGetTime();
-    for (unsigned int j = 0; j < allPlayers.size(); j++) {
-        allPlayers[j]->joystickAxis = glfwGetJoystickAxes(GLFW_JOYSTICK_1 + j,
-                &allPlayers[j]->joystickAxisCount);
-        allPlayers[j]->joystickButtons = glfwGetJoystickButtons(GLFW_JOYSTICK_1 + j,
-                &allPlayers[j]->joystickButtonsCount);
-    }
-
+    //Update
     if (nowTime - lastUpdateTime > (1 / 60)) {
         for (unsigned int i = 0; i < allUpdateObjects.size(); i++) {
             allUpdateObjects[i]->update();
@@ -274,27 +263,29 @@ void mainLoop(long frameCount) {
         lastUpdateTime = glfwGetTime();
     }
 
-
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    glViewport(0, 0, 1000, 1000);
-
+    //Render
     glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+    glViewport(0, 0, 1024, 1024);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
 
-    glClear(GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glm::vec3 lighPos = glm::vec3(0.0f, 10.5f, 2.0f);
-    Camera lightCam(lighPos, -lighPos, glm::vec3(0.0f, 1.0f, 0.0f));
+
     for (unsigned int i = 0; i < allRenderObjects.size(); i++) {
-        allRenderObjects[i]->renderShadow(shadowShaderID, Projection * lightCam.getView());
+        allRenderObjects[i]->renderShadow(shadowShaderID, depthVP);
     }
 
+    //
+
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glViewport(0, 0, WindowWidth, WindowHeight);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK); // Cull back-facing triangles -> draw only front-facing triangles
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     for (unsigned int i = 0; i < allRenderObjects.size(); i++) {
-        allRenderObjects[i]->render(geometrieShaderID, Projection * cam.getView(), cam, allLightSources, lightCam);
+        allRenderObjects[i]->render(geometrieShaderID, Projection * cam.getView(), cam, allLightSources, depthBiasVP);
     }
 
     // Swap buffers

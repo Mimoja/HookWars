@@ -12,59 +12,87 @@ void Hook::pull() {
 
 extern std::vector<Player*> allPlayers;
 
-Hook::Hook(int playerNumber, glm::vec3 origin, float dir, PointLight* p) : GameObject(HOOK_MODEL) {
+extern GameObject* referenceHook;
+extern GameObject* referenceGrapple;
+
+Hook::Hook(int playerNumber, glm::vec3 origin, float dir, PointLight* p, bool grapple)
+        : GameObject(*referenceHook) {
+    if(grapple) {
+        mModel = referenceGrapple->mModel;
+    }
+    grappling = grapple;
     owner = playerNumber;
     mModel.position = origin;
     vel = HOOK_SPEED * glm::normalize(glm::vec3(sin(dir), 0, cos(dir)));
-    collided = 0;
+    collided = 5;
     prev = NULL;
     pulling = false;
+    pulled = NULL;
     mModel.rotation.y = dir + HOOK_BASE_ROTATION;
     mModel.scaling = glm::vec3(HOOK_SCALING, HOOK_SCALING, HOOK_SCALING);
     radius = HOOK_RADIUS;
     allRenderObjects.push_back(this);
     sight = p;
+    sight->position = mModel.position;
+    sight->position.y += 0.1f;
 }
 
 void Hook::update() {
 
     if (pulling) {
-        // pull
-        glm::vec3 follow;
-        glm::vec3 dif;
+        if (!grappling) {
+            // pull
+            glm::vec3 follow;
+            glm::vec3 dif;
 
-        if (prev != NULL) {
-            follow = prev->mModel.position;
-        } else {
-            follow = allPlayers[owner]->hookpoint;
+            if (prev != NULL) {
+                follow = prev->mModel.position;
+            } else {
+                follow = allPlayers[owner]->hookpoint;
+            }
+            dif = moveTowards(mModel.position, follow, CHAIN_BASE_PULL) - mModel.position;
+
+            mModel.position += dif;
+
+            mModel.rotation.y = glm::atan(dif.x, dif.z) + HOOK_BASE_ROTATION + glm::pi<float>();
+            if(pulled != NULL){
+                pulled->mModel.position = mModel.position;
+            }
         }
-        dif = moveTowards(mModel.position, follow, CHAIN_BASE_PULL) - mModel.position;
-
-        mModel.position += dif;
-
-        mModel.rotation.y = glm::atan(dif.x, dif.z) + HOOK_BASE_ROTATION + glm::pi<float>();
     } else {
         // push
-        glm::vec3 normal = circleCollision(mModel.position, radius, 8.0f, false);
+        glm::vec3 normal = circleCollision(mModel.position, radius, 8.0f, false, false, allPlayers[owner]);
 
         if (collided == 0 && glm::length(normal) != 0.0f) {
-            // reflect
-            vel = HOOK_SPEED * glm::normalize(glm::reflect(vel, glm::normalize(normal)));
-            mModel.rotation.y = glm::atan(vel.x, vel.z) + HOOK_BASE_ROTATION;
-            collided = 3;
+            if(grappling) {
+                // grapple
+                allPlayers[owner]->pull();
+            } else {
+                // reflect
+                vel = HOOK_SPEED * glm::normalize(glm::reflect(vel, glm::normalize(normal)));
+                mModel.rotation.y = glm::atan(vel.x, vel.z) + HOOK_BASE_ROTATION;
+                collided = 3;
+            }
         } else {
             // just keep going
             mModel.position += vel;
             collided = std::max(0, collided - 1);
         }
+    }
+    // check for hits
+    if (!grappling && pulled == NULL){
+        // did we hit a player?
         for (Player* p : allPlayers) {
-            if (p->playerNumber != owner && isColliding(*this, *p)) {
+            if (p->playerNumber != owner && isColliding(*this, *p) && !p->isHit()) {
                 printf("Hit Player %d", p->playerNumber);
+                pulled = p;
+                p->hit();
+                allPlayers[owner]->pull();
             }
         }
-
     }
     sight->position = mModel.position;
+    sight->position.y += 0.1f;
 }
 
 void Hook::kill() {

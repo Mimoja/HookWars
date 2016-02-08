@@ -17,7 +17,7 @@ void HealthBar::update() {
     }
 }
 
-void HealthBar::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights lights,Camera shadowCamera) {
+void HealthBar::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights lights, glm::mat4 shadowMVP) {
 
     glUseProgram(healthBarShaderID);
 
@@ -26,5 +26,5 @@ void HealthBar::render(GLuint shaderID, glm::mat4 MVP, Camera camera, Lights lig
         if (healthID != -1) glUniform1f(healthID, origin->health);
     } else if (healthID != -1) glUniform1f(healthID, 1.0f);
 
-    GameObject::render(healthBarShaderID, MVP, camera, *(new Lights()), shadowCamera);
+    GameObject::render(healthBarShaderID, MVP, camera, *(new Lights()), shadowMVP);
 }

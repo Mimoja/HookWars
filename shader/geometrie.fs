@@ -6,7 +6,7 @@ in vec3 Tangent;
 in vec3 Bitangent;
 
 in vec3 worldPos;
-in vec4 lightPos;
+in vec4 shadowPos;
 
 out vec4 FragColor;
 
@@ -16,8 +16,6 @@ uniform sampler2D SpecularTextureSampler;
 uniform sampler2D ShadowMapSampler;
 uniform sampler2D SSAOTextureSampler;
 uniform sampler2DShadow ShadowTextureSampler;
-
-
 
 uniform vec3 CAMERA;
 uniform mat4 WORLD;
@@ -71,15 +69,21 @@ uniform int directionalLightCount;
 uniform DirectionalLight directionalLight[10];
 
 uniform int pointLightCount;
-uniform SpotLight spotLight[10];
+uniform SpotLight spotLight[20];
 
 uniform int spotLightCount;
-uniform PointLight pointLight[10];
+uniform PointLight pointLight[20];
 
 
 void main(){
         vec4 color = vec4(texture(DiffuseTextureSampler, UV).rgb, 1.0f);
         vec4 ssao =  vec4(texture(SSAOTextureSampler, UV).rgb, 1.0f);
+
+        float visibility = texture(ShadowTextureSampler, vec3(shadowPos.xy, (shadowPos.z)/shadowPos.w) );
+        vec4 shadow = vec4(1.0f);
+        if(visibility<0.005f){
+            shadow = ssao * vec4(0.3f, 0.3f, 0.3f, 1.0f);
+        }
 
         vec3 normal = normalize(Normal);
         vec3 tangent = normalize(Tangent);
@@ -157,7 +161,7 @@ void main(){
             light.Position = (WORLD*vec4(light.Position,1.0f)).xyz;
 
             vec3 LightDirection = (worldPos - light.Position);
-            vec3 LightToPixel = normalize(LightDirection);                             
+            vec3 LightToPixel = normalize(-LightDirection);                             
             float SpotFactor = dot(LightToPixel, light.Direction);   
             if (SpotFactor  > light.Cutoff) { 
                 float Distance = length(LightDirection);
@@ -190,5 +194,5 @@ void main(){
             }
         }
 
-        FragColor = color * ssao * (AmbientColor + DiffuseColor + SpecularColor);
+        FragColor = color * shadow * ssao * (AmbientColor + DiffuseColor + SpecularColor);
 }

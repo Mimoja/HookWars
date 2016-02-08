@@ -1,11 +1,11 @@
-#version 330
+#version 330 core
 
-layout (location = 0) in vec3 Position;
+layout(location = 0) in vec3 Position;
 
-uniform mat4 LIGHT;
+uniform mat4 depthMVP;
 uniform mat4 MODEL;
 
-void main()
-{
-    gl_Position = (LIGHT*MODEL)*vec4(Position, 1.0);
+void main(){
+    gl_Position =  (depthMVP*MODEL) * vec4(Position, 1.0f);
 }
+

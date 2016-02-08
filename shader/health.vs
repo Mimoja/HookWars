@@ -18,6 +18,6 @@ void main()
 {
     vec3 pos = Position;
     pos.x *= HEALTH;
-    pos.x -= 0.5f;
+    pos.x -= 0.5f*HEALTH;
     gl_Position = (WORLD*MODEL)*vec4(pos, 1.0);
 }

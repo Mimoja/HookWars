@@ -6,9 +6,9 @@
 
 #define PLAYER_MODEL "assets/player.obj"
 #define ROTOR_MODEL "assets/rotor.obj"
-#define PLAYER_SCALING 1
+#define PLAYER_SCALING 0.7f
 #define PLAYER_BASE_ROTATION (glm::pi<float>())
-#define PLAYER_RADIUS 1.0f
+#define PLAYER_RADIUS 0.7f
 
 #define HEALTHBAR_MODEL "assets/health.obj"
 #define HEALTHBAR_SCALING 0.1f
@@ -16,18 +16,26 @@
 #define HEALTHBAR_HEIGHT 4.0f
 
 #define HOOK_MODEL "assets/hook.obj"
+#define HOOK_GRAPPLE_MODEL "assets/grapple.obj"
 #define HOOK_SCALING 0.4f
 #define HOOK_SPEED 0.5f
 #define HOOK_RADIUS 0.4f
 #define HOOK_BASE_ROTATION glm::half_pi<float>()
 
 #define CHAIN_MODEL "assets/chain_simple.obj"
-#define CHAIN_SCALING 0.12f
-#define CHAIN_DISTANCE 0.55f
+#define CHAIN_SCALING 0.15f
+#define CHAIN_DISTANCE 0.65f
 #define CHAIN_BASE_ROTATION glm::pi<float>()
 #define CHAIN_BASE_PUSH 0.2f
 #define CHAIN_PULL 0.5f
 #define CHAIN_BASE_PULL 0.2f
+
+#define MINE_MODEL "assets/derp.obj"
+#define MINE_SCALING 1.0f
+#define MINE_BASE_ROTATION glm::half_pi<float>()
+#define MINE_RADIUS 0.5f
+#define MINE_RANGE 1.5f
+#define MINE_RESPAWN_TIME 2.0f
 
 //#define loadCube
 #define MAP_MODEL "assets/map1.obj"
@@ -45,10 +53,14 @@
 #define LINK_DISTANCE (0.1f)
 
 #define HOOK_COOLDOWN (1.500f) //seconds
+#define GRAPPLE_COOLDOWN (10.000f) //seconds
 #define HOOK_LIFETIME (6.000f) //seconds
 #define HOOK_RETRACT_TIME (0.300f) //seconds
 #define GAMEPAD_CUTOFF (0.15f)
 #define PLAYER_MAXSPEED (0.20f)
+
+#define BLINK_TIME 1.5f
+#define BLINK_INTERVAL 0.3f
 
 // Shading
 #define GEOMETRIE_VERTEX "shader/geometrie.vs"
@@ -68,12 +80,8 @@ namespace XBOX_ONE_GAMEPAD {
         MOVE_LEFT_RIGHT = 0,
         MOVE_UP_DOWN = 1,
         FIRE = 5,
+		GRAPPLE = 2,
     };
 }
-
-enum PlayerColor {
-    blue = 1,
-    red = 2,
-};
 
 #endif
