@@ -2,7 +2,7 @@ TARGET = game
 
 CC     = cc
 CPP    = c++
-CPPFLAGS = -pthread -O2 --std=c++11 -Wextra -Wpedantic -g -Ideps/assimp/include/ -Ideps/glfw/include -Ideps/glm/glm
+CPPFLAGS = -pthread -O2 --std=c++11 -Wextra -Wpedantic -g -Ideps/assimp/include/ -Ideps/glfw/include -Ideps/glm
 
 EXTRA_DEFINES  = -DLINUX -DGLM_FORCE_RADIANS -DPROG_NAME=\"$(TARGET)\"
 LFLAGS       = $(LIB_LINUX) -lXrandr -lGL -lXi -pthread -lm -lX11 -lXxf86vm
