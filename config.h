@@ -72,6 +72,7 @@
 #define HOOK_LIFETIME (6.000f) //seconds
 #define HOOK_RETRACT_TIME (0.300f) //seconds
 #define GAMEPAD_CUTOFF (0.15f)
+#define GAMEPAD_ROTATION_DEADZONE (0.4f)
 #define PLAYER_MAXSPEED (0.20f)
 
 #define BLINK_TIME 1.0f
