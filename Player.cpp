@@ -3,6 +3,8 @@
 #include "stdio.h"
 #include "util.h"
 
+#include <glm/gtc/random.hpp>
+
 extern std::vector<GameObject*> allUpdateObjects;
 extern std::vector<GameObject*> allRenderObjects;
 extern Lights allLightSources;
@@ -74,10 +76,21 @@ void JoystickPlayer::update() {
         movementVector.z = -(joystickAxis[XBOX_ONE_GAMEPAD::MOVE_UP_DOWN] - joystickCalibration[0].z);
     } else movementVector.z = 0.0f;
 
-    rotationVector.x = -(joystickAxis[XBOX_ONE_GAMEPAD::TURN_LEFT_RIGHT] - joystickCalibration[1].x);
-    rotationVector.y = joystickAxis[XBOX_ONE_GAMEPAD::TURN_UP_DOWN] - joystickCalibration[1].y;
-    // workaround so abs(rotationVector) is never 0
-    if (rotationVector.x == 0) rotationVector.x = 0.00001f;
+    if (rotationVector.x == 0 && rotationVector.y == 0) {
+        glm::vec2 randDir = glm::circularRand(1.0f);
+        rotationVector.x = randDir.x;
+        rotationVector.y = randDir.y;
+    }
+    {
+        glm::vec2 joystickPos = {
+            -(joystickAxis[XBOX_ONE_GAMEPAD::TURN_LEFT_RIGHT] - joystickCalibration[1].x),
+            joystickAxis[XBOX_ONE_GAMEPAD::TURN_UP_DOWN] - joystickCalibration[1].y
+        };
+        if (glm::length(joystickPos) >= GAMEPAD_ROTATION_DEADZONE) {
+            rotationVector.x = joystickPos.x;
+            rotationVector.y = joystickPos.y;
+        }
+    }
 
     fire = (joystickAxis[XBOX_ONE_GAMEPAD::FIRE] < 0);
     grapple = (joystickAxis[XBOX_ONE_GAMEPAD::GRAPPLE] > 0);
