@@ -25,5 +25,5 @@ Use 'WASDQERT' and 'HJKL'+Arrowkeys to control the players.
 
 
 Created by
- * Maximilian Schander
- * Wanja Hentze
+ * Mimoja
+ * Muvlon
